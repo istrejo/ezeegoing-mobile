@@ -1,4 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
@@ -8,9 +9,20 @@ import { Router } from '@angular/router';
 })
 export class LoginPage implements OnInit {
   router: Router = inject(Router);
+  fb: FormBuilder = inject(FormBuilder);
+  form!: FormGroup;
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.initForm();
+  }
+
+  initForm() {
+    this.form = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
+    });
+  }
 
   onSubmit() {
     this.router.navigate(['/tabs/home']);
