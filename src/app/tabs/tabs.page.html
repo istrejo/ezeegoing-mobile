@@ -1,20 +1,29 @@
-<ion-tabs>
-
+<ion-tabs mode="ios">
+  <!-- <ion-tabs> -->
   <ion-tab-bar slot="bottom">
-    <ion-tab-button tab="tab1" href="/tabs/tab1">
-      <ion-icon aria-hidden="true" name="triangle"></ion-icon>
-      <ion-label>Tab 1</ion-label>
+    <ion-tab-button tab="home">
+      <fa-icon [icon]="faHouse" />
+      Home
     </ion-tab-button>
+    <!-- <ion-tab-button tab="">
+        <fa-icon [icon]="faUsers" />
 
-    <ion-tab-button tab="tab2" href="/tabs/tab2">
-      <ion-icon aria-hidden="true" name="ellipse"></ion-icon>
-      <ion-label>Tab 2</ion-label>
+        Visitantes
+      </ion-tab-button> -->
+    <ion-tab-button tab="reserve">
+      <fa-icon [icon]="faCalendarDays" />
+
+      Reservar
     </ion-tab-button>
+    <ion-tab-button tab="reservations">
+      <fa-icon [icon]="faCalendarCheck" />
 
-    <ion-tab-button tab="tab3" href="/tabs/tab3">
-      <ion-icon aria-hidden="true" name="square"></ion-icon>
-      <ion-label>Tab 3</ion-label>
+      Mis reservas
+    </ion-tab-button>
+    <ion-tab-button tab="profile">
+      <fa-icon [icon]="faUser" />
+
+      Mi perfil
     </ion-tab-button>
   </ion-tab-bar>
-
 </ion-tabs>

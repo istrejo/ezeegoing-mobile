@@ -34,4 +34,21 @@
 
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import "@ionic/angular/css/palettes/dark.system.css";
+// @import "@ionic/angular/css/palettes/dark.system.css";
+
+//fonts - Nunito
+@font-face {
+  font-family: "Nunito";
+  src: url("assets/fonts/Nunito/Nunito-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Nunito";
+  src: url("assets/fonts/Nunito/Nunito-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
+
+* {
+  font-family: "Nunito", sans-serif;
+}

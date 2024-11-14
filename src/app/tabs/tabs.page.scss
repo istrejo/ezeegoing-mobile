@@ -1,1 +1,21 @@
+ion-tabs {
+  ion-tab-bar {
+    background: #0f75bd;
+    height: 74px;
+  }
+}
 
+ion-tab-button {
+  background: #0f75bd;
+  color: #fff;
+  font-size: 10px;
+
+  fa-icon {
+    font-size: 20px;
+  }
+
+  &.tab-selected {
+    color: #30c5f7;
+    // font-size: 20px;
+  }
+}
