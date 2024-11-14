@@ -1,3 +1,9 @@
-<p>
-  validation-errors works!
-</p>
+@if(control.errors?.['required']) {
+<div>
+  <p class="text-red-600">Este campo es requerido</p>
+</div>
+} @if(control.errors?.['email'] && control.touched) {
+<div>
+  <p class="text-red-600">Este campo debe ser un correo válido</p>
+</div>
+}
