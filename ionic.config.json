@@ -1,0 +1,7 @@
+{
+  "name": "ezeegoing",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
