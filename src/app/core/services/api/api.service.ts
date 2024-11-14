@@ -9,7 +9,8 @@ import { environment } from 'src/environments/environment';
 })
 export class ApiService {
   // private readonly API = environment.apiUrl;
-  private readonly API = 'https://lindora.ezeeparking.com/api/';
+  private readonly API = '/api/';
+
   private readonly http = inject(HttpClient);
 
   /**

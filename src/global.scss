@@ -36,6 +36,15 @@
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 // @import "@ionic/angular/css/palettes/dark.system.css";
 
+//Prime NG
+@import "primeng/resources/themes/lara-light-blue/theme.css";
+@import "primeng/resources/primeng.css";
+
+//Tailwind
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 //fonts - Nunito
 @font-face {
   font-family: "Nunito";
@@ -51,4 +60,27 @@
 
 * {
   font-family: "Nunito", sans-serif;
+}
+
+ion-content {
+  --background: linear-gradient(180deg, #ffffff 0%, #d5e9f8 100%);
+  // overflow-y: scroll;
+}
+
+ion-button {
+  --border-radius: 7px;
+  min-height: 35px;
+  text-transform: capitalize;
+  // max-height: 40px;
+}
+
+ion-checkbox {
+  --checkbox-background: transparent;
+  color: #232323;
+  --checkmark-color: #fff;
+  --border-color: #58585a;
+}
+
+.link {
+  @apply text-base font-normal  text-secondary active:text-primary;
 }
