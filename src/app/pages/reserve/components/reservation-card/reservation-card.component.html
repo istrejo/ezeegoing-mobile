@@ -1,0 +1,13 @@
+<ion-item
+  (click)="selectReservation()"
+  lines="none"
+  class="flex items-center w-full rounded-lg ion-activatable ion-no-padding shadow bg-white"
+>
+  <div class="flex items-center w-full rounded-lg relative px-5">
+    <figure class="mr-4">
+      <img [src]="'assets/svgs/' + iconUrl" alt="logo" />
+    </figure>
+    <p class="text-sm font-medium">{{ description }}</p>
+  </div>
+  <ion-ripple-effect></ion-ripple-effect>
+</ion-item>

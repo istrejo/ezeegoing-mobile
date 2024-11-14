@@ -1,13 +1,50 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>reservations</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="ion-padding">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <div class="flex flex-col items-center justify-between gap-4 mt-11 mb-3">
+    <figure>
+      <img src="assets/logos/logo-small.png" alt="logo" />
+    </figure>
+    <h2 class="text-xl font-extrabold mb-1">Mis Reservas</h2>
+    <a routerLink="/tabs/reserve" class="link flex items-center gap-1 ml-auto"
+      >Crear nueva reservación
+      <ion-icon name="add-circle-outline"></ion-icon>
+    </a>
+  </div>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">reservations</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-list
+    class="flex flex-col w-full gap-4 items-center justify-center bg-transparent"
+    lines="none"
+    *ngIf="true"
+  >
+    @if(isLoading$ | async) { @for(item of [1,1,1,1,1,1,1,]; track item) {
+
+    <ion-item
+      class="skelleton-item flex items-center w-full h-14 rounded-lg ion-activatable ion-no-padding bg-transparent"
+    >
+      <ion-thumbnail class="" slot="start">
+        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+      </ion-thumbnail>
+      <ion-label>
+        <h3>
+          <ion-skeleton-text
+            [animated]="true"
+            style="width: 80%"
+          ></ion-skeleton-text>
+        </h3>
+        <p>
+          <ion-skeleton-text
+            [animated]="true"
+            style="width: 60%"
+          ></ion-skeleton-text>
+        </p>
+      </ion-label>
+    </ion-item>
+    } } @else { @for(reservation of (reservations | async); track
+    reservation.id){
+    <app-card [reservation]="reservation" />
+
+    } }
+  </ion-list>
 </ion-content>

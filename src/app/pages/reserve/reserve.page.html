@@ -1,13 +1,24 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>reserve</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="ion-padding" [fullscreen]="true">
+  <div class="w-full flex flex-col gap-4 items-center mt-11 mb-5">
+    <figure>
+      <img class="mx-auto" src="assets/logos/logo-title.png" alt="logo-title" />
+    </figure>
+    <h2 class="text-sm md:text-base font-semibold">
+      Selecciona el tipo de reserva que deseas realizar
+    </h2>
+  </div>
+  <ion-list
+    class="flex flex-col w-full gap-4 items-center justify-center bg-transparent"
+    lines="none"
+  >
+    @for(reservation of reservationsTypes; track reservation.id){
+    <app-reservation-card
+      [id]="reservation.id"
+      [description]="reservation.description"
+      [type]="reservation.type"
+      [routerLink]="['/tabs/create-reservation', reservation.type]"
+    />
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">reserve</ion-title>
-    </ion-toolbar>
-  </ion-header>
+    }
+  </ion-list>
 </ion-content>

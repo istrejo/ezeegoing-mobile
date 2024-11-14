@@ -1,7 +1,11 @@
-ion-item.skelleton-item {
+:host {
+  width: 100%;
   max-width: 350px;
-  --background: transparent;
+}
 
+ion-item {
+  width: 100%;
+  height: 56px;
   --padding-start: 0;
   --inner-padding-start: 0;
   --inner-padding-end: 0;

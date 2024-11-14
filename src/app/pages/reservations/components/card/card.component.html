@@ -1,0 +1,21 @@
+<ion-item
+  lines="none"
+  class="flex items-center w-full rounded-lg ion-activatable ion-no-padding shadow bg-white"
+>
+  <div class="flex items-center w-full h-full rounded-lg relative pl-5">
+    <figure class="mr-4">
+      <img class="" [src]="'assets/svgs/' + iconUrl" alt="Icono" />
+    </figure>
+    <p class="text-sm font-medium">
+      {{ reservation.first_name + " " + reservation.last_name }}
+    </p>
+  </div>
+  <ion-buttons class="mr-4" slot="end">
+    <ion-button>
+      <img slot="icon-only" src="assets/svgs/edit.svg" alt="" />
+    </ion-button>
+    <ion-button>
+      <img slot="icon-only" src="assets/svgs/trash.svg" alt="" />
+    </ion-button>
+  </ion-buttons>
+</ion-item>

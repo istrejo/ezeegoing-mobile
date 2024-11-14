@@ -7,14 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { ReservationsPageRoutingModule } from './reservations-routing.module';
 
 import { ReservationsPage } from './reservations.page';
+import { CardComponent } from './components/card/card.component';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    ReservationsPageRoutingModule
+    ReservationsPageRoutingModule,
   ],
-  declarations: [ReservationsPage]
+  declarations: [ReservationsPage, CardComponent],
 })
 export class ReservationsPageModule {}
