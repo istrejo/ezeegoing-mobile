@@ -13,7 +13,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ROOT_REDUCERS } from './state/app.state';
 import { ReservationEffects } from './state/effects/reservation.effects';
 import { HttpClientModule } from '@angular/common/http';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -25,6 +25,7 @@ import { HttpClientModule } from '@angular/common/http';
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     FontAwesomeModule,
     HttpClientModule,
+    BrowserAnimationsModule,
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
