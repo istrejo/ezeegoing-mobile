@@ -1,13 +1,126 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>create-reservation</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
+  <ion-header mode="md" class="ion-no-border">
     <ion-toolbar>
-      <ion-title size="large">create-reservation</ion-title>
+      <ion-buttons slot="start">
+        <ion-back-button
+          defaultHref="tabs/reserve"
+          icon="assets/icon/chevron-back.svg"
+        />
+      </ion-buttons>
     </ion-toolbar>
   </ion-header>
+  <div class="flex flex-col items-center justify-between gap-4 px-4 mt-5">
+    <figure>
+      <img src="assets/logos/logo-small.png" alt="logo" />
+    </figure>
+    <h2 class="text-xl font-extrabold mb-1">Reserva para {{title}}</h2>
+    <h4 class="text-base font-normal">Nueva Reservación</h4>
+  </div>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <ion-list
+      lines="none"
+      class="ion-no-padding"
+      class="flex flex-col items-center w-full py-6 md:w-1/3 lg:w-1/4 md:mx-auto h-4/12 h-4/12 bg-transparent"
+    >
+      <div class="flex flex-col w-full">
+        <app-select
+          formControlName="firstName"
+          [options]="visitors"
+          placeholder="Visitante"
+          class="px-6 mb-5"
+        />
+        <p class="px-6 text-gray-700 text-sm">Sede / Edificio</p>
+        <ion-segment
+          formControlName="building"
+          mode="md"
+          [scrollable]="true"
+          value="heart"
+          class="py-4"
+        >
+          @for(building of buildings; track building?.id) {
+
+          <ion-segment-button
+            [value]="building.title"
+            class="mx-2 min-w-[150px] shadow-md"
+            layout="icon-start"
+          >
+            <img src="assets/svgs/building.svg" alt="" />
+            <ion-label> {{building.title}} </ion-label>
+          </ion-segment-button>
+          }
+        </ion-segment>
+        <div class="px-6 flex flex-col mt-4 gap-4">
+          <app-input
+            formControlName="department"
+            inputId="myId"
+            placeholder="Departamento / Local / Inquilino (Opcional)"
+          ></app-input>
+
+          <app-input placeholder="División (Opcional)"></app-input>
+          <p>Fecha inicio</p>
+          <ion-datetime-button
+            class="mr-auto"
+            datetime="datetime"
+          ></ion-datetime-button>
+          <p>Fecha fin</p>
+          <ion-datetime-button
+            class="mr-auto"
+            datetime="datetime2"
+          ></ion-datetime-button>
+
+          <ion-checkbox
+            mode="md"
+            class="mb-5"
+            justify="start"
+            labelPlacement="end"
+            >Pre-habilitar código QR</ion-checkbox
+          >
+          <ion-checkbox
+            mode="md"
+            class="mb-5"
+            justify="start"
+            labelPlacement="end"
+            >Enviar pase wifi</ion-checkbox
+          >
+
+          <div class="flex justify-between items-center mb-4">
+            <span>¿Tiene Vehículo?</span>
+
+            <ion-radio-group class="flex gap-3" formControlName="hasVehicle">
+              <ion-radio [value]="true">Si</ion-radio><br />
+              <ion-radio [value]="false">No</ion-radio><br />
+            </ion-radio-group>
+          </div>
+          @if(form.get('hasVehicle')?.value) {
+
+          <app-input placeholder="Placa del Vehículo"></app-input>
+          <app-select
+            formControlName="vehicle_type"
+            [options]="vehicles"
+            placeholder="Tipo de vehículo"
+          />
+          }
+
+          <ion-modal [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime id="datetime"></ion-datetime>
+            </ng-template>
+          </ion-modal>
+          <ion-modal [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime id="datetime2"></ion-datetime>
+            </ng-template>
+          </ion-modal>
+        </div>
+      </div>
+      <ion-button
+        type="submit"
+        mode="ios"
+        class="text-white mt-4"
+        expand="block"
+      >
+        Crear Reserva
+      </ion-button>
+    </ion-list>
+  </form>
 </ion-content>

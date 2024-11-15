@@ -1,3 +1,10 @@
-<p>
-  select works!
-</p>
+@if(control) {
+<p-dropdown
+  class="w-full"
+  [formControl]="control"
+  [options]="options"
+  optionLabel="name"
+  [placeholder]="placeholder"
+  styleClass="custom-width"
+/>
+}

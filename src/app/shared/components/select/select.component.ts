@@ -1,14 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  forwardRef,
+  Input,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { DropdownModule } from 'primeng/dropdown';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ControlValueAccessorDirective } from '../../directives/control-value-accessor/control-value-accessor.directive';
 
 @Component({
   selector: 'app-select',
+  standalone: true,
+  imports: [DropdownModule, ReactiveFormsModule],
   templateUrl: './select.component.html',
   styleUrls: ['./select.component.scss'],
+  encapsulation: ViewEncapsulation.None,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => SelectComponent),
+      multi: true,
+    },
+  ],
 })
-export class SelectComponent  implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {}
-
+export class SelectComponent<T> extends ControlValueAccessorDirective<T> {
+  @Input() options!: any[];
+  @Input() placeholder: string = '';
 }

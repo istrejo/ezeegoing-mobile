@@ -27,6 +27,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'create-reservation/:id',
+        loadChildren: () =>
+          import('../pages/create-reservation/create-reservation.module').then(
+            (m) => m.CreateReservationPageModule
+          ),
+      },
+      {
         path: 'profile',
         loadChildren: () =>
           import('../pages/profile/profile.module').then(
