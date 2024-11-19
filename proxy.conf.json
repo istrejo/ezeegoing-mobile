@@ -1,6 +1,6 @@
 {
   "/api": {
-    "target": "https://lindora.ezeeparking.com",
+    "target": "https://app.ezeeparking.com",
     "secure": true,
     "logLevel": "debug",
     "changeOrigin": true

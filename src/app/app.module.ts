@@ -12,8 +12,13 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ROOT_REDUCERS } from './state/app.state';
 import { ReservationEffects } from './state/effects/reservation.effects';
-import { HttpClientModule } from '@angular/common/http';
+import {
+  HttpClientModule,
+  provideHttpClient,
+  withInterceptors,
+} from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { authInterceptor } from './shared/interceptors/auth/auth.interceptor';
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -27,7 +32,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     HttpClientModule,
     BrowserAnimationsModule,
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    provideHttpClient(withInterceptors([authInterceptor])),
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

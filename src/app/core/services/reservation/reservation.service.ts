@@ -13,7 +13,6 @@ import { body } from 'ionicons/icons';
 })
 export class ReservationService {
   private apiSvc = inject(ApiService);
-  private http = inject(HttpClient);
 
   constructor() {}
 
