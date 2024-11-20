@@ -7,9 +7,13 @@ import {
 } from '../actions/auth.actions';
 import { AuthState } from 'src/app/core/models/auth.state.interface';
 
+const userData = localStorage.getItem('userData')
+  ? JSON.parse(localStorage.getItem('userData') || '{}')
+  : null;
+
 export const initialState: AuthState = {
-  isAuthenticated: false,
-  userData: null,
+  isAuthenticated: !!userData,
+  userData: userData,
   error: null,
 };
 
@@ -32,7 +36,7 @@ export const authReducer = createReducer(
   on(logout, (state) => ({
     ...state,
     isAuthenticated: false,
-    user: null,
+    userData: null,
     error: null,
   }))
 );

@@ -106,7 +106,7 @@ export class CreateReservationPage implements OnInit {
   }
 
   onSubmit() {
-    this.loadingSvc.presentLoading();
+    this.loadingSvc.present();
     const dto = {
       start_date: '2024-10-31 00:00:00',
       end_date: '2024-10-31 01:00:00',
@@ -125,11 +125,11 @@ export class CreateReservationPage implements OnInit {
     this.reservationSvc.createReservation(dto).subscribe(
       (res) => {
         console.log('Create reserve: ', res);
-        this.loadingSvc.dismissLoading();
+        this.loadingSvc.dismiss();
         this.openModal();
       },
       (error) => {
-        this.loadingSvc.dismissLoading();
+        this.loadingSvc.dismiss();
         this.openModal();
         console.log(error);
       }

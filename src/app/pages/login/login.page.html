@@ -13,7 +13,10 @@
     >
       <h1 class="text-xl font-extrabold mb-1">Inicio de sesión</h1>
       <ion-list class="w-full bg-transparent flex flex-col gap-4" lines="none">
-        <app-input formControlName="email" placeholder="Correo electrónico" />
+        <app-input
+          formControlName="username"
+          placeholder="Correo electrónico"
+        />
 
         <app-input
           formControlName="password"
@@ -38,6 +41,7 @@
         mode="ios"
         class="text-white mt-4"
         expand="block"
+        [disabled]="!form.valid"
       >
         Iniciar sesión
       </ion-button>

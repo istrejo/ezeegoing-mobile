@@ -19,6 +19,7 @@ import {
 } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { authInterceptor } from './shared/interceptors/auth/auth.interceptor';
+import { AuthEffects } from './state/effects/auth.effects';
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -26,7 +27,7 @@ import { authInterceptor } from './shared/interceptors/auth/auth.interceptor';
     IonicModule.forRoot(),
     AppRoutingModule,
     StoreModule.forRoot(ROOT_REDUCERS),
-    EffectsModule.forRoot([ReservationEffects]),
+    EffectsModule.forRoot([AuthEffects, ReservationEffects]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     FontAwesomeModule,
     HttpClientModule,

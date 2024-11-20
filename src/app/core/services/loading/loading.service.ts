@@ -13,7 +13,7 @@ export class LoadingService {
 indicator on the screen. It creates a loading overlay using the `LoadingController` provided by
 Ionic Framework. The method takes an optional `message` parameter which defaults to 'Cargando...'
 (Spanish for 'Loading...'). */
-  async presentLoading(message: string = 'Cargando...') {
+  async present(message: string = 'Cargando...') {
     console.log(message);
     this.loading = await this.loadingController.create({
       message,
@@ -24,7 +24,7 @@ Ionic Framework. The method takes an optional `message` parameter which defaults
   /**
    * The function dismisses a loading indicator if it is currently displayed.
    */
-  async dismissLoading() {
+  async dismiss() {
     if (this.loading) {
       await this.loading.dismiss();
       this.loading = null;

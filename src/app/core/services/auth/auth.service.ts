@@ -12,8 +12,8 @@ export class AuthService {
   constructor() {}
 
   login(username: string, password: string): Observable<any> {
-    const loginData = { username, password, id: 2 };
-    return this.apiSvc.post<LoginResponse>('login', loginData);
+    const loginData = { password, username, id: 2 };
+    return this.apiSvc.post<LoginResponse>('login/', loginData);
   }
 
   logout(): Observable<any> {
