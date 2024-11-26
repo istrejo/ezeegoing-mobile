@@ -24,23 +24,23 @@
           type="password"
           [toggleVisibility]="true"
         />
+        <div class="flex justify-between items-center w-full mt-4">
+          <a class="underline font-light text-sm text-gray-500">
+            <span> ¿Olvidaste tu Contraseña? </span>
+          </a>
+          <ion-checkbox
+            formControlName="rememberMe"
+            class="font-light text-sm text-gray-500"
+            mode="md"
+            labelPlacement="end"
+            >Recordarme</ion-checkbox
+          >
+        </div>
       </ion-list>
-      <div class="flex justify-between items-center w-full mt-4">
-        <a class="underline font-light text-sm text-gray-500">
-          <span> ¿Olvidaste tu Contraseña? </span>
-        </a>
-        <ion-checkbox
-          class="font-light text-sm text-gray-500"
-          mode="md"
-          labelPlacement="end"
-          >Recordarme</ion-checkbox
-        >
-      </div>
       <ion-button
         type="submit"
         mode="ios"
         class="text-white mt-4"
-        expand="block"
         [disabled]="!form.valid"
       >
         Iniciar sesión
