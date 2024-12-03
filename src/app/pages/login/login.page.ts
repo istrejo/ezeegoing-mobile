@@ -19,7 +19,7 @@ export class LoginPage implements OnInit {
 
   ngOnInit() {
     this.initForm();
-    this.credentials = JSON.parse(localStorage.getItem('credentials') || '');
+    this.credentials = JSON.parse(this.localStorageSvc.getItem('credentials'));
     if (this.credentials) {
       this.form.patchValue(this.credentials);
     }

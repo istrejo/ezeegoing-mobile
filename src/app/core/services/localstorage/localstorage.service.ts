@@ -11,7 +11,7 @@ export class LocalStorageService {
   }
 
   getItem(key: string): any {
-    return JSON.parse(localStorage.getItem(key) || '');
+    return localStorage.getItem(key);
   }
 
   removeItem(key: string): void {
