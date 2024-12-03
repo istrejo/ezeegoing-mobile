@@ -1,13 +1,64 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>profile</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-refresher slot="fixed">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <div class="flex flex-col items-center justify-between gap-4 mt-11 mb-3">
+    <figure>
+      <img src="assets/logos/logo-small.png" alt="logo" />
+    </figure>
+    <h2 class="text-xl font-extrabold mb-1">Mi Perfil</h2>
+  </div>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">profile</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-list
+    class="flex flex-col w-full max-w-[300px] mx-auto gap-4 items-center justify-center bg-transparent"
+    lines="none"
+  >
+    <div class="flex flex-col w-full">
+      <ion-label class="text-xs">Titular</ion-label>
+      <p class="text-lg font-medium leading-5">Nombre completo del titular</p>
+    </div>
+    <div class="flex justify-between w-full">
+      <div class="flex flex-col gap-4">
+        <div>
+          <ion-label class="text-xs">Sede / Edificio</ion-label>
+          <p class="text-lg font-medium leading-5">Edificio 1</p>
+        </div>
+        <div>
+          <ion-label class="text-xs">Estado</ion-label>
+          <p class="text-lg font-medium leading-5">Titular</p>
+        </div>
+        <div>
+          <ion-label class="text-xs">Vehículos</ion-label>
+          <p class="text-lg font-medium leading-5">1</p>
+        </div>
+      </div>
+      <div class="flex flex-col gap-4">
+        <div>
+          <ion-label class="text-xs">Teléfono</ion-label>
+          <p class="text-lg font-medium leading-5">+123456789</p>
+        </div>
+
+        <div>
+          <ion-label class="text-xs">Número de apartamento</ion-label>
+          <p class="text-lg font-medium leading-5">00-00</p>
+        </div>
+
+        <div>
+          <ion-label class="text-xs">Número de placa</ion-label>
+          <p class="text-lg font-medium leading-5">ABCDEFG</p>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col w-full">
+      <ion-label class="text-xs">Correo electrónico</ion-label>
+      <p class="text-lg font-medium leading-5">correo.gmail.com</p>
+    </div>
+    <div
+      class="active-reservations shadow w-full max-w-[350px] py-5 bg-white rounded-lg text-center my-5"
+    >
+      <p class="text-sm font-medium">
+        Reservasiones Activas <span class="font-bold">0</span>
+      </p>
+    </div>
+  </ion-list>
 </ion-content>
