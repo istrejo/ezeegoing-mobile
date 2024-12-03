@@ -25,29 +25,15 @@ export class ReservationCardComponent implements OnInit {
 
   getIcon() {
     switch (this.type) {
-      case 2:
-        this.iconUrl = 'visit.svg';
-        break;
       case 1:
-        this.iconUrl = 'parking.svg';
-        break;
+        return (this.iconUrl = 'parking.svg');
+      case 2:
+        return (this.iconUrl = 'visit.svg');
       case 3:
-        this.iconUrl = 'common-areas.svg';
-        break;
-      case 4:
-        this.iconUrl = 'workspace.svg';
-        break;
-      case 5:
-        this.iconUrl = 'meeting.svg';
-        break;
-      case 6:
-        this.iconUrl = 'charger.svg';
-        break;
-      case 7:
-        this.iconUrl = 'restaurant.svg';
-        break;
+        return (this.iconUrl = 'charger.svg');
+
       default:
-        this.iconUrl = 'help';
+        return (this.iconUrl = 'help');
     }
   }
 }

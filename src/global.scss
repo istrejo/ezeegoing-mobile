@@ -84,3 +84,12 @@ ion-checkbox {
 .link {
   @apply text-base font-normal  text-secondary active:text-primary;
 }
+
+ion-item.skelleton-item {
+  max-width: 350px;
+  --background: transparent;
+
+  --padding-start: 0;
+  --inner-padding-start: 0;
+  --inner-padding-end: 0;
+}

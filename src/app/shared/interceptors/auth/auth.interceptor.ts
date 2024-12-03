@@ -9,7 +9,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const apiKey = environment.apiSecretKey;
   const store = inject(Store);
   const localStorageSvc = inject(LocalStorageService);
-  const accessToken = localStorageSvc.getItem('userData')?.access_token;
+  const accessToken = JSON.parse(
+    localStorageSvc.getItem('userData')
+  )?.access_token;
 
   if (req.url.includes('login')) {
     console.log('Token login: ', accessToken);
@@ -21,6 +23,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     });
     return next(cloneRequest);
   }
+
   console.log('Token: ', accessToken);
 
   const cloneRequest = req.clone({

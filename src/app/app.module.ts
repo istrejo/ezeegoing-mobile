@@ -20,6 +20,7 @@ import {
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { authInterceptor } from './shared/interceptors/auth/auth.interceptor';
 import { AuthEffects } from './state/effects/auth.effects';
+import { ReservationTypeEffects } from './state/effects/reservation-type.effects';
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -27,7 +28,11 @@ import { AuthEffects } from './state/effects/auth.effects';
     IonicModule.forRoot(),
     AppRoutingModule,
     StoreModule.forRoot(ROOT_REDUCERS),
-    EffectsModule.forRoot([AuthEffects, ReservationEffects]),
+    EffectsModule.forRoot([
+      AuthEffects,
+      ReservationEffects,
+      ReservationTypeEffects,
+    ]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     FontAwesomeModule,
     HttpClientModule,

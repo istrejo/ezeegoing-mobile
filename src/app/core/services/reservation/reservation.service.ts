@@ -4,6 +4,7 @@ import { catchError, Observable, of } from 'rxjs';
 import {
   Reservation,
   ReservationDto,
+  ReservationType,
 } from '../../models/reservation.interface';
 import { HttpClient } from '@angular/common/http';
 import { body } from 'ionicons/icons';
@@ -22,6 +23,10 @@ export class ReservationService {
       //   badge: 3,
       // },
     });
+  }
+
+  getTypes(): Observable<ReservationType[]> {
+    return this.apiSvc.get<ReservationType[]>('reservation-type/');
   }
 
   createReservation(dto: any): Observable<any> {

@@ -1,4 +1,7 @@
 <ion-content class="ion-padding" [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
   <div class="w-full flex flex-col gap-4 items-center mt-11 mb-5">
     <figure>
       <img class="mx-auto" src="assets/logos/logo-title.png" alt="logo-title" />
@@ -7,18 +10,42 @@
       Selecciona el tipo de reserva que deseas realizar
     </h2>
   </div>
+
   <ion-list
     class="flex flex-col w-full gap-4 items-center justify-center bg-transparent"
     lines="none"
   >
-    @for(reservation of reservationsTypes; track reservation.id){
+    @if(isLoading$ | async){ @for(item of [1,1,1,1,1,1,1,]; track item) {
+
+    <ion-item
+      class="skelleton-item flex items-center w-full h-14 rounded-lg ion-activatable ion-no-padding bg-transparent"
+    >
+      <ion-thumbnail class="" slot="start">
+        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+      </ion-thumbnail>
+      <ion-label>
+        <h3>
+          <ion-skeleton-text
+            [animated]="true"
+            style="width: 80%"
+          ></ion-skeleton-text>
+        </h3>
+        <p>
+          <ion-skeleton-text
+            [animated]="true"
+            style="width: 60%"
+          ></ion-skeleton-text>
+        </p>
+      </ion-label>
+    </ion-item>
+    } } @else { @for(reservation of reservationsTypes; track reservation.id){
     <app-reservation-card
       [id]="reservation.id"
-      [description]="reservation.description"
-      [type]="reservation.type"
-      [routerLink]="['/tabs/create-reservation', reservation.type]"
+      [description]="reservation.name"
+      [type]="reservation.id"
+      [routerLink]="['/tabs/create-reservation', reservation.id]"
     />
 
-    }
+    } }
   </ion-list>
 </ion-content>

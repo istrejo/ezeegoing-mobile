@@ -1,6 +1,14 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import { ReservationType } from 'src/app/core/models/reservation.interface';
+import { loadReservationTypes } from 'src/app/state/actions/reservation-type.actions';
+import {
+  selectReservationTypeById,
+  selectReservationTypeLoading,
+  selectReservationTypes,
+} from 'src/app/state/selectors/reservation-type.selectors';
 
 @Component({
   selector: 'app-reserve',
@@ -9,50 +17,30 @@ import { ReservationType } from 'src/app/core/models/reservation.interface';
 })
 export class ReservePage implements OnInit {
   private router: Router = inject(Router);
-  reservationsTypes: ReservationType[] = [
-    {
-      id: 1,
-      description: 'Reserva  para Visitante',
-      type: 2,
-    },
-    {
-      id: 2,
-      description: 'Reserva para Parqueo',
-      type: 1,
-    },
-    {
-      id: 3,
-      description: 'Reserva para Cargadores',
-      type: 3,
-    },
-    {
-      id: 4,
-      description: 'Reserva para Areas Comunes',
-      type: 4,
-    },
-    {
-      id: 5,
-      description: 'Reserva para Espacio de Trabajo',
-      type: 5,
-    },
-    {
-      id: 6,
-      description: 'Reserva para Sala de Reunión',
-      type: 6,
-    },
-
-    {
-      id: 7,
-      description: 'Reserva para Comedor',
-      type: 7,
-    },
-  ];
+  private store: Store = inject(Store);
+  // reservationsTypes = signal<ReservationType[]>([]);
+  reservationsTypes: ReservationType[] = [];
+  isLoading$: Observable<any> = new Observable();
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.store.dispatch(loadReservationTypes());
+    this.isLoading$ = this.store.select(selectReservationTypeLoading);
+  }
+
+  ionViewWillEnter() {
+    this.store.select(selectReservationTypes).subscribe((res) => {
+      this.reservationsTypes = res;
+    });
+  }
 
   onCreateReservation(reservationId: any) {
     console.log('Reservation selected ', reservationId);
     this.router.navigate(['tabs/create-reservation', reservationId]);
+  }
+
+  handleRefresh(event: any) {
+    this.store.dispatch(loadReservationTypes());
+    setTimeout(() => event.target.complete(), 1500);
   }
 }

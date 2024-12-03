@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { loadReservationTypes } from 'src/app/state/actions/reservation-type.actions';
 import { loadReservations } from 'src/app/state/actions/reservation.actions';
 import { selectReservations } from 'src/app/state/selectors/reservation.selectors';
 
@@ -15,6 +16,7 @@ export class HomePage implements OnInit {
 
   ngOnInit(): void {
     this.store.dispatch(loadReservations());
+    this.store.dispatch(loadReservationTypes());
     this.store.select(selectReservations).subscribe((reservations) => {
       this.activeReservations = reservations.length;
     });

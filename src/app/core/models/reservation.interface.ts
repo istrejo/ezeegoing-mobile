@@ -25,11 +25,16 @@ export interface ReservationDto {
   building: number;
 }
 
-// Interface maked by tests before API
 export interface ReservationType {
   id: number;
-  description: string;
-  type: number;
+  external_id: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  delete_at: null;
+  name: string;
+  building: null;
+  type_catalogs: any[];
 }
 
 export interface Reservation {
