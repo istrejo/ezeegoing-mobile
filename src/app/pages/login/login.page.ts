@@ -14,15 +14,14 @@ export class LoginPage implements OnInit {
   private localStorageSvc = inject(LocalStorageService);
   fb: FormBuilder = inject(FormBuilder);
   form!: FormGroup;
+  credentials: any = null;
   constructor() {}
 
   ngOnInit() {
     this.initForm();
-    if (this.localStorageSvc.getItem('credentials')) {
-      const credentials = JSON.parse(
-        this.localStorageSvc.getItem('credentials') as string
-      );
-      this.form.patchValue(credentials);
+    this.credentials = JSON.parse(localStorage.getItem('credentials') || '');
+    if (this.credentials) {
+      this.form.patchValue(this.credentials);
     }
   }
 

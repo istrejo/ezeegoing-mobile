@@ -8,8 +8,7 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class ApiService {
-  // private readonly API = environment.apiUrl;
-  private readonly API = '/api/';
+  private readonly API = environment.apiUrl;
 
   private readonly http = inject(HttpClient);
 
