@@ -1,16 +1,26 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { RequestOptions } from '../../models/api.interface';
 import { environment } from 'src/environments/environment';
+import { Store } from '@ngrx/store';
+import { selectAuthState } from 'src/app/state/selectors/auth.selectors';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
   private readonly API = environment.apiUrl;
+  private baseUrl = signal<string | null>(null);
+  private store = inject(Store);
 
-  private readonly http = inject(HttpClient);
+  private http = inject(HttpClient);
+
+  constructor() {
+    this.store.select(selectAuthState).subscribe((auth) => {
+      this.baseUrl.set(`https://${auth.userData?.base_url}/api/`);
+    });
+  }
 
   /**
    * GET request
@@ -19,7 +29,7 @@ export class ApiService {
    * @returns {Observable<T>}
    */
   public getById<T>(endPoint: string, options?: RequestOptions): Observable<T> {
-    return this.http.get<T>(`${this.API}${endPoint}`, options);
+    return this.http.get<T>(`${this.baseUrl()}${endPoint}`, options);
   }
 
   /**
@@ -29,12 +39,13 @@ export class ApiService {
    * @returns {Observable<T>}
    */
   public get<T>(endPoint: string, options?: RequestOptions): Observable<T> {
-    return this.http.get<T>(`${this.API}${endPoint}`, options);
+    return this.http.get<T>(`${this.baseUrl()}${endPoint}`, options);
   }
 
   /**
    * POST request
    * @param {string} endPoint end point of the api
+   * @param {any} dto data to be sent in the body of the request
    * @param {RequestOptions} options options of the request like headers, body, etc.
    * @returns {Observable<T>}
    */
@@ -43,17 +54,22 @@ export class ApiService {
     dto: any,
     options?: RequestOptions
   ): Observable<T> {
-    return this.http.post<T>(`${this.API}${endPoint}`, dto, options);
+    return this.http.post<T>(`${this.baseUrl()}${endPoint}`, dto, options);
   }
 
   /**
    * PUT request
    * @param {string} endPoint end point of the api
+   * @param {any} dto data to be sent in the body of the request
    * @param {RequestOptions} options options of the request like headers, body, etc.
    * @returns {Observable<T>}
    */
-  public put<T>(endPoint: string, options?: RequestOptions): Observable<T> {
-    return this.http.put<T>(`${this.API}${endPoint}`, options);
+  public put<T>(
+    endPoint: string,
+    dto: any,
+    options?: RequestOptions
+  ): Observable<T> {
+    return this.http.put<T>(`${this.baseUrl()}${endPoint}`, dto, options);
   }
 
   /**
@@ -63,6 +79,6 @@ export class ApiService {
    * @returns {Observable<T>}
    */
   public delete<T>(endPoint: string, options?: RequestOptions): Observable<T> {
-    return this.http.delete<T>(`${this.API}${endPoint}`, options);
+    return this.http.delete<T>(`${this.baseUrl()}${endPoint}`, options);
   }
 }
