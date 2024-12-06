@@ -37,18 +37,18 @@ export class AuthEffects {
     )
   );
 
-  logout$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(AuthActions.logout),
-      mergeMap(() =>
-        this.authService.logout().pipe(
-          switchMap(() => [
-            AuthActions.logoutSuccess(),
-            AuthActions.clearStore(),
-          ]),
-          catchError((error) => of(AuthActions.logoutFailure({ error })))
-        )
-      )
-    )
-  );
+  // logout$ = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(AuthActions.logout),
+  //     mergeMap(() =>
+  //       this.authService.logout().pipe(
+  //         switchMap(() => [
+  //           AuthActions.logoutSuccess(),
+  //           AuthActions.clearStore(),
+  //         ]),
+  //         catchError((error) => of(AuthActions.logoutFailure({ error })))
+  //       )
+  //     )
+  //   )
+  // );
 }
