@@ -19,8 +19,8 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.apiUrl}login/`, loginData);
   }
 
-  logout(): Observable<any> {
-    const logoutData = {};
-    return this.http.post(`${this.apiUrl}logout/`, logoutData);
-  }
+  // logout(): Observable<any> {
+  //   const logoutData = {};
+  //   return this.http.post(`${this.apiUrl}logout/`, logoutData);
+  // }
 }
