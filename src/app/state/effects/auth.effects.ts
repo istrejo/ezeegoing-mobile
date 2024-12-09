@@ -44,20 +44,18 @@ application. */
     )
   );
 
-  /* The `logout$` effect is defined using the `createEffect` function provided by `@ngrx/effects`. This
- effect is triggered when the `logout` action is dispatched in the application. */
-  logout$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(AuthActions.logout),
-      mergeMap(() =>
-        this.authService.logout().pipe(
-          switchMap(() => [
-            AuthActions.logoutSuccess(),
-            AuthActions.clearStore(),
-          ]),
-          catchError((error) => of(AuthActions.logoutFailure({ error })))
-        )
-      )
-    )
-  );
+  // logout$ = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(AuthActions.logout),
+  //     mergeMap(() =>
+  //       this.authService.logout().pipe(
+  //         switchMap(() => [
+  //           AuthActions.logoutSuccess(),
+  //           AuthActions.clearStore(),
+  //         ]),
+  //         catchError((error) => of(AuthActions.logoutFailure({ error })))
+  //       )
+  //     )
+  //   )
+  // );
 }
