@@ -6,8 +6,13 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ValidationErrorsComponent } from './components/validation-errors/validation-errors.component';
 import { ControlValueAccessorDirective } from './directives/control-value-accessor/control-value-accessor.directive';
 import { ReactiveFormsModule } from '@angular/forms';
+import { BuildingModalComponent } from './components/building-modal/building-modal.component';
 
-const components = [InputComponent, ValidationErrorsComponent];
+const components = [
+  InputComponent,
+  ValidationErrorsComponent,
+  BuildingModalComponent,
+];
 const directives = [ControlValueAccessorDirective];
 
 @NgModule({

@@ -17,6 +17,10 @@ export class LoginPage implements OnInit {
   credentials: any = null;
   constructor() {}
 
+  /**
+   * The ngOnInit function initializes a form and populates it with credentials stored in local storage
+   * if available.
+   */
   ngOnInit() {
     this.initForm();
     this.credentials = JSON.parse(this.localStorageSvc.getItem('credentials'));
@@ -25,6 +29,10 @@ export class LoginPage implements OnInit {
     }
   }
 
+  /**
+   * The `initForm` function initializes a form with fields for username, password, and a checkbox for
+   * remembering the user.
+   */
   initForm() {
     this.form = this.fb.group({
       username: ['', [Validators.required]],
@@ -33,6 +41,12 @@ export class LoginPage implements OnInit {
     });
   }
 
+  /**
+   * The `saveCredentials` function saves or removes credentials based on the value of the `rememberMe`
+   * property.
+   * @returns The `saveCredentials()` function returns nothing (`undefined`) explicitly, as there is no
+   * `return` statement outside of the conditional logic.
+   */
   saveCredentials() {
     const credentials = this.form.value;
     if (credentials.rememberMe) {

@@ -21,6 +21,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { authInterceptor } from './shared/interceptors/auth/auth.interceptor';
 import { AuthEffects } from './state/effects/auth.effects';
 import { ReservationTypeEffects } from './state/effects/reservation-type.effects';
+import { BuildingEffects } from './state/effects/building.effect';
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -32,6 +33,7 @@ import { ReservationTypeEffects } from './state/effects/reservation-type.effects
       AuthEffects,
       ReservationEffects,
       ReservationTypeEffects,
+      BuildingEffects,
     ]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     FontAwesomeModule,

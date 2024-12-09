@@ -1,15 +1,6 @@
 <ion-tabs mode="ios">
   <!-- <ion-tabs> -->
   <ion-tab-bar slot="bottom">
-    <ion-tab-button tab="home">
-      <fa-icon [icon]="faHouse" />
-      Home
-    </ion-tab-button>
-    <!-- <ion-tab-button tab="">
-        <fa-icon [icon]="faUsers" />
-
-        Visitantes
-      </ion-tab-button> -->
     <ion-tab-button tab="reserve">
       <fa-icon [icon]="faCalendarDays" />
 
@@ -27,3 +18,16 @@
     </ion-tab-button>
   </ion-tab-bar>
 </ion-tabs>
+<ion-fab slot="fixed" horizontal="end" vertical="bottom" class="mb-20">
+  <ion-fab-button class="text-white">
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+  <ion-fab-list side="top">
+    <ion-fab-button (click)="openBuildingModal()">
+      <fa-icon [icon]="faBuilding" />
+    </ion-fab-button>
+    <ion-fab-button>
+      <ion-icon name="calendar"></ion-icon>
+    </ion-fab-button>
+  </ion-fab-list>
+</ion-fab>

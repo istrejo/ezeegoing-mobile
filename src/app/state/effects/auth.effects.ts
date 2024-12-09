@@ -6,6 +6,8 @@ import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { LoadingService } from 'src/app/core/services/loading/loading.service';
 import { Router } from '@angular/router';
+import { ModalService } from 'src/app/core/services/modal/modal.service';
+import { BuildingModalComponent } from 'src/app/shared/components/building-modal/building-modal.component';
 
 @Injectable()
 export class AuthEffects {
@@ -13,8 +15,12 @@ export class AuthEffects {
   private actions$ = inject(Actions);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private modalSvc = inject(ModalService);
   constructor() {}
 
+  /* This code snippet defines an effect called `login$` using the `createEffect` function provided by
+`@ngrx/effects`. The purpose of this effect is to handle the `login` action dispatched in the
+application. */
   login$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.login),
@@ -23,6 +29,7 @@ export class AuthEffects {
         this.loadingSvc.present();
         return this.authService.login(username, password).pipe(
           map((userData) => {
+            this.modalSvc.presentModal(BuildingModalComponent);
             this.router.navigate(['/tabs/home']);
             this.loadingSvc.dismiss();
             localStorage.setItem('userData', JSON.stringify(userData));
@@ -37,6 +44,8 @@ export class AuthEffects {
     )
   );
 
+  /* The `logout$` effect is defined using the `createEffect` function provided by `@ngrx/effects`. This
+ effect is triggered when the `logout` action is dispatched in the application. */
   logout$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.logout),
