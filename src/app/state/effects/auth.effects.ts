@@ -30,7 +30,7 @@ application. */
         return this.authService.login(username, password).pipe(
           map((userData) => {
             this.modalSvc.presentModal(BuildingModalComponent);
-            this.router.navigate(['/tabs/home']);
+            this.router.navigate(['/tabs/reserve']);
             this.loadingSvc.dismiss();
             localStorage.setItem('userData', JSON.stringify(userData));
             return AuthActions.loginSuccess({ userData });

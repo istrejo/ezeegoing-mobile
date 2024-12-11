@@ -1,6 +1,5 @@
 import { Component, inject, Input, OnInit, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
 import { Building } from 'src/app/core/models/building.state';
 import { ModalService } from 'src/app/core/services/modal/modal.service';
 import {
@@ -21,7 +20,7 @@ export class BuildingModalComponent implements OnInit {
   private modalSvc: ModalService = inject(ModalService);
   private store: Store = inject(Store);
   public buildings = signal<Building[]>([]);
-  buildingSelected$ = new Observable();
+  public buildingSelected: number | null = null;
 
   constructor() {}
 
@@ -35,13 +34,19 @@ export class BuildingModalComponent implements OnInit {
       console.log('Buildings: ', res);
       this.buildings.set(res);
     });
-    this.buildingSelected$ = this.store.select(selectBuildingSelected);
+
+    this.store.select(selectBuildingSelected).subscribe((res) => {
+      this.buildingSelected = res;
+    });
   }
 
   /* The `SelectBuilding(buildingId: number)` function in the `BuildingModalComponent` class is a method
 that is used to dispatch an action to select a specific building based on the `buildingId` provided
 as a parameter. */
   SelectBuilding(buildingId: number) {
+    if (this.buildingSelected === null) {
+      this.close();
+    }
     this.store.dispatch(selectBuilding({ buildingId }));
   }
 

@@ -1,11 +1,14 @@
 <ion-header class="ion-nor-border" collapse="fade">
   <ion-toolbar>
+    @if(buildingSelected !== null) {
     <ion-buttons slot="start">
       <ion-button (click)="close()">
         <ion-icon slot="start" name="close"></ion-icon>
         <ion-label>Cerrar</ion-label>
       </ion-button>
     </ion-buttons>
+    }
+
     <ion-title>Residencia</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -24,7 +27,7 @@
       @for(building of buildings(); track building.id) {
       <div
         class="w-full border-2 border-transparent"
-        [ngClass]="{ isSelected: (buildingSelected$ | async) === building.id }"
+        [ngClass]="{ isSelected: buildingSelected === building.id }"
         (click)="SelectBuilding(building.id)"
       >
         <ion-item
