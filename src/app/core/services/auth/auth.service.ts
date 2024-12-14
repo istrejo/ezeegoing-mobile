@@ -1,5 +1,4 @@
 import { inject, Injectable } from '@angular/core';
-import { ApiService } from '../api/api.service';
 import { Observable } from 'rxjs';
 import { LoginResponse } from '../../models/auth.state.interface';
 import { HttpClient } from '@angular/common/http';
@@ -19,8 +18,21 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.apiUrl}login/`, loginData);
   }
 
-  // logout(): Observable<any> {
-  //   const logoutData = {};
-  //   return this.http.post(`${this.apiUrl}logout/`, logoutData);
-  // }
+  logout(): Observable<any> {
+    const refresh_token = localStorage.getItem('refreshToken');
+    return this.http.post(`https://app.ezeeparking.com/api/logout/`, {
+      refresh_token,
+    });
+  }
+
+  getAuthToken() {
+    return localStorage.getItem('accessToken') || '';
+  }
+
+  refreshToken(): Observable<any> {
+    const refreshToken = localStorage.getItem('refreshToken');
+    return this.http.post(`${this.apiUrl}token/refresh/`, {
+      refresh_token: refreshToken,
+    });
+  }
 }

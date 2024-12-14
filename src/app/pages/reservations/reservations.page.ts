@@ -17,6 +17,30 @@ export class ReservationsPage implements OnInit {
   private store = inject(Store);
   public isLoading$: Observable<boolean> = new Observable();
   reservations: Observable<Reservation[]> = new Observable();
+  skeletonItems = [
+    {
+      id: 1,
+    },
+    {
+      id: 2,
+    },
+
+    {
+      id: 3,
+    },
+
+    {
+      id: 4,
+    },
+
+    {
+      id: 5,
+    },
+
+    {
+      id: 6,
+    },
+  ];
   constructor() {}
 
   ngOnInit(): void {}

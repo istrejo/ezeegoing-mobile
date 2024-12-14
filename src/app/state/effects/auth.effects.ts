@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthService } from '../../core/services/auth/auth.service';
 import * as AuthActions from '../actions/auth.actions';
-import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
+import { catchError, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { LoadingService } from 'src/app/core/services/loading/loading.service';
 import { Router } from '@angular/router';
@@ -33,6 +33,8 @@ application. */
             this.router.navigate(['/tabs/reserve']);
             this.loadingSvc.dismiss();
             localStorage.setItem('userData', JSON.stringify(userData));
+            localStorage.setItem('accessToken', userData.access_token);
+            localStorage.setItem('refreshToken', userData.refresh_token);
             return AuthActions.loginSuccess({ userData });
           }),
           catchError((error) => {
@@ -44,18 +46,31 @@ application. */
     )
   );
 
-  // logout$ = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(AuthActions.logout),
-  //     mergeMap(() =>
-  //       this.authService.logout().pipe(
-  //         switchMap(() => [
-  //           AuthActions.logoutSuccess(),
-  //           AuthActions.clearStore(),
-  //         ]),
-  //         catchError((error) => of(AuthActions.logoutFailure({ error })))
-  //       )
-  //     )
-  //   )
-  // );
+  /* The `logout$` effect is defined using the `createEffect` function provided by `@ngrx/effects`. This
+ effect is triggered when the `logout` action is dispatched in the application. Here is a breakdown
+ of what the `logout$` effect is doing: */
+  logout$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.logout),
+      mergeMap(() => {
+        this.loadingSvc.present();
+
+        return this.authService.logout().pipe(
+          tap(() => {
+            this.loadingSvc.dismiss();
+            this.router.navigate(['/login']);
+          }),
+          switchMap(() => [
+            AuthActions.logoutSuccess(),
+            AuthActions.clearStore(),
+          ]),
+          catchError((error) => {
+            this.loadingSvc.dismiss();
+
+            return of(AuthActions.logoutFailure({ error }));
+          })
+        );
+      })
+    )
+  );
 }

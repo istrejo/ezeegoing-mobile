@@ -4,6 +4,7 @@ import {
   loginSuccess,
   loginFailure,
   logout,
+  clearStore,
 } from '../actions/auth.actions';
 import { AuthState } from 'src/app/core/models/auth.state.interface';
 
@@ -29,12 +30,18 @@ export const authReducer = createReducer(
     userData,
     error: null,
   })),
+
   on(loginFailure, (state, { error }) => ({
     ...state,
     error,
   })),
   on(logout, (state) => ({
     ...state,
+    isAuthenticated: false,
+    userData: null,
+    error: null,
+  })),
+  on(clearStore, (state) => ({
     isAuthenticated: false,
     userData: null,
     error: null,

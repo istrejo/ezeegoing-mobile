@@ -13,7 +13,7 @@
     class="flex flex-col w-full gap-4 items-center justify-center bg-transparent"
     lines="none"
   >
-    @if(isLoading$ | async) { @for(item of [1,1,1,1,1,1,1,]; track item) {
+    @if(isLoading$ | async) { @for(item of skeletonItems; track item.id) {
 
     <ion-item
       class="skelleton-item flex items-center w-full h-14 rounded-lg ion-activatable ion-no-padding bg-transparent"
