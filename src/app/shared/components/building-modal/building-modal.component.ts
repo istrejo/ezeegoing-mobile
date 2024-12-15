@@ -37,6 +37,9 @@ export class BuildingModalComponent implements OnInit {
 
     this.store.select(selectBuildingSelected).subscribe((res) => {
       this.buildingSelected = res;
+      this.buildingSelected = parseInt(
+        localStorage.getItem('buildingId') || 'null'
+      );
     });
   }
 
@@ -47,6 +50,7 @@ as a parameter. */
     if (this.buildingSelected === null) {
       this.close();
     }
+    localStorage.setItem('buildingId', buildingId.toString());
     this.store.dispatch(selectBuilding({ buildingId }));
   }
 

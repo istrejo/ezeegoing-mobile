@@ -40,7 +40,6 @@ export class AuthService {
   }
 
   refreshToken(): Observable<any> {
-    console.log('Refresh token: ', this.refresh());
     return this.http.post('https://app.ezeeparking.com/api/token/refresh/', {
       refresh_token: this.refresh(),
     });

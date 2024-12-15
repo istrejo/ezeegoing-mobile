@@ -8,6 +8,13 @@ const routes: Routes = [
     component: TabsPage,
     children: [
       {
+        path: 'visitors',
+        loadChildren: () =>
+          import('../pages/visitors/visitors.module').then(
+            (m) => m.VisitorsPageModule
+          ),
+      },
+      {
         path: 'reserve',
         loadChildren: () =>
           import('../pages/reserve/reserve.module').then(

@@ -20,7 +20,6 @@ export class ProfilePage implements OnInit {
 
   ngOnInit() {
     this.store.select(selectAuthState).subscribe((auth: any) => {
-      console.log(auth);
       this.userInfo = auth;
     });
   }

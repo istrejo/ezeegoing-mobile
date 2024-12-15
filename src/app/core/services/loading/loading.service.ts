@@ -1,33 +1,32 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LoadingService {
-  private loading: HTMLIonLoadingElement | null = null;
+  private loadingCtrl: LoadingController = inject(LoadingController);
+  constructor() {}
 
-  constructor(private loadingController: LoadingController) {}
-
-  /* The `presentLoading` method in the `LoadingService` class is responsible for displaying a loading
-indicator on the screen. It creates a loading overlay using the `LoadingController` provided by
-Ionic Framework. The method takes an optional `message` parameter which defaults to 'Cargando...'
-(Spanish for 'Loading...'). */
+  /**
+   * The `present` function asynchronously creates and presents a loading indicator with an optional
+   * message.
+   * @param {string} [message=Cargando...] - The `message` parameter in the `present` function is a
+   * string parameter with a default value of `'Cargando...'`. This parameter is used to specify the
+   * message that will be displayed in the loading spinner while it is being presented to the user. If no
+   * message is provided when calling the function
+   */
   async present(message: string = 'Cargando...') {
-    console.log(message);
-    this.loading = await this.loadingController.create({
+    const loading = await this.loadingCtrl.create({
       message,
     });
-    await this.loading.present();
+    await loading.present();
   }
 
   /**
-   * The function dismisses a loading indicator if it is currently displayed.
+   * The `dismiss` function asynchronously dismisses a loading controller.
    */
   async dismiss() {
-    if (this.loading) {
-      await this.loading.dismiss();
-      this.loading = null;
-    }
+    await this.loadingCtrl.dismiss();
   }
 }

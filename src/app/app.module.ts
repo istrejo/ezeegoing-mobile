@@ -12,16 +12,13 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ROOT_REDUCERS } from './state/app.state';
 import { ReservationEffects } from './state/effects/reservation.effects';
-import {
-  HttpClientModule,
-  provideHttpClient,
-  withInterceptors,
-} from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { authInterceptor } from './shared/interceptors/auth/auth.interceptor';
 import { AuthEffects } from './state/effects/auth.effects';
 import { ReservationTypeEffects } from './state/effects/reservation-type.effects';
 import { BuildingEffects } from './state/effects/building.effect';
+import { VisitorEffects } from './state/effects/visitor.effects';
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -34,10 +31,10 @@ import { BuildingEffects } from './state/effects/building.effect';
       ReservationEffects,
       ReservationTypeEffects,
       BuildingEffects,
+      VisitorEffects,
     ]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     FontAwesomeModule,
-    HttpClientModule,
     BrowserAnimationsModule,
   ],
   providers: [

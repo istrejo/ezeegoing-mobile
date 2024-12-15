@@ -2,8 +2,10 @@ import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { effect, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { catchError, switchMap, throwError } from 'rxjs';
+import { AlertService } from 'src/app/core/services/alert/alert.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import {
+  logout,
   updateAccessToken,
   updateRefreshToken,
 } from 'src/app/state/actions/auth.actions';
@@ -11,6 +13,7 @@ import { environment } from 'src/environments/environment';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
+  const alertService = inject(AlertService);
   const apiKey = environment.apiSecretKey;
   const store = inject(Store);
   const token = authService.token;
@@ -24,7 +27,6 @@ tokens. */
     req.url.includes('logout') ||
     req.url.includes('refresh')
   ) {
-    console.log('Token login: ', token());
     const cloneRequest = req.clone({
       setHeaders: {
         'Content-Type': 'application/json',
@@ -75,8 +77,19 @@ specifically an `HttpErrorResponse`. */
         catchError((refreshErr) => {
           const finalError = new Error(refreshErr);
 
-          localStorage.removeItem('token');
-          localStorage.removeItem('refreshToken');
+          alertService.presentAlert({
+            header: 'Error',
+            message: 'Sesión expirada. Porfavor,vuelve a iniciar sesión.',
+            buttons: [
+              {
+                text: 'OK',
+                handler: () => {
+                  store.dispatch(logout());
+                },
+              },
+            ],
+            backdropDismiss: false,
+          });
 
           return throwError(() => finalError);
         })

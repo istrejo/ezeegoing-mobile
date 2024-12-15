@@ -5,7 +5,7 @@ import {
   faCalendarDays,
   faCalendarCheck,
   faUser,
-  faUsers,
+  faUserGroup,
   faBuilding,
 } from '@fortawesome/free-solid-svg-icons';
 import { ModalService } from '../core/services/modal/modal.service';
@@ -22,8 +22,9 @@ export class TabsPage {
   faCalendarDays = faCalendarDays;
   faCalendarCheck = faCalendarCheck;
   faUser = faUser;
-  faUsers = faUsers;
   faBuilding = faBuilding;
+  faUserGroup = faUserGroup;
+
   constructor() {}
 
   async openBuildingModal() {

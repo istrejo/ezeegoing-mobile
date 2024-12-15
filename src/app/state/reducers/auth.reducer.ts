@@ -15,8 +15,8 @@ const userData = localStorage.getItem('userData')
   : null;
 
 export const initialState: AuthState = {
-  access_token: userData.access_token,
-  refresh_token: userData.refresh_token,
+  access_token: userData?.access_token || '',
+  refresh_token: userData?.refresh_token || '',
   isAuthenticated: !!userData,
   userData: userData,
   error: null,

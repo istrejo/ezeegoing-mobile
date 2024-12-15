@@ -23,7 +23,6 @@ export class ReservationEffects {
   ) {}
 
   loadReservations$ = createEffect(() => {
-    console.log('Pidiendo las reservaciones');
     return this.actions$.pipe(
       ofType(loadReservations),
       mergeMap(() =>

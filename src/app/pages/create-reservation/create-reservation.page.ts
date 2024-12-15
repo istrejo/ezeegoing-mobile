@@ -121,7 +121,6 @@ export class CreateReservationPage implements OnInit {
       phone: '83203913',
       building: 1,
     };
-    console.log(this.form.value);
     this.reservationSvc.createReservation(dto).subscribe(
       (res) => {
         console.log('Create reserve: ', res);

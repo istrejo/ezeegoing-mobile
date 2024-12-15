@@ -58,6 +58,9 @@ application. */
         return this.authService.logout().pipe(
           tap(() => {
             this.loadingSvc.dismiss();
+            localStorage.removeItem('token');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('userData');
             this.router.navigate(['/login']);
           }),
           switchMap(() => [
@@ -66,7 +69,6 @@ application. */
           ]),
           catchError((error) => {
             this.loadingSvc.dismiss();
-
             return of(AuthActions.logoutFailure({ error }));
           })
         );
