@@ -33,7 +33,7 @@ export class ReservationCardComponent implements OnInit {
         return (this.iconUrl = 'charger.svg');
 
       default:
-        return (this.iconUrl = 'help');
+        return (this.iconUrl = 'visit.svg');
     }
   }
 }

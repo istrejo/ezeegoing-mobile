@@ -14,6 +14,8 @@ export interface User {
 }
 
 export interface AuthState {
+  access_token: string | null;
+  refresh_token: string | null;
   isAuthenticated: boolean;
   userData: LoginResponse | null;
   error: string | null;

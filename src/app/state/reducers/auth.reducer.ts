@@ -5,6 +5,8 @@ import {
   loginFailure,
   logout,
   clearStore,
+  updateAccessToken,
+  updateRefreshToken,
 } from '../actions/auth.actions';
 import { AuthState } from 'src/app/core/models/auth.state.interface';
 
@@ -13,6 +15,8 @@ const userData = localStorage.getItem('userData')
   : null;
 
 export const initialState: AuthState = {
+  access_token: userData.access_token,
+  refresh_token: userData.refresh_token,
   isAuthenticated: !!userData,
   userData: userData,
   error: null,
@@ -26,6 +30,8 @@ export const authReducer = createReducer(
   })),
   on(loginSuccess, (state, { userData }) => ({
     ...state,
+    access_token: userData.access_token,
+    refresh_token: userData.refresh_token,
     isAuthenticated: true,
     userData,
     error: null,
@@ -42,8 +48,18 @@ export const authReducer = createReducer(
     error: null,
   })),
   on(clearStore, (state) => ({
+    access_token: null,
+    refresh_token: null,
     isAuthenticated: false,
     userData: null,
     error: null,
+  })),
+  on(updateAccessToken, (state: AuthState, { access_token }) => ({
+    ...state,
+    access_token,
+  })),
+  on(updateRefreshToken, (state: AuthState, { refresh_token }) => ({
+    ...state,
+    refresh_token,
   }))
 );

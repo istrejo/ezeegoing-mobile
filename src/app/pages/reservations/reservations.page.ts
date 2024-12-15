@@ -2,6 +2,11 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Reservation } from 'src/app/core/models/reservation.interface';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
+import {
+  updateAccessToken,
+  updateRefreshToken,
+} from 'src/app/state/actions/auth.actions';
 import { loadReservations } from 'src/app/state/actions/reservation.actions';
 import {
   selectLoading,
@@ -16,6 +21,7 @@ import {
 export class ReservationsPage implements OnInit {
   private store = inject(Store);
   public isLoading$: Observable<boolean> = new Observable();
+  private authservice = inject(AuthService);
   reservations: Observable<Reservation[]> = new Observable();
   skeletonItems = [
     {
@@ -57,6 +63,15 @@ export class ReservationsPage implements OnInit {
 
   handleRefresh(event: any) {
     this.store.dispatch(loadReservations());
+    // this.authservice.refreshToken().subscribe((res) => {
+    //   console.log('Refresh response: ', res);
+    //   this.store.dispatch(
+    //     updateAccessToken({ access_token: res.access_token })
+    //   );
+    //   this.store.dispatch(
+    //     updateRefreshToken({ refresh_token: res.refresh_token })
+    //   );
+    // });
     setTimeout(() => event.target.complete(), 1500);
   }
 }

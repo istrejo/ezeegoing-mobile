@@ -1,16 +1,30 @@
-import { HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
+import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import { effect, inject } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { catchError, switchMap, throwError } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
+import {
+  updateAccessToken,
+  updateRefreshToken,
+} from 'src/app/state/actions/auth.actions';
 import { environment } from 'src/environments/environment';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const apiKey = environment.apiSecretKey;
+  const store = inject(Store);
+  const token = authService.token;
 
-  const token = authService.getAuthToken();
-
-  if (req.url.includes('login') || req.url.includes('logout')) {
-    console.log('Token login: ', token);
+  if (
+    /* This part of the code is checking if the URL of the HTTP request (`req`) includes certain keywords
+such as 'login', 'logout', or 'refresh'. If the URL contains any of these keywords, it means that
+the request is related to user authentication actions like logging in, logging out, or refreshing
+tokens. */
+    req.url.includes('login') ||
+    req.url.includes('logout') ||
+    req.url.includes('refresh')
+  ) {
+    console.log('Token login: ', token());
     const cloneRequest = req.clone({
       setHeaders: {
         'Content-Type': 'application/json',
@@ -20,40 +34,53 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(cloneRequest);
   }
 
+  /* This part of the code is creating a new HTTP request (`authReq`) by cloning the original request
+(`req`) and adding additional headers to it. Specifically, it is setting the headers for
+Authorization, Content-Type, and X-API-KEY in the request. The Authorization header is set with a
+Bearer token obtained from the `token()` function provided by the `AuthService`, the Content-Type
+header is set to 'application/json', and the X-API-KEY header is set to the value of the `apiKey`
+variable from the environment configuration. This new request is then returned to be executed with
+the updated headers. */
   const authReq = req.clone({
     setHeaders: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${token()}`,
       'Content-Type': 'application/json',
       'X-API-KEY': apiKey,
     },
   });
 
-  // return next(authReq).pipe(
-  //   catchError((err) => {
-  //     console.error('Interceptor Error: ', err);
-  //     // return throwError(() => err);
-  //     return authService.refreshToken().pipe(
-  //       switchMap((res) => {
-  //         // Save token in local storage
-  //         localStorage.setItem('accessToken', res.access_token);
-  //         localStorage.setItem('refreshToken', res.refresh_token);
-  //         const newReq = req.clone({
-  //           setHeaders: {
-  //             Authorization: `Bearer ${res.access_token}`,
-  //             'X-API-KEY': apiKey,
-  //           },
-  //         });
-  //         return next(newReq);
-  //       }),
-  //       catchError((refreshError) => {
-  //         console.error('Refresh Token Error: ', refreshError);
-  //         // Handle the error appropriately, e.g., log out the user
-  //         store.dispatch(logout());
-  //         return throwError(() => new Error(refreshError));
-  //       })
-  //     );
-  //   })
-  // );
+  /* This part of the code is handling the scenario where an HTTP request encounters an error,
+specifically an `HttpErrorResponse`. */
+  return next(authReq).pipe(
+    catchError((err: HttpErrorResponse) => {
+      return authService.refreshToken().pipe(
+        switchMap((res) => {
+          localStorage.setItem('accessToken', res.access_token);
+          localStorage.setItem('refreshToken', res.refresh_token);
+          store.dispatch(updateAccessToken({ access_token: res.access_token }));
+          store.dispatch(
+            updateRefreshToken({ refresh_token: res.refresh_token })
+          );
 
-  return next(authReq);
+          const newReq = req.clone({
+            setHeaders: {
+              Authorization: `Bearer ${token()}`,
+              'Content-Type': 'application/json',
+              'X-API-KEY': apiKey,
+            },
+          });
+
+          return next(newReq);
+        }),
+        catchError((refreshErr) => {
+          const finalError = new Error(refreshErr);
+
+          localStorage.removeItem('token');
+          localStorage.removeItem('refreshToken');
+
+          return throwError(() => finalError);
+        })
+      );
+    })
+  );
 };

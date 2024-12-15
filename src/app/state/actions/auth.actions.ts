@@ -26,3 +26,13 @@ export const logoutFailure = createAction(
 );
 
 export const clearStore = createAction('[Auth] Clear Store');
+
+export const updateAccessToken = createAction(
+  '[Auth] Update Access Token',
+  props<{ access_token: string }>()
+);
+
+export const updateRefreshToken = createAction(
+  '[Auth] Update Refresh Token',
+  props<{ refresh_token: string }>()
+);
