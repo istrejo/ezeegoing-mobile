@@ -19,7 +19,7 @@ export const loadReservationsFailure = createAction(
 // Action to add a new reservation
 export const addReservation = createAction(
   '[Reservation] Add Reservation',
-  props<{ reservation: Reservation }>()
+  props<{ dto: any }>()
 );
 
 // Action triggered when a reservation is successfully added

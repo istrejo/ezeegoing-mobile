@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -11,11 +11,14 @@ import { ReservationService } from 'src/app/core/services/reservation/reservatio
 
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { SuccessModalComponent } from './components/success-modal/success-modal.component';
-
-interface Visitor {
-  name: string;
-  id: string;
-}
+import { Store } from '@ngrx/store';
+import { selectVisitors } from 'src/app/state/selectors/visitor.selectors';
+import { Visitor } from 'src/app/core/models/visitor.state';
+import { loadVisitors } from 'src/app/state/actions/visitor.actions';
+import { User } from 'src/app/core/models/auth.state.interface';
+import { selectUser } from 'src/app/state/selectors/auth.selectors';
+import { selectBuildingSelected } from 'src/app/state/selectors/building.selectors';
+import { addReservation } from 'src/app/state/actions/reservation.actions';
 
 @Component({
   selector: 'app-create-reservation',
@@ -23,125 +26,148 @@ interface Visitor {
   styleUrls: ['./create-reservation.page.scss'],
 })
 export class CreateReservationPage implements OnInit {
+  private store = inject(Store);
   private fb: FormBuilder = inject(FormBuilder);
   private reservationSvc = inject(ReservationService);
   private loadingSvc = inject(LoadingService);
   private modalCtrl: ModalController = inject(ModalController);
+  public user = signal<User | undefined>(undefined);
+  public buildingSelected = signal<number | null>(null);
   form!: FormGroup;
   faChevronLeft = faChevronLeft;
   title = 'Visitante';
   reservationType: number = 1;
   type = '';
-  visitors: any[] = [];
-  buildings: any[] = [];
-  vehicles: any[] = [];
+  visitors: Visitor[] = [];
 
-  testControl = new FormControl('My default value');
+  documentTypes = [
+    {
+      name: 'Cédula',
+      id: 1,
+    },
+    {
+      name: 'Pasaporte',
+      id: 2,
+    },
+  ];
+
+  reservationTypes = [
+    {
+      name: 'Normal',
+      id: 1,
+    },
+    {
+      name: 'Temporal',
+      id: 2,
+    },
+  ];
 
   constructor() {
     this.initForm();
   }
 
   ngOnInit() {
-    this.visitors = [
-      { name: 'Nombre visitante #1', id: 'NY' },
-      { name: 'Nombre visitante #2', id: 'RM' },
-      { name: 'Nombre visitante #3', id: 'LDN' },
-      { name: 'Nombre visitante #4', id: 'IST' },
-      { name: 'Nombre visitante #5', id: 'PRS' },
-    ];
-    this.vehicles = [
-      { name: 'Sedan', id: 1 },
-      { name: 'SUV', id: 2 },
-      { name: 'Crossover', id: 3 },
-      { name: 'Minivan', id: 4 },
-      { name: 'Moto', id: 5 },
-    ];
-
-    this.buildings = [
-      {
-        id: 1,
-        title: 'Edif. Veronica',
-      },
-      {
-        id: 2,
-        title: 'Edif. Guzman',
-      },
-      {
-        id: 3,
-        title: 'Edif. Blue',
-      },
-      {
-        id: 4,
-        title: 'Edif. Red hat ubuntu pro',
-      },
-      {
-        id: 5,
-        title: 'Edif. Washintong',
-      },
-    ];
+    this.store.select(selectUser).subscribe((user) => {
+      console.log(user);
+      this.user.set(user);
+      this.form.patchValue({ created_by: user?.userId });
+    });
+    this.store.select(selectBuildingSelected).subscribe((buildingId) => {
+      console.log(buildingId);
+      this.form.patchValue({ building: buildingId });
+    });
+    this.store.select(selectVisitors).subscribe((res: Visitor[]) => {
+      if (!res.length) {
+        this.store.dispatch(loadVisitors());
+      }
+      this.visitors = res.map((item: any) => {
+        return {
+          ...item,
+          name: item.first_name + ' ' + item.last_name,
+          id: item.badge,
+        };
+      });
+    });
   }
 
   initForm() {
     this.form = this.fb.group({
-      department: ['', []],
-      division: [''],
-      startDate: ['', Validators.required],
-      endDate: ['', Validators.required],
-      firstName: new FormControl<Visitor | null>({
-        name: 'alfredo',
-        id: '3423423',
-      }),
-      lastName: ['', Validators.required],
-      createdBy: ['', Validators.required],
+      visitorSelected: new FormControl<Visitor | null>(null),
+      documentSelected: new FormControl<any>(null),
+      typeSelected: new FormControl<any>(null),
+      start_date: [
+        new Date('2016-04-19T18:03:40.887').toJSON(),
+        Validators.required,
+      ],
+      end_date: [
+        new Date('2016-04-19T18:03:40.887').toJSON(),
+        Validators.required,
+      ],
+      first_name: [''],
+      last_name: [''],
       email: ['', [Validators.required, Validators.email]],
-      reservationType: ['', Validators.required],
-      legalId: ['', Validators.required],
-      codumentType: ['', Validators.required],
-      phone: ['', Validators.required],
-      building: ['', Validators.required],
+      created_by: [this.user()?.userId],
+      reservation_reference: [new Date().getTime().toString().slice(0, 9)],
+      reservation_type: new FormControl<number>(0),
+      legal_id: ['', [Validators.required]],
+      document_type: [1, [Validators.required]],
+      phone: ['', [Validators.required]],
+      building: [null],
       hasVehicle: [false],
-      vehicle_type: [''],
+      car_plate: [''],
     });
   }
 
   onSubmit() {
-    this.loadingSvc.present();
-    const dto = {
-      start_date: '2024-10-31 00:00:00',
-      end_date: '2024-10-31 01:00:00',
-      first_name: 'Alfonso',
-      last_name: 'Guzman',
-      email: 'istrejo2106@gmail.com',
-      created_by: 2,
-      reservation_reference: '3AE95081C5',
-      reservation_type: 2,
-      legal_id: '11640738',
-      document_type: 1,
-      phone: '83203913',
-      building: 1,
-    };
-    this.reservationSvc.createReservation(dto).subscribe(
-      (res) => {
-        console.log('Create reserve: ', res);
-        this.loadingSvc.dismiss();
-        this.openModal();
-      },
-      (error) => {
-        this.loadingSvc.dismiss();
-        this.openModal();
-        console.log(error);
-      }
-    );
-  }
-
-  /**
-   * The openModal function creates and presents a modal component asynchronously.
-   */
-  async openModal() {
-    const modal = await this.modalCtrl.create({
-      component: SuccessModalComponent,
+    const documentSelected = this.form.controls['documentSelected']?.value.id;
+    const typeSelected = this.form.controls['typeSelected']?.value.id;
+    const firstName = this.form.controls['visitorSelected']?.value.first_name;
+    const lastName = this.form.controls['visitorSelected']?.value.last_name;
+    this.form.patchValue({
+      first_name: firstName,
+      last_name: lastName,
+      document_type: documentSelected,
+      reservation_type: typeSelected,
     });
-    await modal.present();
+    const {
+      start_date,
+      end_date,
+      first_name,
+      last_name,
+      email,
+      created_by,
+      reservation_reference,
+      reservation_type,
+      legal_id,
+      document_type,
+      phone,
+      building,
+      car_plate,
+    } = this.form.value;
+
+    let dto: any = {
+      start_date,
+      end_date,
+      first_name,
+      last_name,
+      email,
+      created_by,
+      reservation_reference,
+      reservation_type,
+      legal_id,
+      document_type,
+      phone,
+      building,
+    };
+    if (car_plate.length > 1) {
+      dto = {
+        ...dto,
+        car_plate: car_plate,
+      };
+    }
+
+    console.log('DTO: ', dto);
+    this.store.dispatch(addReservation({ dto }));
+    this.form.reset();
   }
 }

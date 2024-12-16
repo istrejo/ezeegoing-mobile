@@ -14,9 +14,13 @@ import {
   deleteReservationSuccess,
   deleteReservationFailure,
 } from '../actions/reservation.actions';
+import { LoadingController, ModalController } from '@ionic/angular';
+import { SuccessModalComponent } from 'src/app/pages/create-reservation/components/success-modal/success-modal.component';
 
 @Injectable()
 export class ReservationEffects {
+  private loadingCtrl = inject(LoadingController);
+  private modalCtrl = inject(ModalController);
   constructor(
     private actions$: Actions,
     private reservationService: ReservationService
@@ -28,7 +32,10 @@ export class ReservationEffects {
       mergeMap(() =>
         this.reservationService.getAll().pipe(
           map((reservations) => {
-            return loadReservationsSuccess({ reservations });
+            const reversedReservations = reservations.reverse();
+            return loadReservationsSuccess({
+              reservations: reversedReservations,
+            });
           }),
           catchError((error) => {
             return of(loadReservationsFailure({ error }));
@@ -41,12 +48,20 @@ export class ReservationEffects {
   addReservation$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addReservation),
-      mergeMap((action) =>
-        this.reservationService.createReservation(action.reservation).pipe(
-          map((reservation) => addReservationSuccess({ reservation })),
-          catchError((error) => of(addReservationFailure({ error })))
-        )
-      )
+      mergeMap((action) => {
+        this.presentLoading('Creando reservación');
+        return this.reservationService.createReservation(action.dto).pipe(
+          map((reservation) => {
+            this.loadingCtrl.dismiss();
+            this.openSuccessModal();
+            return addReservationSuccess({ reservation });
+          }),
+          catchError((error) => {
+            this.loadingCtrl.dismiss();
+            return of(addReservationFailure({ error }));
+          })
+        );
+      })
     )
   );
 
@@ -65,4 +80,24 @@ export class ReservationEffects {
       )
     )
   );
+
+  /* The `presentLoading()` function is an asynchronous function that creates and presents a loading
+spinner using the `LoadingController` provided by Ionic. */
+  async presentLoading(message: string) {
+    const loading = await this.loadingCtrl.create({
+      message,
+      mode: 'ios',
+    });
+    await loading.present();
+  }
+
+  /**
+   * The openBuildingModal function asynchronously creates and presents a modal component for a building.
+   */
+  async openSuccessModal() {
+    const modal = await this.modalCtrl.create({
+      component: SuccessModalComponent,
+    });
+    await modal.present();
+  }
 }

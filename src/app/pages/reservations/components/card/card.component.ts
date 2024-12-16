@@ -55,7 +55,7 @@ export class CardComponent implements OnInit {
         this.title = 'Reserva para Comedor ';
         break;
       default:
-        this.iconUrl = 'help';
+        this.iconUrl = 'visit.svg';
     }
   }
 }
