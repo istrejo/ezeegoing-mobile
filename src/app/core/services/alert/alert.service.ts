@@ -15,6 +15,7 @@ export class AlertService {
     message,
     buttons,
     backdropDismiss,
+    mode,
   }: AlertOptions) {
     const alert = await this.alertController.create({
       backdropDismiss,
@@ -22,6 +23,7 @@ export class AlertService {
       subHeader,
       message,
       buttons,
+      mode,
     });
 
     await alert.present();

@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { faBuilding } from '@fortawesome/free-solid-svg-icons';
+import { faBuilding, faCalendarDays } from '@fortawesome/free-solid-svg-icons';
 import { Store } from '@ngrx/store';
 import { Visitor } from 'src/app/core/models/visitor.state';
 import { ModalService } from 'src/app/core/services/modal/modal.service';
@@ -19,6 +19,7 @@ export class VisitorsPage implements OnInit {
   private modalSvc: ModalService = inject(ModalService);
   private store = inject(Store);
   faBuilding = faBuilding;
+  faCalendarDays = faCalendarDays;
   public visitors = signal<Visitor[]>([]);
   public isLoading = signal<boolean>(false);
   skeletonItems = [

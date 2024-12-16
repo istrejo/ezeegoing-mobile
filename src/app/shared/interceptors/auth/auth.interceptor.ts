@@ -78,6 +78,7 @@ specifically an `HttpErrorResponse`. */
           const finalError = new Error(refreshErr);
 
           alertService.presentAlert({
+            mode: 'ios',
             header: 'Error',
             message: 'Sesión expirada. Porfavor,vuelve a iniciar sesión.',
             buttons: [

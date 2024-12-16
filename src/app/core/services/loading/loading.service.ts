@@ -19,6 +19,7 @@ export class LoadingService {
   async present(message: string = 'Cargando...') {
     const loading = await this.loadingCtrl.create({
       message,
+      mode: 'ios',
     });
     await loading.present();
   }

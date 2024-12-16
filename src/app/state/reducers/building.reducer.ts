@@ -5,7 +5,7 @@ import { BuildingState } from 'src/app/core/models/building.state';
 export const initialState: BuildingState = {
   buildings: [],
   loading: false,
-  buildingIdSelected: null,
+  buildingIdSelected: JSON.parse(localStorage.getItem('buildingId') || 'null'),
   error: null,
 };
 

@@ -15,5 +15,5 @@ export const loadBuildingsFailure = createAction(
 
 export const selectBuilding = createAction(
   '[Building] Select Building',
-  props<{ buildingId: number }>()
+  props<{ buildingId: number | null }>()
 );

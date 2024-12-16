@@ -1,3 +1,4 @@
+import { LoadingController } from '@ionic/angular';
 import { LocalStorageService } from './../../core/services/localstorage/localstorage.service';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -12,6 +13,7 @@ import { login } from 'src/app/state/actions/auth.actions';
 export class LoginPage implements OnInit {
   private store: Store = inject(Store);
   private localStorageSvc = inject(LocalStorageService);
+  private loadingCtrl = inject(LoadingController);
   fb: FormBuilder = inject(FormBuilder);
   form!: FormGroup;
   credentials: any = null;

@@ -8,8 +8,6 @@ import {
   faUserGroup,
   faBuilding,
 } from '@fortawesome/free-solid-svg-icons';
-import { ModalService } from '../core/services/modal/modal.service';
-import { BuildingModalComponent } from '../shared/components/building-modal/building-modal.component';
 
 @Component({
   selector: 'app-tabs',
@@ -17,7 +15,6 @@ import { BuildingModalComponent } from '../shared/components/building-modal/buil
   styleUrls: ['tabs.page.scss'],
 })
 export class TabsPage {
-  private modalSvc: ModalService = inject(ModalService);
   faHouse = faHouse;
   faCalendarDays = faCalendarDays;
   faCalendarCheck = faCalendarCheck;
@@ -26,8 +23,4 @@ export class TabsPage {
   faUserGroup = faUserGroup;
 
   constructor() {}
-
-  async openBuildingModal() {
-    this.modalSvc.presentModal(BuildingModalComponent);
-  }
 }
