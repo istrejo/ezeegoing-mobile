@@ -66,9 +66,8 @@ application. */
             localStorage.removeItem('refreshToken');
             localStorage.removeItem('userData');
             localStorage.removeItem('buildingId');
-            this.store.dispatch(selectBuilding({ buildingId: null }));
-
             this.router.navigate(['/login']);
+            this.store.dispatch(selectBuilding({ buildingId: null }));
           }),
           switchMap(() => [
             AuthActions.logoutSuccess(),

@@ -55,46 +55,52 @@ the updated headers. */
 specifically an `HttpErrorResponse`. */
   return next(authReq).pipe(
     catchError((err: HttpErrorResponse) => {
-      return authService.refreshToken().pipe(
-        switchMap((res) => {
-          localStorage.setItem('accessToken', res.access_token);
-          localStorage.setItem('refreshToken', res.refresh_token);
-          store.dispatch(updateAccessToken({ access_token: res.access_token }));
-          store.dispatch(
-            updateRefreshToken({ refresh_token: res.refresh_token })
-          );
+      if (err.status !== 401) {
+        return authService.refreshToken().pipe(
+          switchMap((res) => {
+            localStorage.setItem('accessToken', res.access_token);
+            localStorage.setItem('refreshToken', res.refresh_token);
+            store.dispatch(
+              updateAccessToken({ access_token: res.access_token })
+            );
+            store.dispatch(
+              updateRefreshToken({ refresh_token: res.refresh_token })
+            );
 
-          const newReq = req.clone({
-            setHeaders: {
-              Authorization: `Bearer ${token()}`,
-              'Content-Type': 'application/json',
-              'X-API-KEY': apiKey,
-            },
-          });
-
-          return next(newReq);
-        }),
-        catchError((refreshErr) => {
-          const finalError = new Error(refreshErr);
-
-          alertService.presentAlert({
-            mode: 'ios',
-            header: 'Error',
-            message: 'Sesión expirada. Porfavor,vuelve a iniciar sesión.',
-            buttons: [
-              {
-                text: 'OK',
-                handler: () => {
-                  store.dispatch(logout());
-                },
+            const newReq = req.clone({
+              setHeaders: {
+                Authorization: `Bearer ${token()}`,
+                'Content-Type': 'application/json',
+                'X-API-KEY': apiKey,
               },
-            ],
-            backdropDismiss: false,
-          });
+            });
 
-          return throwError(() => finalError);
-        })
-      );
+            return next(newReq);
+          }),
+          catchError((refreshErr) => {
+            const finalError = new Error(refreshErr);
+
+            alertService.presentAlert({
+              mode: 'ios',
+              header: 'Error',
+              message: 'Sesión expirada. Porfavor,vuelve a iniciar sesión.',
+              buttons: [
+                {
+                  text: 'OK',
+                  handler: () => {
+                    store.dispatch(logout());
+                  },
+                },
+              ],
+              backdropDismiss: false,
+            });
+
+            return throwError(() => finalError);
+          })
+        );
+      }
+
+      return throwError(() => err);
     })
   );
 };

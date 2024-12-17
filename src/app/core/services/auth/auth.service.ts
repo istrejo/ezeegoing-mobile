@@ -43,8 +43,5 @@ export class AuthService {
     return this.http.post('https://app.ezeeparking.com/api/token/refresh/', {
       refresh_token: this.refresh(),
     });
-    // return this.http.post<any>(`${this.apiUrl}token/refresh/`, {
-    //   refresh_token: this.refresh(),
-    // });
   }
 }
