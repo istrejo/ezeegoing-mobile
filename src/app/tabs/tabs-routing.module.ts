@@ -47,6 +47,13 @@ const routes: Routes = [
         redirectTo: '/tabs/reservations',
         pathMatch: 'full',
       },
+      {
+        path: 'charger-form',
+        loadChildren: () =>
+          import('../pages/charger-form/charger-form.module').then(
+            (m) => m.ChargerFormPageModule
+          ),
+      },
     ],
   },
   {

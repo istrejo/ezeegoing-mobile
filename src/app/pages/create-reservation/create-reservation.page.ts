@@ -1,3 +1,4 @@
+import { ActivatedRoute } from '@angular/router';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import {
   FormBuilder,
@@ -5,12 +6,8 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
-import { LoadingService } from 'src/app/core/services/loading/loading.service';
-import { ReservationService } from 'src/app/core/services/reservation/reservation.service';
 
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
-import { SuccessModalComponent } from './components/success-modal/success-modal.component';
 import { Store } from '@ngrx/store';
 import { selectVisitors } from 'src/app/state/selectors/visitor.selectors';
 import { Visitor } from 'src/app/core/models/visitor.state';
@@ -28,9 +25,6 @@ import { addReservation } from 'src/app/state/actions/reservation.actions';
 export class CreateReservationPage implements OnInit {
   private store = inject(Store);
   private fb: FormBuilder = inject(FormBuilder);
-  private reservationSvc = inject(ReservationService);
-  private loadingSvc = inject(LoadingService);
-  private modalCtrl: ModalController = inject(ModalController);
   public user = signal<User | undefined>(undefined);
   public buildingSelected = signal<number | null>(null);
   form!: FormGroup;
@@ -95,14 +89,8 @@ export class CreateReservationPage implements OnInit {
       visitorSelected: new FormControl<Visitor | null>(null),
       documentSelected: new FormControl<any>(null),
       typeSelected: new FormControl<any>(null),
-      start_date: [
-        new Date('2016-04-19T18:03:40.887').toJSON(),
-        Validators.required,
-      ],
-      end_date: [
-        new Date('2016-04-19T18:03:40.887').toJSON(),
-        Validators.required,
-      ],
+      start_date: [new Date().toJSON(), Validators.required],
+      end_date: [new Date().toJSON(), Validators.required],
       first_name: [''],
       last_name: [''],
       email: ['', [Validators.required, Validators.email]],
