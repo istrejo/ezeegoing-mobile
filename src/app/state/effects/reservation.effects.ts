@@ -48,8 +48,24 @@ export class ReservationEffects {
   addReservation$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addReservation),
-      mergeMap((action) => {
+      mergeMap((action: any) => {
         this.presentLoading('Creando reservación');
+        console.log('Payload', action);
+        if (action.reservationType === 3) {
+          return this.reservationService
+            .createChargerReservation(action.dto)
+            .pipe(
+              map((reservation) => {
+                this.loadingCtrl.dismiss();
+                this.openSuccessModal();
+                return addReservationSuccess({ reservation });
+              }),
+              catchError((error) => {
+                this.loadingCtrl.dismiss();
+                return of(addReservationFailure({ error }));
+              })
+            );
+        }
         return this.reservationService.createReservation(action.dto).pipe(
           map((reservation) => {
             this.loadingCtrl.dismiss();

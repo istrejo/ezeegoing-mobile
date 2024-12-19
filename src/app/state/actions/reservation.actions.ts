@@ -1,6 +1,8 @@
 import { createAction, props } from '@ngrx/store';
 import { Reservation } from '../../core/models/reservation.interface';
 
+type reservationType = 'charger' | 'parking' | 'common' | 'visitor';
+
 // Action to load reservations
 export const loadReservations = createAction('[Reservation] Load Reservations');
 
@@ -19,7 +21,7 @@ export const loadReservationsFailure = createAction(
 // Action to add a new reservation
 export const addReservation = createAction(
   '[Reservation] Add Reservation',
-  props<{ dto: any; charger?: boolean }>()
+  props<{ dto: any; reservationType?: number }>()
 );
 
 // Action triggered when a reservation is successfully added

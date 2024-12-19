@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { effect, inject, Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LoginResponse } from '../../models/auth.state.interface';
 import { HttpClient } from '@angular/common/http';
@@ -20,6 +20,13 @@ export class AuthService {
     this.store.select(selectAuthState).subscribe((auth) => {
       this.token.set(auth.access_token || '');
       this.refresh.set(auth.refresh_token || '');
+    });
+    console.log('Tokens: ', {
+      token: this.token(),
+      refresh: this.refresh(),
+    });
+    effect(() => {
+      console.log('Toekn change:', this.token());
     });
   }
 

@@ -33,6 +33,10 @@ export class ReservationService {
     return this.apiSvc.post('reservation/', dto);
   }
 
+  createChargerReservation(dto: any): Observable<any> {
+    return this.apiSvc.post('bolt-badge/', dto);
+  }
+
   delete(id: number): Observable<any> {
     return of();
   }

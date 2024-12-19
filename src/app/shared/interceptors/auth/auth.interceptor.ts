@@ -79,21 +79,26 @@ specifically an `HttpErrorResponse`. */
           }),
           catchError((refreshErr) => {
             const finalError = new Error(refreshErr);
-
-            alertService.presentAlert({
-              mode: 'ios',
-              header: 'Error',
-              message: 'Sesión expirada. Porfavor,vuelve a iniciar sesión.',
-              buttons: [
-                {
-                  text: 'OK',
-                  handler: () => {
-                    store.dispatch(logout());
+            if (refreshErr.status === 401) {
+              alertService.presentAlert({
+                mode: 'ios',
+                header: 'Error',
+                message: 'Sesión expirada. Porfavor,vuelve a iniciar sesión.',
+                buttons: [
+                  {
+                    text: 'OK',
+                    handler: () => {
+                      localStorage.removeItem('accessToken');
+                      localStorage.removeItem('refreshToken');
+                      localStorage.removeItem('userData');
+                      localStorage.removeItem('buildingId');
+                      store.dispatch(logout());
+                    },
                   },
-                },
-              ],
-              backdropDismiss: false,
-            });
+                ],
+                backdropDismiss: false,
+              });
+            }
 
             return throwError(() => finalError);
           })

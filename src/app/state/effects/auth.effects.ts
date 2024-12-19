@@ -58,15 +58,16 @@ application. */
       ofType(AuthActions.logout),
       mergeMap(() => {
         this.presentLoading();
-
         return this.authService.logout().pipe(
           tap(() => {
-            this.loadingCtrl.dismiss();
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
             localStorage.removeItem('userData');
             localStorage.removeItem('buildingId');
-            this.router.navigate(['/login']);
+            this.router.navigate(['/login'], {
+              replaceUrl: true,
+            });
+            this.loadingCtrl.dismiss();
             this.store.dispatch(selectBuilding({ buildingId: null }));
           }),
           switchMap(() => [

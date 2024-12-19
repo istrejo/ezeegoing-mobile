@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { ReservationService } from 'src/app/core/services/reservation/reservation.service';
+import { addReservation } from 'src/app/state/actions/reservation.actions';
 import { selectUser } from 'src/app/state/selectors/auth.selectors';
 import { selectBuildingSelected } from 'src/app/state/selectors/building.selectors';
 
@@ -32,7 +33,19 @@ export class ChargerFormPage implements OnInit {
     console.log(this.form.value);
   }
 
-  onSubmit() {}
+  onSubmit() {
+    console.log(this.form.value);
+    if (this.form.valid) {
+      this.store.dispatch(
+        addReservation({
+          dto: this.form.value,
+          reservationType: 3,
+        })
+      );
+    } else {
+      this.form.markAllAsTouched();
+    }
+  }
 
   initForm() {
     this.form = this.fb.group({
