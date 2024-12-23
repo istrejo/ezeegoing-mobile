@@ -1,7 +1,9 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { Reservation } from 'src/app/core/models/reservation.interface';
 import { AlertService } from 'src/app/core/services/alert/alert.service';
+import { EditReservationModalComponent } from 'src/app/shared/components/edit-reservation-modal/edit-reservation-modal.component';
 import { deleteReservation } from 'src/app/state/actions/reservation.actions';
 
 @Component({
@@ -14,6 +16,7 @@ export class CardComponent implements OnInit {
   @Input() reservation!: Reservation;
   private alertService = inject(AlertService);
   private store: Store = inject(Store);
+  private modalCtrl = inject(ModalController);
 
   iconUrl: string = '';
   title: string = '';
@@ -62,6 +65,17 @@ export class CardComponent implements OnInit {
       default:
         this.iconUrl = 'visit.svg';
     }
+  }
+
+  async onEdit() {
+    const modal = await this.modalCtrl.create({
+      component: EditReservationModalComponent,
+      componentProps: {
+        reservation: this.reservation,
+      },
+    });
+
+    await modal.present();
   }
 
   deleteReservation() {
