@@ -1,20 +1,30 @@
 <ion-item
   lines="none"
-  class="flex items-center w-full rounded-lg ion-activatable ion-no-padding shadow bg-white"
+  class="flex items-center w-full rounded-lg shadow bg-white"
 >
-  <div class="flex items-center w-full h-full rounded-lg relative pl-5">
-    <figure class="mr-4">
-      <img class="" [src]="'assets/svgs/' + iconUrl" alt="Icono" />
-    </figure>
-    <p class="text-sm font-medium">
-      {{ reservation.first_name + " " + reservation.last_name }}
+  <!-- <figure class="mr-4">
+    <img class="" [src]="'assets/svgs/' + iconUrl" alt="Icono" />
+  </figure> -->
+  <ion-avatar class="mr-3">
+    <img src="assets/svgs/avatar.svg" />
+  </ion-avatar>
+  <div class="felx flex-col">
+    <h3 class="text-sm font-semibold">
+      {{ reservation.first_name + " " + reservation.last_name | titlecase }}
+    </h3>
+    <p class="text-sm">
+      Autorización:
+      <span>
+        {{ reservation.alpr_authentication ? "Activa" : "Inactiva" }}
+      </span>
     </p>
+    <p class="text-sm">Último ingreso: {{ reservation.updated_at | date }}</p>
   </div>
-  <ion-buttons class="mr-4" slot="end">
+  <ion-buttons class="mr-4" slot="end" class="flex flex-col">
     <ion-button>
       <img slot="icon-only" src="assets/svgs/edit.svg" alt="" />
     </ion-button>
-    <ion-button>
+    <ion-button (click)="deleteReservation()">
       <img slot="icon-only" src="assets/svgs/trash.svg" alt="" />
     </ion-button>
   </ion-buttons>

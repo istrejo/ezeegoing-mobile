@@ -1,5 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Reservation } from 'src/app/core/models/reservation.interface';
+import { AlertService } from 'src/app/core/services/alert/alert.service';
+import { deleteReservation } from 'src/app/state/actions/reservation.actions';
 
 @Component({
   selector: 'app-card',
@@ -9,6 +12,8 @@ import { Reservation } from 'src/app/core/models/reservation.interface';
 export class CardComponent implements OnInit {
   @Input() type!: number;
   @Input() reservation!: Reservation;
+  private alertService = inject(AlertService);
+  private store: Store = inject(Store);
 
   iconUrl: string = '';
   title: string = '';
@@ -57,5 +62,29 @@ export class CardComponent implements OnInit {
       default:
         this.iconUrl = 'visit.svg';
     }
+  }
+
+  deleteReservation() {
+    this.alertService.presentAlert({
+      mode: 'ios',
+      header: 'Eliminar Reservación',
+      message: '¿Está seguro que desea eliminar la reservación?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+        },
+        {
+          text: 'Eliminar',
+          handler: () => {
+            // Call the deleteReservation action
+            this.store.dispatch(
+              deleteReservation({ reservationId: this.reservation.id })
+            );
+          },
+        },
+      ],
+    });
   }
 }

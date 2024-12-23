@@ -62,6 +62,7 @@ export interface Reservation {
   legal_id: null | string;
   first_name: string;
   last_name: string;
+  fullname?: string;
   email: string;
   phone: string;
   person_to_visit_id: null | number;

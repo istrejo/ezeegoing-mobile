@@ -1,13 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { ApiService } from '../api/api.service';
-import { catchError, Observable, of } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import {
   Reservation,
-  ReservationDto,
   ReservationType,
 } from '../../models/reservation.interface';
-import { HttpClient } from '@angular/common/http';
-import { body } from 'ionicons/icons';
 
 @Injectable({
   providedIn: 'root',
@@ -18,11 +15,14 @@ export class ReservationService {
   constructor() {}
 
   getAll(): Observable<Reservation[]> {
-    return this.apiSvc.get('reservation/', {
-      // params: {
-      //   badge: 3,
-      // },
-    });
+    return this.apiSvc.get<Reservation[]>('reservation/').pipe(
+      map((reservations) =>
+        reservations.map((item) => ({
+          ...item,
+          fullname: `${item.first_name} ${item.last_name}`,
+        }))
+      )
+    );
   }
 
   getTypes(): Observable<ReservationType[]> {
@@ -38,7 +38,11 @@ export class ReservationService {
   }
 
   delete(id: number): Observable<any> {
-    return of();
+    return this.apiSvc.delete('reservation/', {
+      params: {
+        id,
+      },
+    });
   }
 
   update() {}

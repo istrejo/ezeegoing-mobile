@@ -1,12 +1,8 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Reservation } from 'src/app/core/models/reservation.interface';
-import { AuthService } from 'src/app/core/services/auth/auth.service';
-import {
-  updateAccessToken,
-  updateRefreshToken,
-} from 'src/app/state/actions/auth.actions';
+
 import { loadReservations } from 'src/app/state/actions/reservation.actions';
 import {
   selectLoading,
@@ -21,7 +17,10 @@ import {
 export class ReservationsPage implements OnInit {
   private store = inject(Store);
   public isLoading$: Observable<boolean> = new Observable();
-  reservations: Observable<Reservation[]> = new Observable();
+  reservations = signal<Reservation[]>([]);
+  reservationsTemp = signal<Reservation[]>([]);
+  public search = '';
+  limit = 10;
   skeletonItems = [
     {
       id: 1,
@@ -56,12 +55,51 @@ export class ReservationsPage implements OnInit {
         this.store.dispatch(loadReservations());
       }
     });
-    this.reservations = this.store.select(selectReservations);
+    this.store.select(selectReservations).subscribe((reservations) => {
+      this.reservations.set(reservations);
+      this.reservationsTemp.set(reservations.slice(0, this.limit));
+    });
     this.isLoading$ = this.store.select(selectLoading);
   }
 
   handleRefresh(event: any) {
     this.store.dispatch(loadReservations());
     setTimeout(() => event.target.complete(), 1500);
+  }
+
+  onSearch() {}
+
+  orderSearch() {
+    const search = this.search.toLocaleLowerCase();
+    this.limit = 10;
+
+    if (!search.trim()) {
+      this.reservationsTemp.set(this.reservations().slice(0, this.limit));
+      return;
+    }
+
+    this.reservationsTemp.set(
+      this.reservations()
+        .filter((item: Reservation) =>
+          item.fullname?.toLowerCase().includes(search)
+        )
+        .slice(0, this.limit)
+    );
+  }
+
+  onScroll(event: any): void {
+    const search = this.search.toLocaleLowerCase();
+    if (search.trim()) {
+      this.limit += 10;
+      this.reservationsTemp.set(
+        this.reservations()
+          .filter((data: Reservation): any => data.fullname?.includes(search))
+          .slice(0, this.limit)
+      );
+    } else if (this.limit < this.reservations().length) {
+      this.limit += 10;
+      this.reservationsTemp.set(this.reservations().slice(0, this.limit));
+    }
+    event.target.complete();
   }
 }

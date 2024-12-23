@@ -16,11 +16,13 @@ import {
 } from '../actions/reservation.actions';
 import { LoadingController, ModalController } from '@ionic/angular';
 import { SuccessModalComponent } from 'src/app/pages/create-reservation/components/success-modal/success-modal.component';
+import { ToastService } from 'src/app/core/services/toast/toast.service';
 
 @Injectable()
 export class ReservationEffects {
   private loadingCtrl = inject(LoadingController);
   private modalCtrl = inject(ModalController);
+  private toastService = inject(ToastService);
   constructor(
     private actions$: Actions,
     private reservationService: ReservationService
@@ -84,16 +86,22 @@ export class ReservationEffects {
   deleteReservation$ = createEffect(() =>
     this.actions$.pipe(
       ofType(deleteReservation),
-      mergeMap((action) =>
-        this.reservationService.delete(action.reservationId).pipe(
-          map(() =>
-            deleteReservationSuccess({
+      mergeMap((action) => {
+        this.presentLoading('Eliminando reservación');
+        return this.reservationService.delete(action.reservationId).pipe(
+          map(() => {
+            this.loadingCtrl.dismiss();
+            return deleteReservationSuccess({
               reservationId: action.reservationId,
-            })
-          ),
-          catchError((error) => of(deleteReservationFailure({ error })))
-        )
-      )
+            });
+          }),
+          catchError((error) => {
+            this.loadingCtrl.dismiss();
+            this.toastService.error('Error al eliminar la reservación');
+            return of(deleteReservationFailure({ error }));
+          })
+        );
+      })
     )
   );
 
