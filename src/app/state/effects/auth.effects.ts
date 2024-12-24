@@ -76,7 +76,17 @@ application. */
           ]),
           catchError((error) => {
             this.loadingCtrl.dismiss();
-
+            console.log('Logout effect error response: ', error);
+            if (error.status === 400) {
+              localStorage.removeItem('accessToken');
+              localStorage.removeItem('refreshToken');
+              localStorage.removeItem('userData');
+              localStorage.removeItem('buildingId');
+              this.router.navigate(['/login'], {
+                replaceUrl: true,
+              });
+              this.store.dispatch(selectBuilding({ buildingId: null }));
+            }
             return of(AuthActions.logoutFailure({ error }));
           })
         );

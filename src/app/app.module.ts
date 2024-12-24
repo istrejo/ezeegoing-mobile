@@ -19,13 +19,14 @@ import { AuthEffects } from './state/effects/auth.effects';
 import { ReservationTypeEffects } from './state/effects/reservation-type.effects';
 import { BuildingEffects } from './state/effects/building.effect';
 import { VisitorEffects } from './state/effects/visitor.effects';
+import { metaReducers } from './state/reducers/meta.reducer';
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    StoreModule.forRoot(ROOT_REDUCERS),
+    StoreModule.forRoot(ROOT_REDUCERS, { metaReducers }),
     EffectsModule.forRoot([
       AuthEffects,
       ReservationEffects,

@@ -91,6 +91,7 @@ export class ReservationEffects {
         return this.reservationService.delete(action.reservationId).pipe(
           map(() => {
             this.loadingCtrl.dismiss();
+            this.toastService.success('Reservación eliminada');
             return deleteReservationSuccess({
               reservationId: action.reservationId,
             });

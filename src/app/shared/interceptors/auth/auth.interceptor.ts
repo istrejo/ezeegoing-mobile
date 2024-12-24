@@ -55,8 +55,7 @@ the updated headers. */
 specifically an `HttpErrorResponse`. */
   return next(authReq).pipe(
     catchError((err: HttpErrorResponse) => {
-      if (err.status === 401 || err.status === 403) {
-        console.log('Refresh token');
+      if (err.status === 401 || err.status === 403 || err.status === 400) {
         return authService.refreshToken().pipe(
           switchMap((res) => {
             localStorage.setItem('accessToken', res.access_token);
@@ -80,7 +79,6 @@ specifically an `HttpErrorResponse`. */
           }),
           catchError((refreshErr) => {
             const finalError = new Error(refreshErr);
-            console.log('Refresh token error: ', refreshErr);
             if (refreshErr.status === 401 || refreshErr.status === 403) {
               alertService.presentAlert({
                 mode: 'ios',
@@ -90,10 +88,6 @@ specifically an `HttpErrorResponse`. */
                   {
                     text: 'OK',
                     handler: () => {
-                      // localStorage.removeItem('accessToken');
-                      // localStorage.removeItem('refreshToken');
-                      // localStorage.removeItem('userData');
-                      // localStorage.removeItem('buildingId');
                       store.dispatch(logout());
                     },
                   },

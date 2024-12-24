@@ -38,11 +38,7 @@ export class ReservationService {
   }
 
   delete(id: number): Observable<any> {
-    return this.apiSvc.delete('reservation/', {
-      params: {
-        id,
-      },
-    });
+    return this.apiSvc.delete(`reservation/${id}/`);
   }
 
   update() {}
