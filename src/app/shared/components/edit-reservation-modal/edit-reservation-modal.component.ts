@@ -17,6 +17,8 @@ import { selectUser } from 'src/app/state/selectors/auth.selectors';
 import { selectBuildingSelected } from 'src/app/state/selectors/building.selectors';
 import { selectVisitors } from 'src/app/state/selectors/visitor.selectors';
 
+import { format } from '@formkit/tempo';
+
 @Component({
   selector: 'app-edit-reservation-modal',
   templateUrl: './edit-reservation-modal.component.html',
@@ -64,6 +66,7 @@ export class EditReservationModalComponent implements OnInit {
 
   ngOnInit() {
     console.log(this.reservation);
+
     this.form.patchValue({
       start_date: this.reservation.start_date,
       end_date: this.reservation.end_date,
@@ -79,12 +82,12 @@ export class EditReservationModalComponent implements OnInit {
     });
 
     this.store.select(selectUser).subscribe((user: any) => {
-      console.log(user);
+      // console.log(user);
       this.user.set(user);
       this.form.patchValue({ created_by: user?.userId });
     });
     this.store.select(selectBuildingSelected).subscribe((buildingId: any) => {
-      console.log(buildingId);
+      // console.log(buildingId);
       this.form.patchValue({ building: buildingId });
     });
     this.store.select(selectVisitors).subscribe((res: Visitor[]) => {
@@ -99,6 +102,8 @@ export class EditReservationModalComponent implements OnInit {
         };
       });
     });
+
+    console.log(this.form.value);
   }
 
   initForm() {
@@ -106,8 +111,16 @@ export class EditReservationModalComponent implements OnInit {
       visitorSelected: new FormControl<Visitor | null>(null),
       documentSelected: new FormControl<any>(null),
       typeSelected: new FormControl<any>(null),
-      start_date: [new Date().toJSON(), Validators.required],
-      end_date: [new Date().toJSON(), Validators.required],
+      start_date: [
+        format(new Date(), 'YYYY-MM-DDTHH:mm:ss'),
+        Validators.required,
+      ],
+      // start_date: ['2024-12-27 00:43:39', Validators.required],
+
+      end_date: [
+        format(new Date(), 'YYYY-MM-DDTHH:mm:ss'),
+        Validators.required,
+      ],
       first_name: [''],
       last_name: [''],
       email: ['', [Validators.required, Validators.email]],
@@ -171,9 +184,10 @@ export class EditReservationModalComponent implements OnInit {
       };
     }
 
-    console.log('DTO: ', dto);
     // TODO: usar el dispath y crear el metodo edit en el effect
-    // this.store.dispatch(updateReservation({ reservation: dto }));
+    this.store.dispatch(
+      updateReservation({ reservationId: this.reservation.id, dto })
+    );
     // this.form.reset();
   }
 

@@ -10,7 +10,7 @@ import { selectAuthState } from 'src/app/state/selectors/auth.selectors';
   providedIn: 'root',
 })
 export class ApiService {
-  private readonly API = environment.apiUrl;
+  // private readonly API = environment.apiUrl;
   private baseUrl = signal<string | null>(null);
   private store = inject(Store);
 

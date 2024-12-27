@@ -5,6 +5,7 @@ import {
   loadReservations,
   loadReservationsFailure,
   loadReservationsSuccess,
+  updateReservationSuccess,
 } from '../actions/reservation.actions';
 import { ReservationState } from 'src/app/core/models/reservations.state';
 
@@ -41,4 +42,10 @@ export const reservationReducer = createReducer(
       (reservation) => reservation.id !== reservationId
     ),
   }))
+  // on(updateReservationSuccess, (state, { reservation }) => ({
+  //   ...state,
+  //   reservations: state.reservations.map((res) =>
+  //     res.id === reservation.id ? reservation : res
+  //   ),
+  // }))
 );

@@ -16,6 +16,7 @@ import { User } from 'src/app/core/models/auth.state.interface';
 import { selectUser } from 'src/app/state/selectors/auth.selectors';
 import { selectBuildingSelected } from 'src/app/state/selectors/building.selectors';
 import { addReservation } from 'src/app/state/actions/reservation.actions';
+import { format } from '@formkit/tempo';
 
 @Component({
   selector: 'app-create-reservation',
@@ -82,6 +83,7 @@ export class CreateReservationPage implements OnInit {
         };
       });
     });
+    console.log('Form values: ', this.form.value);
   }
 
   initForm() {
@@ -89,8 +91,14 @@ export class CreateReservationPage implements OnInit {
       visitorSelected: new FormControl<Visitor | null>(null),
       documentSelected: new FormControl<any>(null),
       typeSelected: new FormControl<any>(null),
-      start_date: [new Date().toJSON(), Validators.required],
-      end_date: [new Date().toJSON(), Validators.required],
+      start_date: [
+        format(new Date(), 'YYYY-MM-DDTHH:mm:ss'),
+        Validators.required,
+      ],
+      end_date: [
+        format(new Date(), 'YYYY-MM-DDTHH:mm:ss'),
+        Validators.required,
+      ],
       first_name: [''],
       last_name: [''],
       email: ['', [Validators.required, Validators.email]],

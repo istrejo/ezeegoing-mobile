@@ -41,5 +41,7 @@ export class ReservationService {
     return this.apiSvc.delete(`reservation/${id}/`);
   }
 
-  update() {}
+  update(id: any, dto: any): Observable<any> {
+    return this.apiSvc.put(`reservation/${id}/`, dto);
+  }
 }

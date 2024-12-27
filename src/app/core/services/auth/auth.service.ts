@@ -21,13 +21,6 @@ export class AuthService {
       this.token.set(auth.access_token || '');
       this.refresh.set(auth.refresh_token || '');
     });
-    console.log('Tokens: ', {
-      token: this.token(),
-      refresh: this.refresh(),
-    });
-    effect(() => {
-      console.log('Toekn change:', this.token());
-    });
   }
 
   login(username: string, password: string): Observable<any> {

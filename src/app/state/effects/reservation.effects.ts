@@ -13,6 +13,9 @@ import {
   deleteReservation,
   deleteReservationSuccess,
   deleteReservationFailure,
+  updateReservation,
+  updateReservationSuccess,
+  updateReservationFailure,
 } from '../actions/reservation.actions';
 import { LoadingController, ModalController } from '@ionic/angular';
 import { SuccessModalComponent } from 'src/app/pages/create-reservation/components/success-modal/success-modal.component';
@@ -102,6 +105,33 @@ export class ReservationEffects {
             return of(deleteReservationFailure({ error }));
           })
         );
+      })
+    )
+  );
+
+  updateReservation$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateReservation),
+      mergeMap((action: any) => {
+        this.presentLoading('Actualizando reservación');
+        return this.reservationService
+          .update(action.reservationId, action.dto)
+          .pipe(
+            map((reservation) => {
+              this.loadingCtrl.dismiss();
+              this.toastService.success('Reservación actualizada');
+              this.modalCtrl.dismiss();
+              loadReservations();
+              return updateReservationSuccess({ reservation });
+            }),
+            catchError((error) => {
+              this.loadingCtrl.dismiss();
+              this.toastService.error('Error al actualizar la reservación');
+              this.modalCtrl.dismiss();
+
+              return of(updateReservationFailure({ error }));
+            })
+          );
       })
     )
   );

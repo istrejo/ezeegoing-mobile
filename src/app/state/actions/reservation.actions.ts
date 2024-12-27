@@ -39,7 +39,7 @@ export const addReservationFailure = createAction(
 // Action to update an existing reservation
 export const updateReservation = createAction(
   '[Reservation] Update Reservation',
-  props<{ reservation: Reservation }>()
+  props<{ reservationId: number; dto: any }>()
 );
 
 // Action triggered when a reservation is successfully updated

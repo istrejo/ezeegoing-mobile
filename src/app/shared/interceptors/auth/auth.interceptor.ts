@@ -16,7 +16,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const alertService = inject(AlertService);
   const apiKey = environment.apiSecretKey;
   const store = inject(Store);
-  const token = authService.token;
+  const token = localStorage.getItem('accessToken');
 
   if (
     /* This part of the code is checking if the URL of the HTTP request (`req`) includes certain keywords
@@ -45,7 +45,7 @@ variable from the environment configuration. This new request is then returned t
 the updated headers. */
   const authReq = req.clone({
     setHeaders: {
-      Authorization: `Bearer ${token()}`,
+      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
       'X-API-KEY': apiKey,
     },
@@ -69,7 +69,7 @@ specifically an `HttpErrorResponse`. */
 
             const newReq = req.clone({
               setHeaders: {
-                Authorization: `Bearer ${token()}`,
+                Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
                 'X-API-KEY': apiKey,
               },
