@@ -1,4 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Reservation } from 'src/app/core/models/reservation.interface';
@@ -17,6 +18,7 @@ import {
 export class ReservationsPage implements OnInit {
   private store = inject(Store);
   public isLoading$: Observable<boolean> = new Observable();
+  private router = inject(Router);
   reservations = signal<Reservation[]>([]);
   reservationsTemp = signal<Reservation[]>([]);
   public search = '';
@@ -101,5 +103,9 @@ export class ReservationsPage implements OnInit {
       this.reservationsTemp.set(this.reservations().slice(0, this.limit));
     }
     event.target.complete();
+  }
+
+  onReserve() {
+    this.router.navigate(['/tabs/reserve']);
   }
 }
