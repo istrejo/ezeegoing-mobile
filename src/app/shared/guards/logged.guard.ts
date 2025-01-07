@@ -1,20 +1,14 @@
-import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { Observable, map } from 'rxjs';
-import { selectIsAuthenticated } from 'src/app/state/selectors/auth.selectors';
+import { inject } from '@angular/core';
+import { TokenService } from 'src/app/core/services/token/token.service';
 
 export const loggedGuard: CanActivateFn = (route, state) => {
+  const tokenservice = inject(TokenService);
   const router = inject(Router);
-  const store = inject(Store);
+  const isValidToken = tokenservice.isValidRefreshToken();
 
-  return store.select(selectIsAuthenticated).pipe(
-    map((isAuthenticated) => {
-      if (isAuthenticated) {
-        router.navigate(['/tabs']);
-        return false;
-      }
-      return true;
-    })
-  ) as Observable<boolean>;
+  if (isValidToken) {
+    router.navigate(['/']);
+  }
+  return true;
 };

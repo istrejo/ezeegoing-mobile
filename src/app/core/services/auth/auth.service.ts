@@ -30,7 +30,7 @@ export class AuthService {
 
   logout(): Observable<any> {
     const refresh_token = localStorage.getItem('refreshToken');
-    return this.http.post(`https://app.ezeeparking.com/api/logout/`, {
+    return this.http.post(`${this.apiUrl}logout/`, {
       refresh_token,
     });
   }
@@ -39,9 +39,9 @@ export class AuthService {
     return localStorage.getItem('accessToken') || '';
   }
 
-  refreshToken(): Observable<any> {
-    return this.http.post('https://app.ezeeparking.com/api/token/refresh/', {
-      refresh_token: this.refresh(),
+  refreshToken(refreshToken: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}token/refresh/`, {
+      refresh_token: refreshToken,
     });
   }
 }

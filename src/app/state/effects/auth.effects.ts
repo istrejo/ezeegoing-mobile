@@ -9,6 +9,7 @@ import { BuildingModalComponent } from 'src/app/shared/components/building-modal
 import { LoadingController, ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { selectBuilding } from '../actions/building.actions';
+import { TokenService } from 'src/app/core/services/token/token.service';
 
 @Injectable()
 export class AuthEffects {
@@ -18,6 +19,7 @@ export class AuthEffects {
   private loadingCtrl = inject(LoadingController);
   private modalCtrl = inject(ModalController);
   private store = inject(Store);
+  private tokenService = inject(TokenService);
 
   constructor() {}
 
@@ -36,8 +38,8 @@ application. */
             this.router.navigate(['/tabs/reserve']);
             this.loadingCtrl.dismiss();
             localStorage.setItem('userData', JSON.stringify(userData));
-            localStorage.setItem('accessToken', userData.access_token);
-            localStorage.setItem('refreshToken', userData.refresh_token);
+            this.tokenService.saveToken(userData.access_token);
+            this.tokenService.saveRefreshToken(userData.refresh_token);
             return AuthActions.loginSuccess({ userData });
           }),
           catchError((error) => {
@@ -60,8 +62,8 @@ application. */
         this.presentLoading();
         return this.authService.logout().pipe(
           tap(() => {
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
+            this.tokenService.removeToken();
+            this.tokenService.removeRefreshToken();
             localStorage.removeItem('userData');
             localStorage.removeItem('buildingId');
             this.router.navigate(['/login'], {
@@ -77,9 +79,10 @@ application. */
           catchError((error) => {
             this.loadingCtrl.dismiss();
             console.log('Logout effect error response: ', error);
+            // TODO: Esta condición debe ser removida si el token interceptor ya bora dichos datos
             if (error.status === 400) {
-              localStorage.removeItem('accessToken');
-              localStorage.removeItem('refreshToken');
+              this.tokenService.removeToken();
+              this.tokenService.removeRefreshToken();
               localStorage.removeItem('userData');
               localStorage.removeItem('buildingId');
               this.router.navigate(['/login'], {

@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { catchError, switchMap, throwError } from 'rxjs';
 import { AlertService } from 'src/app/core/services/alert/alert.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { TokenService } from 'src/app/core/services/token/token.service';
 import {
   logout,
   updateAccessToken,
@@ -14,9 +15,11 @@ import { environment } from 'src/environments/environment';
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const alertService = inject(AlertService);
+  const tokenService = inject(TokenService);
   const apiKey = environment.apiSecretKey;
   const store = inject(Store);
   const token = localStorage.getItem('accessToken');
+  const refreshToken = tokenService.getRefreshToken();
 
   if (
     /* This part of the code is checking if the URL of the HTTP request (`req`) includes certain keywords
@@ -56,7 +59,7 @@ specifically an `HttpErrorResponse`. */
   return next(authReq).pipe(
     catchError((err: HttpErrorResponse) => {
       if (err.status === 401 || err.status === 403 || err.status === 400) {
-        return authService.refreshToken().pipe(
+        return authService.refreshToken(refreshToken).pipe(
           switchMap((res) => {
             localStorage.setItem('accessToken', res.access_token);
             localStorage.setItem('refreshToken', res.refresh_token);

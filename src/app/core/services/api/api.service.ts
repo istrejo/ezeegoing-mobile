@@ -1,10 +1,31 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
-import { RequestOptions } from '../../models/api.interface';
-import { environment } from 'src/environments/environment';
 import { Store } from '@ngrx/store';
 import { selectAuthState } from 'src/app/state/selectors/auth.selectors';
+import { HttpHeaders } from '@capacitor/core';
+
+interface RequestOptions {
+  headers?:
+    | HttpHeaders
+    | {
+        [header: string]: string | string[];
+      };
+  context?: HttpContext;
+  observe?: 'body';
+  params?:
+    | HttpParams
+    | {
+        [param: string]:
+          | string
+          | number
+          | boolean
+          | ReadonlyArray<string | number | boolean>;
+      };
+  reportProgress?: boolean;
+  responseType?: 'json';
+  withCredentials?: boolean;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -60,16 +81,23 @@ export class ApiService {
   /**
    * PUT request
    * @param {string} endPoint end point of the api
-   * @param {any} dto data to be sent in the body of the request
    * @param {RequestOptions} options options of the request like headers, body, etc.
    * @returns {Observable<T>}
    */
   public put<T>(
     endPoint: string,
-    dto: any,
+    body: any,
     options?: RequestOptions
   ): Observable<T> {
-    return this.http.put<T>(`${this.baseUrl()}${endPoint}`, dto, options);
+    return this.http.put<T>(`${this.baseUrl()}${endPoint}`, body, options);
+  }
+
+  public patch<T>(
+    endPoint: string,
+    body: any,
+    options?: RequestOptions
+  ): Observable<T> {
+    return this.http.patch<T>(`${this.baseUrl()}${endPoint}`, body, options);
   }
 
   /**
