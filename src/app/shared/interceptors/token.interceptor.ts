@@ -1,79 +1,84 @@
-import {
-  HttpContext,
-  HttpContextToken,
-  HttpHandlerFn,
-  HttpInterceptorFn,
-  HttpRequest,
-} from '@angular/common/http';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { TokenService } from './../../core/services/token/token.service';
 import { inject } from '@angular/core';
-import { TokenService } from '../../core/services/token/token.service';
-import { switchMap } from 'rxjs';
-import { AuthService } from '../../core/services/auth/auth.service';
+import {
+  HttpRequest,
+  HttpHandlerFn,
+  HttpEvent,
+  HttpInterceptorFn,
+  HttpContextToken,
+  HttpContext,
+} from '@angular/common/http';
+import { Observable, switchMap } from 'rxjs';
 import { AlertService } from 'src/app/core/services/alert/alert.service';
-import { Store } from '@ngrx/store';
-import { logout } from 'src/app/state/actions/auth.actions';
 import { Router } from '@angular/router';
-import { environment } from 'src/environments/environment';
 
 const CHECK_TOKEN = new HttpContextToken<boolean>(() => false);
-
-export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
-  const tokenService = inject(TokenService);
-  const apiKey = environment.apiSecretKey;
-
-  const cloneRequest = req.clone({
-    setHeaders: {
-      'Content-Type': 'application/json',
-      'X-API-KEY': apiKey,
-    },
-  });
-
-  if (cloneRequest.context.get(CHECK_TOKEN)) {
-    const isValidToken = tokenService.isValidToken();
-    if (isValidToken) {
-      return addToken(cloneRequest, next);
-    } else {
-      return updateAccessTokenAndRefreshToken(cloneRequest, next);
-    }
-  }
-  return next(cloneRequest);
-};
 
 export function checkToken() {
   return new HttpContext().set(CHECK_TOKEN, true);
 }
 
-function addToken(req: HttpRequest<unknown>, next: HttpHandlerFn) {
-  const tokenService = inject(TokenService);
-
-  const accesstoken = tokenService.getToken();
-  if (accesstoken) {
-    const authRequest = req.clone({
-      headers: req.headers.set('Authorization', `Bearer ${accesstoken}`),
-    });
-    return next(authRequest);
-  }
-  return next(req);
-}
-
-function updateAccessTokenAndRefreshToken(
-  req: HttpRequest<unknown>,
+export const tokenInterceptor: HttpInterceptorFn = (
+  request: HttpRequest<unknown>,
   next: HttpHandlerFn
-) {
+): Observable<HttpEvent<unknown>> => {
   const tokenService = inject(TokenService);
   const authService = inject(AuthService);
   const alertService = inject(AlertService);
   const router = inject(Router);
+
+  if (request.context.get(CHECK_TOKEN)) {
+    const isValidToken = tokenService.isValidToken();
+    if (isValidToken) {
+      return addToken(request, next, tokenService);
+    } else {
+      return updateAccessTokenAndRefreshToken(
+        request,
+        next,
+        tokenService,
+        authService,
+        alertService,
+        router
+      );
+    }
+  }
+  return next(request);
+};
+
+function addToken(
+  request: HttpRequest<unknown>,
+  next: HttpHandlerFn,
+  tokenService: TokenService
+): Observable<HttpEvent<unknown>> {
+  const accessToken = tokenService.getToken();
+  if (accessToken) {
+    const authRequest = request.clone({
+      headers: request.headers.set('Authorization', `Bearer ${accessToken}`),
+    });
+    return next(authRequest);
+  }
+  return next(request);
+}
+
+function updateAccessTokenAndRefreshToken(
+  request: HttpRequest<unknown>,
+  next: HttpHandlerFn,
+  tokenService: TokenService,
+  authService: AuthService,
+  alertService: AlertService,
+  router: Router
+): Observable<HttpEvent<unknown>> {
   const refreshToken = tokenService.getRefreshToken();
   const isValidRefreshToken = tokenService.isValidRefreshToken();
 
   if (refreshToken && isValidRefreshToken) {
     return authService
       .refreshToken(refreshToken)
-      .pipe(switchMap(() => addToken(req, next)));
+      .pipe(switchMap(() => addToken(request, next, tokenService)));
   }
 
-  if (!isValidRefreshToken) {
+  if (!isValidRefreshToken && refreshToken) {
     alertService.presentAlert({
       mode: 'ios',
       header: 'Error',
@@ -93,6 +98,5 @@ function updateAccessTokenAndRefreshToken(
       backdropDismiss: false,
     });
   }
-
-  return next(req);
+  return next(request);
 }

@@ -11,6 +11,7 @@ export class ToastService {
 
   async success(message: string, duration: number = 2000) {
     const toast = await this.toastController.create({
+      mode: 'ios',
       message,
       duration,
       color: 'success',
@@ -21,6 +22,7 @@ export class ToastService {
 
   async error(message: string, duration: number = 2000) {
     const toast = await this.toastController.create({
+      mode: 'ios',
       message,
       duration,
       color: 'danger',
@@ -31,6 +33,7 @@ export class ToastService {
 
   async info(message: string, duration: number = 2000) {
     const toast = await this.toastController.create({
+      mode: 'ios',
       message,
       duration,
       color: 'primary',
@@ -41,6 +44,7 @@ export class ToastService {
 
   async warining(message: string, duration: number = 2000) {
     const toast = await this.toastController.create({
+      mode: 'ios',
       message,
       duration,
       color: 'warning',

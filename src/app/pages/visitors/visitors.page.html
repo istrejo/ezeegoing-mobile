@@ -9,6 +9,15 @@
     <h2 class="text-xl font-extrabold mb-1">Visitantes</h2>
   </div>
 
+  <div mode="ios" lines="none" class="">
+    <ion-searchbar
+      mode="ios"
+      placeholder="Busca una reserva"
+      [(ngModel)]="search"
+      (ionInput)="orderSearch()"
+    ></ion-searchbar>
+  </div>
+
   <ion-list
     class="flex flex-col w-full gap-4 items-center justify-center bg-transparent"
     lines="none"

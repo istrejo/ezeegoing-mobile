@@ -20,6 +20,7 @@ import { BuildingEffects } from './state/effects/building.effect';
 import { VisitorEffects } from './state/effects/visitor.effects';
 import { metaReducers } from './state/reducers/meta.reducer';
 import { tokenInterceptor } from './shared/interceptors/token.interceptor';
+import { headersInterceptor } from './shared/interceptors/headers.interceptor';
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -40,7 +41,7 @@ import { tokenInterceptor } from './shared/interceptors/token.interceptor';
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    provideHttpClient(withInterceptors([tokenInterceptor])),
+    provideHttpClient(withInterceptors([tokenInterceptor, headersInterceptor])),
   ],
   bootstrap: [AppComponent],
 })

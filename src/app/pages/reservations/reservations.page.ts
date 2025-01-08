@@ -67,6 +67,17 @@ export class ReservationsPage implements OnInit {
   handleRefresh(event: any) {
     this.store.dispatch(loadReservations());
     setTimeout(() => event.target.complete(), 1500);
+    console.log(this.reservations());
+    this.store.select(selectReservations).subscribe((reservations) => {
+      if (!reservations.length) {
+        this.store.dispatch(loadReservations());
+      }
+    });
+    this.store.select(selectReservations).subscribe((reservations) => {
+      this.reservations.set(reservations);
+      this.reservationsTemp.set(reservations.slice(0, this.limit));
+    });
+    this.isLoading$ = this.store.select(selectLoading);
   }
 
   onSearch() {}

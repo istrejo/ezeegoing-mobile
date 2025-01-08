@@ -7,6 +7,7 @@ import {
   faUser,
   faUserGroup,
   faBuilding,
+  faHome,
 } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -18,6 +19,7 @@ export class TabsPage {
   faHouse = faHouse;
   faCalendarDays = faCalendarDays;
   faCalendarCheck = faCalendarCheck;
+  faHome = faHome;
   faUser = faUser;
   faBuilding = faBuilding;
   faUserGroup = faUserGroup;

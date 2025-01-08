@@ -21,7 +21,11 @@ export class VisitorsPage implements OnInit {
   faBuilding = faBuilding;
   faCalendarDays = faCalendarDays;
   public visitors = signal<Visitor[]>([]);
+  public visitorsTemp = signal<Visitor[]>([]);
   public isLoading = signal<boolean>(false);
+  public search = '';
+  limit = 10;
+
   skeletonItems = [
     {
       id: 1,
@@ -60,12 +64,29 @@ export class VisitorsPage implements OnInit {
         this.store.dispatch(loadVisitors());
       }
     });
-    this.store
-      .select(selectVisitors)
-      .subscribe((visitors) => this.visitors.set(visitors));
+    this.store.select(selectVisitors).subscribe((visitors) => {
+      this.visitors.set(visitors);
+      this.visitorsTemp.set(visitors.slice(0, this.limit));
+    });
     this.store
       .select(selectVisitorsLoading)
       .subscribe((loading) => this.isLoading.set(loading));
+  }
+
+  orderSearch() {
+    const search = this.search.toLocaleLowerCase();
+    this.limit = 10;
+
+    if (!search.trim()) {
+      this.visitorsTemp.set(this.visitors().slice(0, this.limit));
+      return;
+    }
+
+    this.visitorsTemp.set(
+      this.visitors()
+        .filter((item: any) => item.fullname?.toLowerCase().includes(search))
+        .slice(0, this.limit)
+    );
   }
 
   handleRefresh(event: any) {

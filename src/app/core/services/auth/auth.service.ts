@@ -1,15 +1,17 @@
-import { effect, inject, Injectable, signal } from '@angular/core';
-import { Observable } from 'rxjs';
+import { inject, Injectable, signal } from '@angular/core';
+import { Observable, tap } from 'rxjs';
 import { LoginResponse } from '../../models/auth.state.interface';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Store } from '@ngrx/store';
 import { selectAuthState } from 'src/app/state/selectors/auth.selectors';
+import { TokenService } from '../token/token.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  private tokenService = inject(TokenService);
   private http = inject(HttpClient);
   private store = inject(Store);
   private apiUrl = environment.apiUrl;
@@ -40,8 +42,15 @@ export class AuthService {
   }
 
   refreshToken(refreshToken: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}token/refresh/`, {
-      refresh_token: refreshToken,
-    });
+    return this.http
+      .post<any>(`${this.apiUrl}token/refresh/`, {
+        refresh_token: refreshToken,
+      })
+      .pipe(
+        tap((response) => {
+          this.tokenService.saveToken(response.access_token);
+          this.tokenService.saveRefreshToken(response.refresh_token);
+        })
+      );
   }
 }
