@@ -1,5 +1,8 @@
 @if (control) {
 <div class="input-container">
+  @if(label) {
+  <ion-label>{{ label }}</ion-label>
+  }
   <div
     class="input-wrapper"
     [ngClass]="{ inputFocus: isFocused, isInvalid: control.errors }"

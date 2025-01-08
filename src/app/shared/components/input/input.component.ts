@@ -24,6 +24,7 @@ export class InputComponent<T> extends ControlValueAccessorDirective<T> {
   @Input() placeholder: string = '';
   @Input() clearInput: boolean = false;
   @Input() toggleVisibility: boolean = false;
+  @Input() label: string = '';
   isFocused: boolean = false;
   faEye = faEye;
   faEyeSlash = faEyeSlash;

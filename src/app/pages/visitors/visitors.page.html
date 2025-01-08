@@ -46,7 +46,7 @@
       </ion-label>
     </ion-item>
     } } @else { @for(visitor of visitorsTemp(); track visitor.id){
-    <app-card [visitor]="visitor" />
+    <app-card [visitor]="visitor" (deleteVisitor)="deleteVisitor($event)" />
 
     } }
   </ion-list>

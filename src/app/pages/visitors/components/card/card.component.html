@@ -18,10 +18,10 @@
     <p class="text-sm">Correo: {{ visitor.email }}</p>
   </div>
   <ion-buttons class="mr-4" slot="end" class="flex flex-col">
-    <ion-button (click)="editVisitor()">
+    <ion-button (click)="onUpdateVisitor()">
       <img slot="icon-only" src="assets/svgs/edit.svg" alt="" />
     </ion-button>
-    <ion-button (click)="deleteVisitor()">
+    <ion-button (click)="onDeleteVisitor()">
       <img slot="icon-only" src="assets/svgs/trash.svg" alt="" />
     </ion-button>
   </ion-buttons>

@@ -62,6 +62,7 @@ export class CreateReservationPage implements OnInit {
   }
 
   ngOnInit() {
+    this.form.reset();
     this.store.select(selectUser).subscribe((user) => {
       console.log(user);
       this.user.set(user);
@@ -83,7 +84,6 @@ export class CreateReservationPage implements OnInit {
         };
       });
     });
-    console.log('Form values: ', this.form.value);
   }
 
   initForm() {
@@ -115,43 +115,33 @@ export class CreateReservationPage implements OnInit {
   }
 
   onSubmit() {
-    const documentSelected = this.form.controls['documentSelected']?.value.id;
-    const typeSelected = this.form.controls['typeSelected']?.value.id;
-    const firstName = this.form.controls['visitorSelected']?.value.first_name;
-    const lastName = this.form.controls['visitorSelected']?.value.last_name;
-    this.form.patchValue({
-      first_name: firstName,
-      last_name: lastName,
-      document_type: documentSelected,
-      reservation_type: typeSelected,
-    });
     const {
       start_date,
       end_date,
-      first_name,
-      last_name,
       email,
       created_by,
       reservation_reference,
-      reservation_type,
       legal_id,
-      document_type,
       phone,
       building,
       car_plate,
+      visitorSelected,
+      typeSelected,
+      documentSelected,
     } = this.form.value;
 
     let dto: any = {
       start_date,
       end_date,
-      first_name,
-      last_name,
+      first_name: visitorSelected.first_name,
+
+      last_name: visitorSelected.last_name,
       email,
       created_by,
       reservation_reference,
-      reservation_type,
+      reservation_type: typeSelected.id,
       legal_id,
-      document_type,
+      document_type: documentSelected.id,
       phone,
       building,
     };
@@ -162,8 +152,6 @@ export class CreateReservationPage implements OnInit {
       };
     }
 
-    console.log('DTO: ', dto);
     this.store.dispatch(addReservation({ dto }));
-    this.form.reset();
   }
 }

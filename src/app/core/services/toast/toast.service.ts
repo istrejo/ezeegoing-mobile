@@ -14,7 +14,6 @@ export class ToastService {
       mode: 'ios',
       message,
       duration,
-      color: 'success',
       position: 'top',
     });
     toast.present();

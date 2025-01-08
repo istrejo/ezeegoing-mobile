@@ -24,4 +24,16 @@ export class VisitorService {
         )
       );
   }
+
+  deleteVisitor(id: number) {
+    return this.apiSvc.delete(`visitor/${id}/`, {
+      context: checkToken(),
+    });
+  }
+
+  updateVisitor(id: string, dto: any) {
+    return this.apiSvc.put(`visitor/${id}/`, dto, {
+      context: checkToken(),
+    });
+  }
 }

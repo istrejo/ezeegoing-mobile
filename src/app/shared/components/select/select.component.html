@@ -1,4 +1,6 @@
-@if(control) {
+@if(control) { @if(label) {
+<ion-label>{{ label }}</ion-label>
+}
 <p-dropdown
   class="w-full"
   [formControl]="control"

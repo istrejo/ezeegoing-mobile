@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { Visitor } from 'src/app/core/models/visitor.state';
 
@@ -9,16 +9,18 @@ import { Visitor } from 'src/app/core/models/visitor.state';
 })
 export class CardComponent implements OnInit {
   @Input() visitor!: Visitor;
+  @Output() deleteVisitor = new EventEmitter();
+  @Output() updateVisitor = new EventEmitter();
   faUser = faUser;
 
   constructor() {}
 
   ngOnInit() {}
 
-  deleteVisitor() {
-    throw new Error('Method not implemented.');
+  onDeleteVisitor() {
+    this.deleteVisitor.emit(this.visitor.id);
   }
-  editVisitor() {
-    throw new Error('Method not implemented.');
+  onUpdateVisitor() {
+    this.deleteVisitor.emit(this.visitor.id);
   }
 }

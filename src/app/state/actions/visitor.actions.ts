@@ -44,12 +44,12 @@ export const updateVisitorFailure = createAction(
 
 export const deleteVisitor = createAction(
   '[Visitor] Delete Visitor',
-  props<{ visitorId: string }>()
+  props<{ visitorId: number }>()
 );
 
 export const deleteVisitorSuccess = createAction(
   '[Visitor] Delete Visitor Success',
-  props<{ visitorId: string }>()
+  props<{ visitorId: number }>()
 );
 
 export const deleteVisitorFailure = createAction(

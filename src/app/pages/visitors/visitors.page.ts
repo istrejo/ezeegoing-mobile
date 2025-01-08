@@ -3,12 +3,14 @@ import { faBuilding, faCalendarDays } from '@fortawesome/free-solid-svg-icons';
 import { Store } from '@ngrx/store';
 import { Visitor } from 'src/app/core/models/visitor.state';
 import { ModalService } from 'src/app/core/services/modal/modal.service';
+import { VisitorService } from 'src/app/core/services/visitor/visitor.service';
 import { BuildingModalComponent } from 'src/app/shared/components/building-modal/building-modal.component';
 import { loadVisitors } from 'src/app/state/actions/visitor.actions';
 import {
   selectVisitors,
   selectVisitorsLoading,
 } from 'src/app/state/selectors/visitor.selectors';
+import { ModalComponent } from './components/modal/modal.component';
 
 @Component({
   selector: 'app-visitors',
@@ -18,6 +20,7 @@ import {
 export class VisitorsPage implements OnInit {
   private modalSvc: ModalService = inject(ModalService);
   private store = inject(Store);
+  private visitorService = inject(VisitorService);
   faBuilding = faBuilding;
   faCalendarDays = faCalendarDays;
   public visitors = signal<Visitor[]>([]);
@@ -90,7 +93,11 @@ export class VisitorsPage implements OnInit {
   }
 
   createVisitor() {
-    throw new Error('Method not implemented.');
+    this.modalSvc.presentModal(ModalComponent);
+  }
+
+  deleteVisitor(id: number) {
+    this.visitorService.deleteVisitor(id).subscribe((res) => console.log(res));
   }
 
   handleRefresh(event: any) {
