@@ -89,6 +89,10 @@ export class VisitorsPage implements OnInit {
     );
   }
 
+  createVisitor() {
+    throw new Error('Method not implemented.');
+  }
+
   handleRefresh(event: any) {
     this.store.dispatch(loadVisitors());
     setTimeout(() => event.target.complete(), 1500);

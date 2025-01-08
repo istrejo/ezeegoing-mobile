@@ -1,11 +1,28 @@
 <ion-item
-  pRipple
   lines="none"
-  class="flex items-center w-full rounded-lg ion-no-padding shadow bg-white"
+  class="visitor-card flex items-center w-full rounded-lg shadow bg-white"
 >
-  <div class="flex items-center w-full rounded-lg relative px-5">
-    <fa-icon [icon]="faUser" class="mr-4"></fa-icon>
-    <p class="text-sm font-medium">{{ visitor.first_name }}</p>
+  <ion-avatar class="mr-3">
+    <img src="assets/svgs/avatar.svg" />
+  </ion-avatar>
+  <div class="felx flex-col">
+    <h3 class="text-sm font-semibold">
+      {{ visitor.fullname | titlecase }}
+    </h3>
+    <p class="text-sm">
+      Teléfono:
+      <span>
+        {{ visitor.phone }}
+      </span>
+    </p>
+    <p class="text-sm">Correo: {{ visitor.email }}</p>
   </div>
-  <!-- <ion-ripple-effect></ion-ripple-effect> -->
+  <ion-buttons class="mr-4" slot="end" class="flex flex-col">
+    <ion-button (click)="editVisitor()">
+      <img slot="icon-only" src="assets/svgs/edit.svg" alt="" />
+    </ion-button>
+    <ion-button (click)="deleteVisitor()">
+      <img slot="icon-only" src="assets/svgs/trash.svg" alt="" />
+    </ion-button>
+  </ion-buttons>
 </ion-item>

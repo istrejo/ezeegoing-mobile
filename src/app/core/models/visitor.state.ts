@@ -23,6 +23,7 @@ export interface Visitor {
   badge: null;
   user: number;
   vehicles: any[];
+  fullname?: string;
 }
 
 export interface VisitorState {

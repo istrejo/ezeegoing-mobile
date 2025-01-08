@@ -14,4 +14,11 @@ export class CardComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {}
+
+  deleteVisitor() {
+    throw new Error('Method not implemented.');
+  }
+  editVisitor() {
+    throw new Error('Method not implemented.');
+  }
 }

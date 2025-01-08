@@ -3,12 +3,9 @@
   max-width: 350px;
 }
 
-ion-item {
+.visitor-card {
   width: 100%;
-  height: 56px;
-  --padding-start: 0;
-  --inner-padding-start: 0;
-  --inner-padding-end: 0;
-  --inner-padding-top: 0;
-  --inner-padding-bottom: 0;
+  --inner-padding-end: 10px;
+  // --inner-padding-top: 5px;
+  // --inner-padding-bottom: 5px;
 }
