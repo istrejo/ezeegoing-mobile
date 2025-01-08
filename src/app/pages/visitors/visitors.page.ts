@@ -73,8 +73,8 @@ export class VisitorsPage implements OnInit {
       .subscribe((loading) => this.isLoading.set(loading));
   }
 
-  orderSearch() {
-    const search = this.search.toLocaleLowerCase();
+  onSearch() {
+    const search = this.search.toLowerCase();
     this.limit = 10;
 
     if (!search.trim()) {
@@ -82,7 +82,7 @@ export class VisitorsPage implements OnInit {
       return;
     }
 
-    this.visitorsTemp.set(
+    this.visitorsTemp.update((prev) =>
       this.visitors()
         .filter((item: any) => item.fullname?.toLowerCase().includes(search))
         .slice(0, this.limit)

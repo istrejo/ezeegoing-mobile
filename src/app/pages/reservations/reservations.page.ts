@@ -83,7 +83,7 @@ export class ReservationsPage implements OnInit {
   onSearch() {}
 
   orderSearch() {
-    const search = this.search.toLocaleLowerCase();
+    const search = this.search.toLowerCase();
     this.limit = 10;
 
     if (!search.trim()) {
@@ -91,7 +91,7 @@ export class ReservationsPage implements OnInit {
       return;
     }
 
-    this.reservationsTemp.set(
+    this.reservationsTemp.update((prev) =>
       this.reservations()
         .filter((item: Reservation) =>
           item.fullname?.toLowerCase().includes(search)

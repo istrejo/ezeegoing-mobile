@@ -12,9 +12,9 @@
   <div mode="ios" lines="none" class="">
     <ion-searchbar
       mode="ios"
-      placeholder="Busca una reserva"
+      placeholder="Busca un visitante"
       [(ngModel)]="search"
-      (ionInput)="orderSearch()"
+      (ionInput)="onSearch()"
     ></ion-searchbar>
   </div>
 
@@ -45,7 +45,7 @@
         </p>
       </ion-label>
     </ion-item>
-    } } @else { @for(visitor of visitors(); track visitor.id){
+    } } @else { @for(visitor of visitorsTemp(); track visitor.id){
     <app-card [visitor]="visitor" />
 
     } }
