@@ -16,14 +16,16 @@ export class ReservationService {
   constructor() {}
 
   getAll(): Observable<Reservation[]> {
-    return this.apiSvc.get<Reservation[]>('reservation/').pipe(
-      map((reservations) =>
-        reservations.map((item) => ({
-          ...item,
-          fullname: `${item.first_name} ${item.last_name}`,
-        }))
-      )
-    );
+    return this.apiSvc
+      .get<Reservation[]>('reservation/', { context: checkToken() })
+      .pipe(
+        map((reservations) =>
+          reservations.map((item) => ({
+            ...item,
+            fullname: `${item.first_name} ${item.last_name}`,
+          }))
+        )
+      );
   }
 
   getTypes(): Observable<ReservationType[]> {

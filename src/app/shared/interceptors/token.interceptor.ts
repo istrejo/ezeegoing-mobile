@@ -13,20 +13,30 @@ import { AlertService } from 'src/app/core/services/alert/alert.service';
 import { Store } from '@ngrx/store';
 import { logout } from 'src/app/state/actions/auth.actions';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 const CHECK_TOKEN = new HttpContextToken<boolean>(() => false);
 
 export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
   const tokenService = inject(TokenService);
-  if (req.context.get(CHECK_TOKEN)) {
+  const apiKey = environment.apiSecretKey;
+
+  const cloneRequest = req.clone({
+    setHeaders: {
+      'Content-Type': 'application/json',
+      'X-API-KEY': apiKey,
+    },
+  });
+
+  if (cloneRequest.context.get(CHECK_TOKEN)) {
     const isValidToken = tokenService.isValidToken();
     if (isValidToken) {
-      return addToken(req, next);
+      return addToken(cloneRequest, next);
     } else {
-      return updateAccessTokenAndRefreshToken(req, next);
+      return updateAccessTokenAndRefreshToken(cloneRequest, next);
     }
   }
-  return next(req);
+  return next(cloneRequest);
 };
 
 export function checkToken() {

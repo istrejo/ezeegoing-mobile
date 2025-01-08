@@ -14,7 +14,6 @@ import { ROOT_REDUCERS } from './state/app.state';
 import { ReservationEffects } from './state/effects/reservation.effects';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { authInterceptor } from './shared/interceptors/auth/auth.interceptor';
 import { AuthEffects } from './state/effects/auth.effects';
 import { ReservationTypeEffects } from './state/effects/reservation-type.effects';
 import { BuildingEffects } from './state/effects/building.effect';
