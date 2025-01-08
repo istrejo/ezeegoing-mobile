@@ -6,7 +6,9 @@
     <img class="" [src]="'assets/svgs/' + iconUrl" alt="Icono" />
   </figure> -->
   <ion-avatar class="mr-3">
-    <img src="assets/svgs/avatar.svg" />
+    <figure class="mr-4">
+      <img [src]="'assets/svgs/' + iconUrl" alt="logo" />
+    </figure>
   </ion-avatar>
   <div class="felx flex-col">
     <h3 class="text-sm font-semibold">
@@ -18,7 +20,7 @@
         {{ reservation.alpr_authentication ? "Activa" : "Inactiva" }}
       </span>
     </p>
-    <p class="text-sm">Último ingreso: {{ reservation.updated_at | date }}</p>
+    <p class="text-sm">Ingreso: {{ reservation.start_date | date }}</p>
   </div>
   <ion-buttons class="mr-4" slot="end" class="flex flex-col">
     <ion-button (click)="onEdit()">
