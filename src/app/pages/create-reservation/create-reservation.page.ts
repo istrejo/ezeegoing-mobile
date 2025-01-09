@@ -34,6 +34,7 @@ export class CreateReservationPage implements OnInit {
   reservationType: number = 1;
   type = '';
   visitors: Visitor[] = [];
+  buildingId = signal<number | null>(null);
 
   documentTypes = [
     {
@@ -62,15 +63,14 @@ export class CreateReservationPage implements OnInit {
   }
 
   ngOnInit() {
-    this.form.reset();
+    console.log(this.form.value);
     this.store.select(selectUser).subscribe((user) => {
       console.log(user);
       this.user.set(user);
-      this.form.patchValue({ created_by: user?.userId });
     });
     this.store.select(selectBuildingSelected).subscribe((buildingId) => {
       console.log(buildingId);
-      this.form.patchValue({ building: buildingId });
+      this.buildingId.set(buildingId);
     });
     this.store.select(selectVisitors).subscribe((res: Visitor[]) => {
       if (!res.length) {
@@ -86,11 +86,15 @@ export class CreateReservationPage implements OnInit {
     });
   }
 
+  ionViewWillLeave() {
+    this.form.reset();
+  }
+
   initForm() {
     this.form = this.fb.group({
-      visitorSelected: new FormControl<Visitor | null>(null),
-      documentSelected: new FormControl<any>(null),
-      typeSelected: new FormControl<any>(null),
+      visitorSelected: [{ value: {} }, [Validators.required]],
+      documentSelected: [{ value: {} }, [Validators.required]],
+      typeSelected: [{ value: {} }, [Validators.required]],
       start_date: [
         format(new Date(), 'YYYY-MM-DDTHH:mm:ss'),
         Validators.required,
@@ -104,9 +108,9 @@ export class CreateReservationPage implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       created_by: [this.user()?.userId],
       reservation_reference: [new Date().getTime().toString().slice(0, 9)],
-      reservation_type: new FormControl<number>(0),
+      reservation_type: [0],
       legal_id: ['', [Validators.required]],
-      document_type: [1, [Validators.required]],
+      document_type: [1],
       phone: ['', [Validators.required]],
       building: [null],
       hasVehicle: [false],
@@ -115,43 +119,47 @@ export class CreateReservationPage implements OnInit {
   }
 
   onSubmit() {
+    if (!this.form.valid) {
+      console.log(this.form.value);
+
+      this.form.markAllAsTouched();
+      return;
+    }
+
     const {
       start_date,
       end_date,
       email,
-      created_by,
-      reservation_reference,
       legal_id,
       phone,
-      building,
       car_plate,
       visitorSelected,
       typeSelected,
       documentSelected,
+      reservation_reference,
     } = this.form.value;
 
     let dto: any = {
       start_date,
       end_date,
       first_name: visitorSelected.first_name,
-
       last_name: visitorSelected.last_name,
       email,
-      created_by,
+      created_by: this.user()?.userId,
       reservation_reference,
       reservation_type: typeSelected.id,
       legal_id,
       document_type: documentSelected.id,
       phone,
-      building,
+      building: this.buildingId(),
     };
-    if (car_plate.length > 1) {
+    if (car_plate) {
       dto = {
         ...dto,
         car_plate: car_plate,
       };
     }
-
+    console.log(dto);
     this.store.dispatch(addReservation({ dto }));
   }
 }

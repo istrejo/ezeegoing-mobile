@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { ReservationService } from '../../core/services/reservation/reservation.service';
 import {
@@ -20,6 +20,7 @@ import {
 import { LoadingController, ModalController } from '@ionic/angular';
 import { SuccessModalComponent } from 'src/app/pages/create-reservation/components/success-modal/success-modal.component';
 import { ToastService } from 'src/app/core/services/toast/toast.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable()
 export class ReservationEffects {
@@ -77,8 +78,10 @@ export class ReservationEffects {
             this.openSuccessModal();
             return addReservationSuccess({ reservation });
           }),
-          catchError((error) => {
+          catchError((error: HttpErrorResponse) => {
             this.loadingCtrl.dismiss();
+            this.toastService.error(error.message);
+
             return of(addReservationFailure({ error }));
           })
         );
