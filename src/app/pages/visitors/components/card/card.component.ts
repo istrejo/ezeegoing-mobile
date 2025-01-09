@@ -3,7 +3,9 @@ import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { Store } from '@ngrx/store';
 import { Visitor } from 'src/app/core/models/visitor.state';
 import { AlertService } from 'src/app/core/services/alert/alert.service';
+import { ModalService } from 'src/app/core/services/modal/modal.service';
 import { deleteVisitor } from 'src/app/state/actions/visitor.actions';
+import { ModalComponent } from '../modal/modal.component';
 
 @Component({
   selector: 'app-card',
@@ -13,6 +15,7 @@ import { deleteVisitor } from 'src/app/state/actions/visitor.actions';
 export class CardComponent implements OnInit {
   private alertservice = inject(AlertService);
   private store = inject(Store);
+  private modalService = inject(ModalService);
 
   @Input() visitor!: Visitor;
 
@@ -45,6 +48,6 @@ export class CardComponent implements OnInit {
   }
 
   updateVisitor() {
-    throw new Error('Method not implemented.');
+    this.modalService.presentModal(ModalComponent, { visitor: this.visitor });
   }
 }

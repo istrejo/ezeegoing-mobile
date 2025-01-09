@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -6,8 +6,12 @@ import {
   Validators,
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { Visitor } from 'src/app/core/models/visitor.state';
 import { ModalService } from 'src/app/core/services/modal/modal.service';
-import { addVisitor } from 'src/app/state/actions/visitor.actions';
+import {
+  addVisitor,
+  updateVisitor,
+} from 'src/app/state/actions/visitor.actions';
 
 @Component({
   selector: 'app-modal',
@@ -15,6 +19,7 @@ import { addVisitor } from 'src/app/state/actions/visitor.actions';
   styleUrls: ['./modal.component.scss'],
 })
 export class ModalComponent implements OnInit {
+  @Input() visitor!: Visitor;
   private store = inject(Store);
   private modalService = inject(ModalService);
   private fb: FormBuilder = inject(FormBuilder);
@@ -35,6 +40,18 @@ export class ModalComponent implements OnInit {
 
   ngOnInit() {
     this.initForm();
+    if (this.visitor) {
+      this.form.patchValue(this.visitor);
+      if (this.visitor.document_type === 1) {
+        this.form.patchValue({
+          document_selected: this.documentTypes[0],
+        });
+      } else {
+        this.form.patchValue({
+          document_selected: this.documentTypes[1],
+        });
+      }
+    }
   }
 
   initForm() {
@@ -92,6 +109,11 @@ export class ModalComponent implements OnInit {
       is_supplier,
     };
 
-    this.store.dispatch(addVisitor({ dto: dto }));
+    console.log(this.visitor);
+    if (this.visitor) {
+      this.store.dispatch(updateVisitor({ id: this.visitor.id, dto }));
+    }
+
+    // this.store.dispatch(addVisitor({ dto }));
   }
 }

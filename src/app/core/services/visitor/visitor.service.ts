@@ -37,7 +37,7 @@ export class VisitorService {
     });
   }
 
-  updateVisitor(id: string, dto: any) {
+  updateVisitor(id: number, dto: any) {
     return this.apiSvc.put(`visitor/${id}/`, dto, {
       context: checkToken(),
     });

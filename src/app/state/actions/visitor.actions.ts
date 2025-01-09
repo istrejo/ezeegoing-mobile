@@ -29,7 +29,7 @@ export const addVisitorFailure = createAction(
 
 export const updateVisitor = createAction(
   '[Visitor] Update Visitor',
-  props<{ visitor: any }>()
+  props<{ id: number; dto: any }>()
 );
 
 export const updateVisitorSuccess = createAction(

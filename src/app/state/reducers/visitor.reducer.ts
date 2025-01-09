@@ -39,11 +39,11 @@ export const visitorReducer = createReducer(
     visitors: state.visitors.filter((visitor) => visitor.id !== visitorId),
     loading: false,
     error: null,
-  })),
-  on(updateVisitor, (state, { visitor }) => ({
-    ...state,
-    visitors: state.visitors.map((v) => (v.id === visitor.id ? visitor : v)),
-    loading: false,
-    error: null,
   }))
+  // on(updateVisitor, (state, { visitor }) => ({
+  //   ...state,
+  //   visitors: state.visitors.map((v) => (v.id === visitor.id ? visitor : v)),
+  //   loading: false,
+  //   error: null,
+  // }))
 );

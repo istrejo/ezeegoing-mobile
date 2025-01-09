@@ -17,6 +17,9 @@ import {
   loadVisitors,
   loadVisitorsFailure,
   loadVisitorsSuccess,
+  updateVisitor,
+  updateVisitorFailure,
+  updateVisitorSuccess,
 } from '../actions/visitor.actions';
 import { Store } from '@ngrx/store';
 
@@ -82,6 +85,29 @@ export class VisitorEffects {
             this.toastService.error(error.error.message);
             this.loading.dismiss();
             return of(deleteVisitorFailure({ error }));
+          })
+        );
+      })
+    )
+  );
+
+  updateVisitor$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateVisitor),
+      mergeMap((action) => {
+        this.loading.present('Actualizando visitante');
+        return this.visitorService.updateVisitor(action.id, action.dto).pipe(
+          map((visitor) => {
+            this.loading.dismiss();
+            this.toastService.success('Visitante actualizado');
+            this.modalService.dismissModal();
+            this.store.dispatch(loadVisitors());
+            return updateVisitorSuccess({ visitor });
+          }),
+          catchError((error: HttpErrorResponse) => {
+            this.toastService.error(error.error.message);
+            this.loading.dismiss();
+            return of(updateVisitorFailure({ error }));
           })
         );
       })
