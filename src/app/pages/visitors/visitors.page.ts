@@ -97,10 +97,6 @@ export class VisitorsPage implements OnInit {
     this.modalSvc.presentModal(ModalComponent);
   }
 
-  deleteVisitor(id: number) {
-    this.visitorService.deleteVisitor(id).subscribe((res) => console.log(res));
-  }
-
   handleRefresh(event: any) {
     this.store.dispatch(loadVisitors());
     setTimeout(() => event.target.complete(), 1500);

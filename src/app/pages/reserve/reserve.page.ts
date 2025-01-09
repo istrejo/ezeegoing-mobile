@@ -74,7 +74,6 @@ export class ReservePage implements OnInit {
    * `reservationId`.
    */
   onCreateReservation(reservationId: any) {
-    console.log('Reservation selected ', reservationId);
     this.router.navigate(['tabs/create-reservation', reservationId]);
   }
 

@@ -65,8 +65,6 @@ export class EditReservationModalComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.reservation);
-
     this.form.patchValue({
       start_date: this.reservation.start_date,
       end_date: this.reservation.end_date,
@@ -82,12 +80,10 @@ export class EditReservationModalComponent implements OnInit {
     });
 
     this.store.select(selectUser).subscribe((user: any) => {
-      // console.log(user);
       this.user.set(user);
       this.form.patchValue({ created_by: user?.userId });
     });
     this.store.select(selectBuildingSelected).subscribe((buildingId: any) => {
-      // console.log(buildingId);
       this.form.patchValue({ building: buildingId });
     });
     this.store.select(selectVisitors).subscribe((res: Visitor[]) => {
@@ -102,8 +98,6 @@ export class EditReservationModalComponent implements OnInit {
         };
       });
     });
-
-    console.log(this.form.value);
   }
 
   initForm() {

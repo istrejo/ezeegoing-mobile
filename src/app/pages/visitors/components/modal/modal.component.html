@@ -82,6 +82,7 @@
         mode="ios"
         class="text-white mt-4"
         expand="block"
+        [disabled]="!form.valid"
       >
         {{ visitor ? "Actualizar" : "Registrar visitante" }}
       </ion-button>

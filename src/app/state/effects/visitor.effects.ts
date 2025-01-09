@@ -36,7 +36,6 @@ export class VisitorEffects {
       mergeMap(() =>
         this.visitorService.getVisitors().pipe(
           map((visitors) => {
-            console.log('Visitors: ', visitors);
             return loadVisitorsSuccess({ visitors });
           }),
           catchError((error) => of(loadVisitorsFailure({ error })))
@@ -105,8 +104,9 @@ export class VisitorEffects {
             return updateVisitorSuccess({ visitor });
           }),
           catchError((error: HttpErrorResponse) => {
-            this.toastService.error(error.error.message);
             this.loading.dismiss();
+
+            this.toastService.error(error.error.message);
             return of(updateVisitorFailure({ error }));
           })
         );

@@ -62,7 +62,7 @@ export class ModalComponent implements OnInit {
       phone: ['', [Validators.required]],
       card_number: ['', [Validators.required]],
       company_name: ['', []],
-      document_selected: new FormControl<any>(null),
+      document_selected: [{ value: {} }, []],
       document_type: [0, [Validators.required]],
       legal_id: ['', [Validators.required]],
       is_supplier: [false, [Validators.required]],
@@ -109,11 +109,11 @@ export class ModalComponent implements OnInit {
       is_supplier,
     };
 
-    console.log(this.visitor);
     if (this.visitor) {
       this.store.dispatch(updateVisitor({ id: this.visitor.id, dto }));
+      return;
     }
 
-    // this.store.dispatch(addVisitor({ dto }));
+    this.store.dispatch(addVisitor({ dto }));
   }
 }
