@@ -1,13 +1,13 @@
 import { createReducer, on } from '@ngrx/store';
 import { VisitorState } from './../../core/models/visitor.state';
 import {
+  addVisitorSuccess,
   deleteVisitor,
   loadVisitors,
   loadVisitorsFailure,
   loadVisitorsSuccess,
   updateVisitor,
 } from '../actions/visitor.actions';
-// import * as VisitorActions from '../actions/visitor.actions';
 
 export const initialState: VisitorState = {
   visitors: [],
@@ -33,6 +33,7 @@ export const visitorReducer = createReducer(
     loading: false,
     error,
   })),
+
   on(deleteVisitor, (state, { visitorId }) => ({
     ...state,
     visitors: state.visitors.filter((visitor) => visitor.id !== visitorId),

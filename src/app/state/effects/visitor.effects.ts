@@ -18,12 +18,14 @@ import {
   loadVisitorsFailure,
   loadVisitorsSuccess,
 } from '../actions/visitor.actions';
+import { Store } from '@ngrx/store';
 
 @Injectable()
 export class VisitorEffects {
   private loading = inject(LoadingService);
   private toastService = inject(ToastService);
   private modalService = inject(ModalService);
+  private store = inject(Store);
 
   loadVisitors$ = createEffect(() =>
     this.actions$.pipe(
@@ -50,6 +52,7 @@ export class VisitorEffects {
             this.loading.dismiss();
             this.toastService.success('Visitante creado');
             this.modalService.dismissModal();
+            this.store.dispatch(loadVisitors());
             return addVisitorSuccess({ visitor });
           }),
           catchError((error: HttpErrorResponse) => {
