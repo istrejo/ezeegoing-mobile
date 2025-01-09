@@ -81,7 +81,7 @@ export class CardComponent implements OnInit {
   deleteReservation() {
     this.alertService.presentAlert({
       mode: 'ios',
-      header: 'Eliminar Reservación',
+      header: 'Eliminar reservación',
       message: '¿Está seguro que desea eliminar la reservación?',
       buttons: [
         {

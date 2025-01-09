@@ -14,7 +14,7 @@ export const loadVisitorsFailure = createAction(
 
 export const addVisitor = createAction(
   '[Visitor] Add Visitor',
-  props<{ visitor: any }>()
+  props<{ dto: any }>()
 );
 
 export const addVisitorSuccess = createAction(

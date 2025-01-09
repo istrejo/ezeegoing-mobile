@@ -13,6 +13,7 @@ export class ToastService {
     const toast = await this.toastController.create({
       mode: 'ios',
       message,
+      color: 'success',
       duration,
       position: 'top',
     });

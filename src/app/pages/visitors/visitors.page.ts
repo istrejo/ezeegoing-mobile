@@ -11,6 +11,7 @@ import {
   selectVisitorsLoading,
 } from 'src/app/state/selectors/visitor.selectors';
 import { ModalComponent } from './components/modal/modal.component';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-visitors',

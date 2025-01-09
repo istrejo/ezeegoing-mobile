@@ -25,6 +25,12 @@ export class VisitorService {
       );
   }
 
+  createVisitor(dto: any) {
+    return this.apiSvc.post('visitor/', dto, {
+      context: checkToken(),
+    });
+  }
+
   deleteVisitor(id: number) {
     return this.apiSvc.delete(`visitor/${id}/`, {
       context: checkToken(),

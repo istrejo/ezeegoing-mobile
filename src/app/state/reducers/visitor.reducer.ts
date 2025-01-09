@@ -1,6 +1,13 @@
 import { createReducer, on } from '@ngrx/store';
 import { VisitorState } from './../../core/models/visitor.state';
-import * as VisitorActions from '../actions/visitor.actions';
+import {
+  deleteVisitor,
+  loadVisitors,
+  loadVisitorsFailure,
+  loadVisitorsSuccess,
+  updateVisitor,
+} from '../actions/visitor.actions';
+// import * as VisitorActions from '../actions/visitor.actions';
 
 export const initialState: VisitorState = {
   visitors: [],
@@ -10,20 +17,32 @@ export const initialState: VisitorState = {
 
 export const visitorReducer = createReducer(
   initialState,
-  on(VisitorActions.loadVisitors, (state) => ({
+  on(loadVisitors, (state) => ({
     ...state,
     loading: true,
     error: null,
   })),
-  on(VisitorActions.loadVisitorsSuccess, (state, { visitors }) => ({
+  on(loadVisitorsSuccess, (state, { visitors }) => ({
     ...state,
     visitors,
     loading: false,
     error: null,
   })),
-  on(VisitorActions.loadVisitorsFailure, (state, { error }) => ({
+  on(loadVisitorsFailure, (state, { error }) => ({
     ...state,
     loading: false,
     error,
+  })),
+  on(deleteVisitor, (state, { visitorId }) => ({
+    ...state,
+    visitors: state.visitors.filter((visitor) => visitor.id !== visitorId),
+    loading: false,
+    error: null,
+  })),
+  on(updateVisitor, (state, { visitor }) => ({
+    ...state,
+    visitors: state.visitors.map((v) => (v.id === visitor.id ? visitor : v)),
+    loading: false,
+    error: null,
   }))
 );
