@@ -71,7 +71,10 @@ ion-button {
   --border-radius: 7px;
   min-height: 35px;
   text-transform: capitalize;
-  // max-height: 40px;
+
+  ion-icon {
+    font-size: 20px;
+  }
 }
 
 ion-checkbox {
