@@ -17,6 +17,8 @@ import { selectUser } from 'src/app/state/selectors/auth.selectors';
 import { selectBuildingSelected } from 'src/app/state/selectors/building.selectors';
 import { addReservation } from 'src/app/state/actions/reservation.actions';
 import { format } from '@formkit/tempo';
+import { ModalService } from 'src/app/core/services/modal/modal.service';
+import { ModalComponent } from '../visitors/components/modal/modal.component';
 
 @Component({
   selector: 'app-create-reservation',
@@ -24,6 +26,7 @@ import { format } from '@formkit/tempo';
   styleUrls: ['./create-reservation.page.scss'],
 })
 export class CreateReservationPage implements OnInit {
+  private modalSvc = inject(ModalService);
   private store = inject(Store);
   private fb: FormBuilder = inject(FormBuilder);
   public user = signal<User | undefined>(undefined);
@@ -116,6 +119,10 @@ export class CreateReservationPage implements OnInit {
       hasVehicle: [false],
       car_plate: [''],
     });
+  }
+
+  addVisitor() {
+    this.modalSvc.presentModal(ModalComponent);
   }
 
   onSubmit() {
