@@ -92,9 +92,9 @@ export class CreateReservationPage implements OnInit {
 
   initForm() {
     this.form = this.fb.group({
-      visitorSelected: [{ value: {} }, [Validators.required]],
-      documentSelected: [{ value: {} }, [Validators.required]],
-      typeSelected: [{ value: {} }, [Validators.required]],
+      visitorSelected: [null, [Validators.required]],
+      documentSelected: [null, [Validators.required]],
+      typeSelected: [null, [Validators.required]],
       start_date: [
         format(new Date(), 'YYYY-MM-DDTHH:mm:ss'),
         Validators.required,
@@ -152,6 +152,7 @@ export class CreateReservationPage implements OnInit {
       document_type: documentSelected.id,
       phone,
       building: this.buildingId(),
+      company: '',
     };
     if (car_plate) {
       dto = {
