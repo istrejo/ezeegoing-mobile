@@ -13,8 +13,7 @@
     <figure>
       <img src="assets/logos/logo-small.png" alt="logo" />
     </figure>
-    <h2 class="text-xl font-extrabold mb-1">Reserva para {{ title }}</h2>
-    <h4 class="text-base font-normal">Nueva Reservación</h4>
+    <h4 class="text-base font-normal">Editar reservación</h4>
   </div>
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <ion-list
@@ -28,12 +27,6 @@
           [options]="visitors"
           placeholder="Visitante"
         />
-
-        <app-input
-          formControlName="email"
-          inputId="email"
-          placeholder="Correo electrónico"
-        ></app-input>
 
         <p>Fecha inicio</p>
         <ion-datetime-button
@@ -112,7 +105,7 @@
         expand="block"
         [disabled]="!form.valid"
       >
-        Crear Reserva
+        Editar reserva
       </ion-button>
     </ion-list>
   </form>

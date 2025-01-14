@@ -1,41 +1,30 @@
-import { Visitor } from './../../../core/models/visitor.state';
-import { Component, inject, Input, OnInit, signal } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
-import { ModalController } from '@ionic/angular';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { format } from '@formkit/tempo';
 import { Store } from '@ngrx/store';
 import { User } from 'src/app/core/models/auth.state.interface';
-import { Reservation } from 'src/app/core/models/reservation.interface';
-import { updateReservation } from 'src/app/state/actions/reservation.actions';
+import { Visitor } from 'src/app/core/models/visitor.state';
+import { ModalService } from 'src/app/core/services/modal/modal.service';
+import { ModalComponent } from 'src/app/pages/visitors/components/modal/modal.component';
+import { addReservation } from 'src/app/state/actions/reservation.actions';
 import { loadVisitors } from 'src/app/state/actions/visitor.actions';
 import { selectUser } from 'src/app/state/selectors/auth.selectors';
 import { selectBuildingSelected } from 'src/app/state/selectors/building.selectors';
 import { selectVisitors } from 'src/app/state/selectors/visitor.selectors';
 
-import { format } from '@formkit/tempo';
-
 @Component({
-  selector: 'app-edit-reservation-modal',
-  templateUrl: './edit-reservation-modal.component.html',
-  styleUrls: ['./edit-reservation-modal.component.scss'],
+  selector: 'app-form',
+  templateUrl: './form.component.html',
+  styleUrls: ['./form.component.scss'],
 })
-export class EditReservationModalComponent implements OnInit {
-  @Input() reservation!: Reservation;
-  private modalCtrl = inject(ModalController);
-  private store = inject(Store);
+export class FormComponent implements OnInit {
+  private modalSvc = inject(ModalService);
   private fb: FormBuilder = inject(FormBuilder);
+  public form!: FormGroup;
+  private store = inject(Store);
   public user = signal<User | undefined>(undefined);
-  public buildingSelected = signal<number | null>(null);
-  form!: FormGroup;
-  faChevronLeft = faChevronLeft;
-  reservationType: number = 1;
-  type = '';
-  visitors: Visitor[] = [];
+  public buildingId = signal<number | null>(null);
+  public visitors: Visitor[] = [];
 
   documentTypes = [
     {
@@ -64,18 +53,25 @@ export class EditReservationModalComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.store.select(selectUser).subscribe((user: any) => {
+    console.log(this.form.value);
+    this.loadData();
+  }
+
+  loadData() {
+    this.store.select(selectUser).subscribe((user) => {
+      console.log(user);
       this.user.set(user);
-      this.form.patchValue({ created_by: user?.userId });
     });
-    this.store.select(selectBuildingSelected).subscribe((buildingId: any) => {
-      this.form.patchValue({ building: buildingId });
+    this.store.select(selectBuildingSelected).subscribe((buildingId) => {
+      console.log(buildingId);
+      this.buildingId.set(buildingId);
     });
-    this.store.select(selectVisitors).subscribe((res: Visitor[]) => {
-      if (!res.length) {
+    this.store.select(selectVisitors).subscribe((visitors: Visitor[]) => {
+      if (!visitors.length) {
         this.store.dispatch(loadVisitors());
       }
-      this.visitors = res.map((item: any) => {
+      console.log('Visitors: ', visitors);
+      this.visitors = visitors.map((item: any) => {
         return {
           ...item,
           name: item.first_name + ' ' + item.last_name,
@@ -83,39 +79,6 @@ export class EditReservationModalComponent implements OnInit {
         };
       });
     });
-
-    console.log('resertvation: ', this.reservation);
-    this.form.patchValue({
-      start_date: format(
-        new Date(this.reservation.start_date),
-        'YYYY-MM-DDTHH:mm:ss'
-      ),
-      end_date: format(
-        new Date(this.reservation.end_date),
-        'YYYY-MM-DDTHH:mm:ss'
-      ),
-      typeSelected: {
-        name:
-          this.reservation.reservation_type_id === 1 ? 'Normal' : 'Temporal',
-        id: this.reservation.reservation_type_id,
-      },
-      documentSelected: {
-        name: this.reservation.document_type_id === 1 ? 'Cédula' : 'Pasaporte',
-        id: this.reservation.document_type_id,
-      },
-
-      document_type: this.reservation.document_type_id,
-      reservation_type: this.reservation.document_type_id,
-      create_by: this.reservation.created_by_id,
-      email: this.reservation.email,
-      legal_id: this.reservation.legal_id,
-      phone: this.reservation.phone,
-      building: this.reservation.building_id,
-    });
-  }
-
-  ionViewWillLeave() {
-    this.form.reset();
   }
 
   initForm() {
@@ -145,6 +108,12 @@ export class EditReservationModalComponent implements OnInit {
     });
   }
 
+  async addVisitor() {
+    this.modalSvc.presentModal(ModalComponent).then((data) => {
+      console.log('Modal data', data);
+    });
+  }
+
   onSubmit() {
     if (!this.form.valid) {
       console.log(this.form.value);
@@ -163,7 +132,6 @@ export class EditReservationModalComponent implements OnInit {
       typeSelected,
       documentSelected,
       reservation_reference,
-      building,
     } = this.form.value;
 
     let dto: any = {
@@ -178,7 +146,7 @@ export class EditReservationModalComponent implements OnInit {
       legal_id,
       document_type: documentSelected.id,
       phone,
-      building,
+      building: this.buildingId(),
       company: '',
     };
     if (car_plate) {
@@ -187,14 +155,7 @@ export class EditReservationModalComponent implements OnInit {
         car_plate: car_plate,
       };
     }
-
-    // TODO: usar el dispath y crear el metodo edit en el effect
-    this.store.dispatch(
-      updateReservation({ reservationId: this.reservation.id, dto })
-    );
-  }
-
-  close() {
-    this.modalCtrl.dismiss();
+    console.log(dto);
+    this.store.dispatch(addReservation({ dto }));
   }
 }

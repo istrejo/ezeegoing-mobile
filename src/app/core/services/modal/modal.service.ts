@@ -7,16 +7,18 @@ import { ModalController } from '@ionic/angular';
 export class ModalService {
   constructor(private modalController: ModalController) {}
 
-  async presentModal(
-    component: any,
-    componentProps?: any
-  ): Promise<HTMLIonModalElement> {
+  async presentModal(component: any, componentProps?: any) {
     const modal = await this.modalController.create({
       component,
       componentProps,
     });
     await modal.present();
-    return modal;
+
+    const { data, role } = await modal.onWillDismiss();
+
+    if (data) {
+      return data;
+    }
   }
 
   async dismissModal(data?: any, role?: string, id?: string): Promise<boolean> {

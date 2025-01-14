@@ -9,6 +9,8 @@ import { CreateReservationPageRoutingModule } from './create-reservation-routing
 import { CreateReservationPage } from './create-reservation.page';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { SelectComponent } from 'src/app/shared/components/select/select.component';
+import { FormComponent } from './components/form/form.component';
+import { DropdownModule } from 'primeng/dropdown';
 
 @NgModule({
   imports: [
@@ -19,7 +21,8 @@ import { SelectComponent } from 'src/app/shared/components/select/select.compone
     SharedModule,
     ReactiveFormsModule,
     SelectComponent,
+    DropdownModule,
   ],
-  declarations: [CreateReservationPage],
+  declarations: [CreateReservationPage, FormComponent],
 })
 export class CreateReservationPageModule {}

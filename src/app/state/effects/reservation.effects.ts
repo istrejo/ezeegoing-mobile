@@ -21,12 +21,14 @@ import { LoadingController, ModalController } from '@ionic/angular';
 import { SuccessModalComponent } from 'src/app/pages/create-reservation/components/success-modal/success-modal.component';
 import { ToastService } from 'src/app/core/services/toast/toast.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Store } from '@ngrx/store';
 
 @Injectable()
 export class ReservationEffects {
   private loadingCtrl = inject(LoadingController);
   private modalCtrl = inject(ModalController);
   private toastService = inject(ToastService);
+  private store = inject(Store);
   constructor(
     private actions$: Actions,
     private reservationService: ReservationService
@@ -124,13 +126,12 @@ export class ReservationEffects {
               this.loadingCtrl.dismiss();
               this.toastService.success('Reservación actualizada');
               this.modalCtrl.dismiss();
-              loadReservations();
+              this.store.dispatch(loadReservations());
               return updateReservationSuccess({ reservation });
             }),
             catchError((error) => {
               this.loadingCtrl.dismiss();
               this.toastService.error('Error al actualizar la reservación');
-              this.modalCtrl.dismiss();
 
               return of(updateReservationFailure({ error }));
             })
