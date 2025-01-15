@@ -16,6 +16,7 @@ import {
   selectBuilding,
 } from 'src/app/state/actions/building.actions';
 import {
+  selectBuildingLoading,
   selectBuildings,
   selectBuildingSelected,
 } from 'src/app/state/selectors/building.selectors';
@@ -30,6 +31,7 @@ export class BuildingModalComponent implements OnInit {
   private store: Store = inject(Store);
   public buildings = signal<Building[]>([]);
   public buildingSelected = signal<number | null>(null);
+  isLoading = signal(false);
 
   public firstTime: boolean = false;
 
@@ -40,6 +42,10 @@ export class BuildingModalComponent implements OnInit {
    * and updates the component's state accordingly.
    */
   ngOnInit() {
+    this.store
+      .select(selectBuildingLoading)
+      .subscribe((res) => this.isLoading.set(res));
+
     this.store.dispatch(loadBuildings());
     this.store.select(selectBuildings).subscribe((res) => {
       this.buildings.set(res);

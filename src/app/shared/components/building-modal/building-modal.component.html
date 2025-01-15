@@ -14,6 +14,11 @@
 </ion-header>
 <ion-content>
   <div class="flex flex-col h-full items-center">
+    @if(isLoading()) {
+
+    <ion-spinner class="my-auto" color="primary"></ion-spinner>
+    } @else {
+
     <div class="w-full flex justify-center items-center h-1/3">
       <figure>
         <img src="/assets/logos/logo.png" alt="" />
@@ -47,5 +52,6 @@
       </div>
       }
     </ion-list>
+    }
   </div>
 </ion-content>

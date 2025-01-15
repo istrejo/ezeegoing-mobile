@@ -1,5 +1,5 @@
 <ion-content [fullscreen]="true" class="ion-padding">
-  <ion-refresher slot="fixed">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <div class="flex flex-col items-center justify-between gap-4 mt-11 mb-3">
@@ -8,7 +8,6 @@
     </figure>
     <h2 class="text-xl font-extrabold mb-1">Mi Perfil</h2>
   </div>
-
   <ion-list
     class="flex flex-col w-full max-w-[300px] mx-auto gap-4 items-center justify-center bg-transparent"
     lines="none"
@@ -27,13 +26,15 @@
         </div>
         <div>
           <ion-label class="text-xs">Estado</ion-label>
-          <p class="text-lg font-medium leading-5">Titular</p>
+          <p class="text-lg font-medium leading-5">
+            {{user()?.user?.is_active ? 'Activo' : 'Inactivo'}}
+          </p>
         </div>
       </div>
       <div class="flex flex-col gap-4">
         <div>
-          <ion-label class="text-xs">Teléfono</ion-label>
-          <p class="text-lg font-medium leading-5">{{user()?.phone}}</p>
+          <ion-label class="text-xs">Identificación</ion-label>
+          <p class="text-lg font-medium leading-5">{{user()?.legal_id}}</p>
         </div>
 
         <div>

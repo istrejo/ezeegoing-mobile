@@ -32,7 +32,19 @@ export class ProfilePage implements OnInit {
 
   constructor() {}
 
+  /**
+   * The ngOnInit function calls the loadData method to initialize data when the component is
+   * initialized.
+   */
   ngOnInit() {
+    this.loadData();
+  }
+
+  /**
+   * The `loadData` function subscribes to various selectors in the store to retrieve user, building, and
+   * reservations data, dispatching actions to load data if necessary.
+   */
+  loadData() {
     this.store.select(selectUser).subscribe((user) => {
       console.log(user);
       this.user.set(user);
@@ -62,10 +74,17 @@ export class ProfilePage implements OnInit {
       .subscribe((loading) => this.isloading.set(loading));
   }
 
+  /**
+   * The `logout` function dispatches a `logout` action using the store.
+   */
   logout() {
     this.store.dispatch(logout());
   }
 
+  /**
+   * The `presentAlert` function in TypeScript presents an iOS-style alert asking the user if they want
+   * to log out.
+   */
   async presentAlert() {
     const alert = await this.alertCtrl.create({
       mode: 'ios',
@@ -87,5 +106,18 @@ export class ProfilePage implements OnInit {
     });
 
     await alert.present();
+  }
+
+  /**
+   * The handleRefresh function in TypeScript triggers a refresh event and loads new data after a delay
+   * of 1500 milliseconds.
+   * @param {any} event - The `event` parameter in the `handleRefresh` function is typically an event
+   * object that is triggered when a user initiates a refresh action, such as pulling down on a list to
+   * refresh its content. This event object contains information about the event that occurred, such as
+   * the target element that triggered the
+   */
+  handleRefresh(event: any) {
+    setTimeout(() => event.target.complete(), 1500);
+    this.loadData();
   }
 }
