@@ -9,9 +9,12 @@ import { buildingReducer } from './reducers/building.reducer';
 import { BuildingState } from '../core/models/building.state';
 import { VisitorState } from '../core/models/visitor.state';
 import { visitorReducer } from './reducers/visitor.reducer';
+import { UserState } from '../core/models/user.state.intercafe';
+import { userReducer } from './reducers/user.reducer';
 
 export interface AppState {
   auth: AuthState;
+  user: UserState;
   reservations: ReservationState;
   reservationTypes: ReservationTypeState;
   buildings: BuildingState;
@@ -20,6 +23,7 @@ export interface AppState {
 
 export const ROOT_REDUCERS: ActionReducerMap<AppState> = {
   auth: authReducer,
+  user: userReducer,
   reservations: reservationReducer,
   reservationTypes: reservationTypeReducer,
   buildings: buildingReducer,

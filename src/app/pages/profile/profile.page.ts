@@ -1,9 +1,20 @@
-import { selectAuthState } from './../../state/selectors/auth.selectors';
-import { Component, inject, OnInit } from '@angular/core';
+import { loadReservations } from './../../state/actions/reservation.actions';
+import { selectReservations } from './../../state/selectors/reservation.selectors';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { faBuilding } from '@fortawesome/free-regular-svg-icons';
 import { AlertController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
-import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { Building } from 'src/app/core/models/building.state';
+import { UserData } from 'src/app/core/models/user.state.intercafe';
+
 import { logout } from 'src/app/state/actions/auth.actions';
+import { loadBuildings } from 'src/app/state/actions/building.actions';
+import { loadUser } from 'src/app/state/actions/user.actions';
+import { selectCurrentBuilding } from 'src/app/state/selectors/building.selectors';
+import {
+  selectUser,
+  selectUserLoading,
+} from 'src/app/state/selectors/user.selectors';
 
 @Component({
   selector: 'app-profile',
@@ -11,17 +22,44 @@ import { logout } from 'src/app/state/actions/auth.actions';
   styleUrls: ['./profile.page.scss'],
 })
 export class ProfilePage implements OnInit {
-  private authservice = inject(AuthService);
-  userInfo = null;
+  public user = signal<UserData | null>(null);
+  public building = signal<Building | any>(null);
   private store = inject(Store);
   private alertCtrl = inject(AlertController);
+  public isloading = signal(false);
+  public reservations = signal(0);
+  faBuilding = faBuilding;
 
   constructor() {}
 
   ngOnInit() {
-    this.store.select(selectAuthState).subscribe((auth: any) => {
-      this.userInfo = auth;
+    this.store.select(selectUser).subscribe((user) => {
+      console.log(user);
+      this.user.set(user);
+      if (!user) {
+        this.store.dispatch(loadUser());
+      }
     });
+
+    this.store.select(selectCurrentBuilding).subscribe((building) => {
+      console.log('Current building: ', building);
+      this.building.set(building);
+      if (!building) {
+        this.store.dispatch(loadBuildings());
+      }
+    });
+
+    this.store.select(selectReservations).subscribe((reservations) => {
+      if (!reservations.length) {
+        this.store.dispatch(loadReservations());
+      }
+
+      this.reservations.set(reservations.length);
+    });
+
+    this.store
+      .select(selectUserLoading)
+      .subscribe((loading) => this.isloading.set(loading));
   }
 
   logout() {

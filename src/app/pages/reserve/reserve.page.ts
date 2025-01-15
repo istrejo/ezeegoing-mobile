@@ -3,11 +3,14 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { ReservationType } from 'src/app/core/models/reservation.interface';
+import { ModalService } from 'src/app/core/services/modal/modal.service';
+import { BuildingModalComponent } from 'src/app/shared/components/building-modal/building-modal.component';
 import { loadReservationTypes } from 'src/app/state/actions/reservation-type.actions';
 import {
   selectReservationTypeLoading,
   selectReservationTypes,
 } from 'src/app/state/selectors/reservation-type.selectors';
+import { faBuilding } from '@fortawesome/free-regular-svg-icons';
 
 @Component({
   selector: 'app-reserve',
@@ -17,8 +20,10 @@ import {
 export class ReservePage implements OnInit {
   private router: Router = inject(Router);
   private store: Store = inject(Store);
+  private modalService = inject(ModalService);
   // reservationsTypes = signal<ReservationType[]>([]);
   reservationsTypes: ReservationType[] = [];
+  faBuilding = faBuilding;
   isLoading$: Observable<any> = new Observable();
   skeletonItems = [
     {
@@ -88,5 +93,9 @@ export class ReservePage implements OnInit {
   handleRefresh(event: any) {
     this.store.dispatch(loadReservationTypes());
     setTimeout(() => event.target.complete(), 1500);
+  }
+
+  openBuildingModal() {
+    this.modalService.presentModal(BuildingModalComponent);
   }
 }

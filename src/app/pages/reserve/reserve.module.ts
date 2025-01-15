@@ -9,6 +9,7 @@ import { ReservePageRoutingModule } from './reserve-routing.module';
 import { ReservePage } from './reserve.page';
 import { ReservationCardComponent } from './components/reservation-card/reservation-card.component';
 import { RippleModule } from 'primeng/ripple';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import { RippleModule } from 'primeng/ripple';
     IonicModule,
     ReservePageRoutingModule,
     RippleModule,
+    FontAwesomeModule,
   ],
   declarations: [ReservePage, ReservationCardComponent],
 })

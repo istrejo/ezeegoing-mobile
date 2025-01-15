@@ -15,49 +15,42 @@
   >
     <div class="flex flex-col w-full">
       <ion-label class="text-xs">Titular</ion-label>
-      <p class="text-lg font-medium leading-5">Nombre completo del titular</p>
+      <p class="text-lg font-medium leading-5">
+        {{user()?.user?.first_name + ' ' + user()?.user?.last_name | titlecase}}
+      </p>
     </div>
     <div class="flex justify-between w-full">
       <div class="flex flex-col gap-4">
         <div>
           <ion-label class="text-xs">Sede / Edificio</ion-label>
-          <p class="text-lg font-medium leading-5">Edificio 1</p>
+          <p class="text-lg font-medium leading-5">{{building()?.name}}</p>
         </div>
         <div>
           <ion-label class="text-xs">Estado</ion-label>
           <p class="text-lg font-medium leading-5">Titular</p>
         </div>
-        <div>
-          <ion-label class="text-xs">Vehículos</ion-label>
-          <p class="text-lg font-medium leading-5">1</p>
-        </div>
       </div>
       <div class="flex flex-col gap-4">
         <div>
           <ion-label class="text-xs">Teléfono</ion-label>
-          <p class="text-lg font-medium leading-5">+123456789</p>
+          <p class="text-lg font-medium leading-5">{{user()?.phone}}</p>
         </div>
 
         <div>
           <ion-label class="text-xs">Número de apartamento</ion-label>
           <p class="text-lg font-medium leading-5">00-00</p>
         </div>
-
-        <div>
-          <ion-label class="text-xs">Número de placa</ion-label>
-          <p class="text-lg font-medium leading-5">ABCDEFG</p>
-        </div>
       </div>
     </div>
     <div class="flex flex-col w-full">
       <ion-label class="text-xs">Correo electrónico</ion-label>
-      <p class="text-lg font-medium leading-5">correo.gmail.com</p>
+      <p class="text-lg font-medium leading-5">{{user()?.email}}</p>
     </div>
     <div
       class="active-reservations shadow w-full max-w-[350px] py-5 bg-white rounded-lg text-center my-5"
     >
       <p class="text-sm font-medium">
-        Reservasiones Activas <span class="font-bold">0</span>
+        Reservasiones Activas <span class="font-bold">{{reservations()}}</span>
       </p>
     </div>
     <ion-button

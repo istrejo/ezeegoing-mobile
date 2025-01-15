@@ -25,3 +25,8 @@ export const selectBuildingSelected = createSelector(
   selectBuildingState,
   (state) => state.buildingIdSelected
 );
+
+export const selectCurrentBuilding = createSelector(
+  selectBuildingState,
+  (state) => state.currentBuilding
+);

@@ -17,3 +17,8 @@ export const selectBuilding = createAction(
   '[Building] Select Building',
   props<{ buildingId: number | null }>()
 );
+
+export const changeBuilding = createAction(
+  '[Building] Change Building',
+  props<{ building: Building | null }>()
+);

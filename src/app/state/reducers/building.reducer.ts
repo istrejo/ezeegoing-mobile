@@ -6,6 +6,9 @@ export const initialState: BuildingState = {
   buildings: [],
   loading: false,
   buildingIdSelected: JSON.parse(localStorage.getItem('buildingId') || 'null'),
+  currentBuilding: JSON.parse(
+    localStorage.getItem('currentBuilding') || 'null'
+  ),
   error: null,
 };
 
@@ -32,5 +35,11 @@ export const buildingReducer = createReducer(
   on(BuildingActions.selectBuilding, (state, { buildingId }) => ({
     ...state,
     buildingIdSelected: buildingId,
+    currentBuilding: state.buildings.find((b) => b.id === buildingId),
+    // response.find((u) => u.user.id === user.userId)
+  })),
+  on(BuildingActions.changeBuilding, (state, { building }) => ({
+    ...state,
+    currentBuilding: building,
   }))
 );

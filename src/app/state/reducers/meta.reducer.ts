@@ -6,14 +6,16 @@ import { buildingReducer } from './building.reducer';
 import { reservationReducer } from './reservation.reducer';
 import { visitorReducer } from './visitor.reducer';
 import { reservationTypeReducer } from './reservation-type.reducer';
+import { userReducer } from './user.reducer';
 
 export const reducers: ActionReducerMap<AppState> = {
   auth: authReducer,
+  user: userReducer,
   buildings: buildingReducer,
   reservations: reservationReducer,
   visitors: visitorReducer,
   reservationTypes: reservationTypeReducer,
-  // otros reducers...
+  // other reducers...
 };
 
 export function clearState(reducer: any) {

@@ -21,5 +21,6 @@ export interface BuildingState {
   buildings: Building[];
   buildingIdSelected: number | null;
   loading: boolean;
+  currentBuilding?: Building | null;
   error?: any;
 }

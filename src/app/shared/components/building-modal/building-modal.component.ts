@@ -11,6 +11,7 @@ import { Store } from '@ngrx/store';
 import { Building } from 'src/app/core/models/building.state';
 import { ModalService } from 'src/app/core/services/modal/modal.service';
 import {
+  changeBuilding,
   loadBuildings,
   selectBuilding,
 } from 'src/app/state/actions/building.actions';
@@ -58,12 +59,14 @@ export class BuildingModalComponent implements OnInit {
    * is used to dispatch an action to select the building and also stored in the local storage for future
    * reference.
    */
-  SelectBuilding(buildingId: number) {
+  SelectBuilding(building: Building) {
     if (this.firstTime) {
       this.close();
     }
-    this.store.dispatch(selectBuilding({ buildingId }));
-    localStorage.setItem('buildingId', buildingId.toString());
+    this.store.dispatch(selectBuilding({ buildingId: building.id }));
+    this.store.dispatch(changeBuilding({ building }));
+    localStorage.setItem('buildingId', building.id.toString());
+    localStorage.setItem('currentBuilding', JSON.stringify(building));
   }
 
   /**

@@ -21,6 +21,7 @@ import { VisitorEffects } from './state/effects/visitor.effects';
 import { metaReducers } from './state/reducers/meta.reducer';
 import { tokenInterceptor } from './shared/interceptors/token.interceptor';
 import { headersInterceptor } from './shared/interceptors/headers.interceptor';
+import { UserEffects } from './state/effects/user.effects';
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -30,6 +31,7 @@ import { headersInterceptor } from './shared/interceptors/headers.interceptor';
     StoreModule.forRoot(ROOT_REDUCERS, { metaReducers }),
     EffectsModule.forRoot([
       AuthEffects,
+      UserEffects,
       ReservationEffects,
       ReservationTypeEffects,
       BuildingEffects,
