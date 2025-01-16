@@ -10,11 +10,13 @@ import { LoadingController, ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { selectBuilding } from '../actions/building.actions';
 import { TokenService } from 'src/app/core/services/token/token.service';
+import { ToastService } from 'src/app/core/services/toast/toast.service';
 
 @Injectable()
 export class AuthEffects {
   private actions$ = inject(Actions);
   private authService = inject(AuthService);
+  private toastService = inject(ToastService);
   private router = inject(Router);
   private loadingCtrl = inject(LoadingController);
   private modalCtrl = inject(ModalController);
@@ -42,9 +44,9 @@ application. */
             this.tokenService.saveRefreshToken(userData.refresh_token);
             return AuthActions.loginSuccess({ userData });
           }),
-          catchError((error) => {
+          catchError(({ error }) => {
             this.loadingCtrl.dismiss();
-
+            this.toastService.error(error.error);
             return of(AuthActions.loginFailure({ error }));
           })
         );
