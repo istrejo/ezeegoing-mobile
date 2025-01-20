@@ -36,7 +36,10 @@ application. */
         this.presentLoading();
         return this.authService.login(username, password, id).pipe(
           map((userData) => {
-            this.openBuildingModal();
+            const buildingSelected = localStorage.getItem('buildingId');
+            if (!buildingSelected) {
+              this.openBuildingModal();
+            }
             this.router.navigate(['/tabs/reserve']);
             this.loadingCtrl.dismiss();
             localStorage.setItem('userData', JSON.stringify(userData));

@@ -33,8 +33,6 @@ export class BuildingModalComponent implements OnInit {
   public buildingSelected = signal<number | null>(null);
   isLoading = signal(false);
 
-  public firstTime: boolean = false;
-
   constructor() {}
 
   /**
@@ -53,7 +51,6 @@ export class BuildingModalComponent implements OnInit {
 
     this.store.select(selectBuildingSelected).subscribe((res) => {
       this.buildingSelected.set(res);
-      this.firstTime = !this.buildingSelected();
     });
   }
 
@@ -66,13 +63,11 @@ export class BuildingModalComponent implements OnInit {
    * reference.
    */
   SelectBuilding(building: Building) {
-    if (this.firstTime) {
-      this.close();
-    }
     this.store.dispatch(selectBuilding({ buildingId: building.id }));
     this.store.dispatch(changeBuilding({ building }));
     localStorage.setItem('buildingId', building.id.toString());
     localStorage.setItem('currentBuilding', JSON.stringify(building));
+    this.close();
   }
 
   /**
