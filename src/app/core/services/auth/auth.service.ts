@@ -25,8 +25,8 @@ export class AuthService {
     });
   }
 
-  login(username: string, password: string): Observable<any> {
-    const loginData = { password, username, id: 2 };
+  login(username: string, password: string, id: number): Observable<any> {
+    const loginData = { password, username, id };
     return this.http.post<LoginResponse>(`${this.apiUrl}login/`, loginData);
   }
 

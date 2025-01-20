@@ -32,9 +32,9 @@ application. */
     this.actions$.pipe(
       ofType(AuthActions.login),
       mergeMap((action: any) => {
-        const { username, password } = action;
+        const { username, password, id } = action;
         this.presentLoading();
-        return this.authService.login(username, password).pipe(
+        return this.authService.login(username, password, id).pipe(
           map((userData) => {
             this.openBuildingModal();
             this.router.navigate(['/tabs/reserve']);
@@ -45,6 +45,7 @@ application. */
             return AuthActions.loginSuccess({ userData });
           }),
           catchError(({ error }) => {
+            console.error(error);
             this.loadingCtrl.dismiss();
             this.toastService.error(error.error);
             return of(AuthActions.loginFailure({ error }));

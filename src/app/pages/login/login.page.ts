@@ -39,6 +39,7 @@ export class LoginPage implements OnInit {
     this.form = this.fb.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required]],
+      id: ['', [Validators.required]],
       rememberMe: [false],
     });
   }
@@ -60,7 +61,7 @@ export class LoginPage implements OnInit {
 
   onSubmit() {
     this.saveCredentials();
-    const { password, username } = this.form.value;
-    this.store.dispatch(login({ username, password }));
+    const { password, username, id } = this.form.value;
+    this.store.dispatch(login({ username, password, id }));
   }
 }
