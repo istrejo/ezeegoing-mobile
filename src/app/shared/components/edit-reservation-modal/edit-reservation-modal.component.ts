@@ -16,8 +16,11 @@ import { loadVisitors } from 'src/app/state/actions/visitor.actions';
 import { selectUser } from 'src/app/state/selectors/auth.selectors';
 import { selectBuildingSelected } from 'src/app/state/selectors/building.selectors';
 import { selectVisitors } from 'src/app/state/selectors/visitor.selectors';
+import * as dayjs from 'dayjs';
 
 import { format } from '@formkit/tempo';
+import { ModalService } from 'src/app/core/services/modal/modal.service';
+import { ModalComponent } from 'src/app/pages/visitors/components/modal/modal.component';
 
 @Component({
   selector: 'app-edit-reservation-modal',
@@ -26,16 +29,16 @@ import { format } from '@formkit/tempo';
 })
 export class EditReservationModalComponent implements OnInit {
   @Input() reservation!: Reservation;
-  private modalCtrl = inject(ModalController);
+  private modalSvc = inject(ModalService);
   private store = inject(Store);
   private fb: FormBuilder = inject(FormBuilder);
   public user = signal<User | undefined>(undefined);
-  public buildingSelected = signal<number | null>(null);
+  public buildingId = signal<number | null>(null);
   form!: FormGroup;
   faChevronLeft = faChevronLeft;
   reservationType: number = 1;
   type = '';
-  visitors: Visitor[] = [];
+  visitors = signal<Visitor[]>([]);
 
   documentTypes = [
     {
@@ -66,34 +69,22 @@ export class EditReservationModalComponent implements OnInit {
   ngOnInit() {
     this.store.select(selectUser).subscribe((user: any) => {
       this.user.set(user);
-      this.form.patchValue({ created_by: user?.userId });
     });
     this.store.select(selectBuildingSelected).subscribe((buildingId: any) => {
-      this.form.patchValue({ building: buildingId });
+      this.buildingId.set(buildingId);
     });
     this.store.select(selectVisitors).subscribe((res: Visitor[]) => {
       if (!res.length) {
         this.store.dispatch(loadVisitors());
       }
-      this.visitors = res.map((item: any) => {
-        return {
-          ...item,
-          name: item.first_name + ' ' + item.last_name,
-          id: item.badge,
-        };
-      });
+      this.visitors.set(res);
     });
 
     console.log('resertvation: ', this.reservation);
     this.form.patchValue({
-      start_date: format(
-        new Date(this.reservation.start_date),
-        'YYYY-MM-DDTHH:mm:ss'
-      ),
-      end_date: format(
-        new Date(this.reservation.end_date),
-        'YYYY-MM-DDTHH:mm:ss'
-      ),
+      visitorSelected: this.reservation.legal_id,
+      start_date: dayjs(this.reservation.start_date).toISOString(),
+      end_date: dayjs(this.reservation.end_date).toISOString(),
       typeSelected: {
         name:
           this.reservation.reservation_type_id === 1 ? 'Normal' : 'Temporal',
@@ -103,7 +94,6 @@ export class EditReservationModalComponent implements OnInit {
         name: this.reservation.document_type_id === 1 ? 'Cédula' : 'Pasaporte',
         id: this.reservation.document_type_id,
       },
-
       document_type: this.reservation.document_type_id,
       reservation_type: this.reservation.document_type_id,
       create_by: this.reservation.created_by_id,
@@ -116,6 +106,12 @@ export class EditReservationModalComponent implements OnInit {
 
   ionViewWillLeave() {
     this.form.reset();
+  }
+
+  addVisitor() {
+    this.modalSvc.presentModal(ModalComponent).then((data) => {
+      console.log('Modal data', data);
+    });
   }
 
   initForm() {
@@ -136,10 +132,10 @@ export class EditReservationModalComponent implements OnInit {
       created_by: [this.user()?.userId],
       reservation_reference: [new Date().getTime().toString().slice(0, 9)],
       reservation_type: [0],
-      legal_id: ['', [Validators.required]],
-      document_type: [1],
-      phone: ['', [Validators.required]],
-      building: [null],
+      legal_id: ['', []],
+      document_type: [null],
+      phone: ['', []],
+      building: [this.buildingId()],
       hasVehicle: [false],
       car_plate: [''],
     });
@@ -147,8 +143,6 @@ export class EditReservationModalComponent implements OnInit {
 
   onSubmit() {
     if (!this.form.valid) {
-      console.log(this.form.value);
-
       this.form.markAllAsTouched();
       return;
     }
@@ -156,31 +150,36 @@ export class EditReservationModalComponent implements OnInit {
     const {
       start_date,
       end_date,
-      legal_id,
-      phone,
       car_plate,
       visitorSelected,
       typeSelected,
-      documentSelected,
       reservation_reference,
-      building,
     } = this.form.value;
+    const visitor: Visitor | undefined = this.visitors().find(
+      (item) => item.legal_id == visitorSelected
+    );
+
+    if (!visitor) {
+      console.error('Visitor not found');
+      return;
+    }
 
     let dto: any = {
       start_date,
       end_date,
-      first_name: visitorSelected.first_name,
-      last_name: visitorSelected.last_name,
-      email: visitorSelected.email,
+      first_name: visitor.first_name,
+      last_name: visitor.last_name,
+      email: visitor.email,
       created_by: this.user()?.userId,
       reservation_reference,
       reservation_type: typeSelected.id,
-      legal_id,
-      document_type: documentSelected.id,
-      phone,
-      building,
+      legal_id: this.reservation.legal_id,
+      document_type: visitor.document_type,
+      phone: visitor.phone,
+      building: this.buildingId(),
       company: '',
     };
+
     if (car_plate) {
       dto = {
         ...dto,
@@ -188,13 +187,12 @@ export class EditReservationModalComponent implements OnInit {
       };
     }
 
-    // TODO: usar el dispath y crear el metodo edit en el effect
     this.store.dispatch(
       updateReservation({ reservationId: this.reservation.id, dto })
     );
   }
 
   close() {
-    this.modalCtrl.dismiss();
+    this.modalSvc.dismissModal();
   }
 }

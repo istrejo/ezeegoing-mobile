@@ -81,9 +81,19 @@ export class ReservationEffects {
             return addReservationSuccess({ reservation });
           }),
           catchError((error: HttpErrorResponse) => {
-            this.loadingCtrl.dismiss();
-            this.toastService.error(error.message);
+            const finalError = error.error;
+            let errorMessage = '';
 
+            if (finalError.message === 'Reservation already exists') {
+              errorMessage = 'Ya existe esta reservación';
+            }
+
+            if (errorMessage) {
+              this.toastService.error(errorMessage);
+            } else {
+              this.toastService.error(error.error);
+            }
+            this.loadingCtrl.dismiss();
             return of(addReservationFailure({ error }));
           })
         );
@@ -130,8 +140,19 @@ export class ReservationEffects {
               return updateReservationSuccess({ reservation });
             }),
             catchError((error) => {
+              const finalError = error.error;
+              let errorMessage = '';
+
+              if (finalError.message === 'Reservation already exists') {
+                errorMessage = 'Ya existe esta reservación';
+              }
+
+              if (errorMessage) {
+                this.toastService.error(errorMessage);
+              } else {
+                this.toastService.error(error.error);
+              }
               this.loadingCtrl.dismiss();
-              this.toastService.error('Error al actualizar la reservación');
 
               return of(updateReservationFailure({ error }));
             })

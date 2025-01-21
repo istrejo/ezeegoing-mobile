@@ -24,7 +24,7 @@ export class FormComponent implements OnInit {
   private store = inject(Store);
   public user = signal<User | undefined>(undefined);
   public buildingId = signal<number | null>(null);
-  public visitors: Visitor[] = [];
+  public visitors = signal<Visitor[]>([]);
 
   documentTypes = [
     {
@@ -57,6 +57,10 @@ export class FormComponent implements OnInit {
     this.loadData();
   }
 
+  ionViewWillLeave() {
+    this.form.reset();
+  }
+
   loadData() {
     this.store.select(selectUser).subscribe((user) => {
       console.log(user);
@@ -71,20 +75,13 @@ export class FormComponent implements OnInit {
         this.store.dispatch(loadVisitors());
       }
       console.log('Visitors: ', visitors);
-      this.visitors = visitors.map((item: any) => {
-        return {
-          ...item,
-          name: item.first_name + ' ' + item.last_name,
-          id: item.badge,
-        };
-      });
+      this.visitors.set(visitors);
     });
   }
 
   initForm() {
     this.form = this.fb.group({
       visitorSelected: [null, [Validators.required]],
-      documentSelected: [null, [Validators.required]],
       typeSelected: [null, [Validators.required]],
       start_date: [
         format(new Date(), 'YYYY-MM-DDTHH:mm:ss'),
@@ -99,16 +96,16 @@ export class FormComponent implements OnInit {
       created_by: [this.user()?.userId],
       reservation_reference: [new Date().getTime().toString().slice(0, 9)],
       reservation_type: [0],
-      legal_id: ['', [Validators.required]],
+      legal_id: ['', []],
       document_type: [1],
-      phone: ['', [Validators.required]],
+      phone: ['', []],
       building: [null],
       hasVehicle: [false],
       car_plate: [''],
     });
   }
 
-  async addVisitor() {
+  addVisitor() {
     this.modalSvc.presentModal(ModalComponent).then((data) => {
       console.log('Modal data', data);
     });
@@ -116,8 +113,6 @@ export class FormComponent implements OnInit {
 
   onSubmit() {
     if (!this.form.valid) {
-      console.log(this.form.value);
-
       this.form.markAllAsTouched();
       return;
     }
@@ -125,27 +120,26 @@ export class FormComponent implements OnInit {
     const {
       start_date,
       end_date,
-      legal_id,
-      phone,
       car_plate,
       visitorSelected,
       typeSelected,
-      documentSelected,
       reservation_reference,
     } = this.form.value;
-
+    const visitor = this.visitors().find(
+      (item) => item.legal_id == visitorSelected
+    );
     let dto: any = {
       start_date,
       end_date,
-      first_name: visitorSelected.first_name,
-      last_name: visitorSelected.last_name,
-      email: visitorSelected.email,
+      first_name: visitor?.first_name,
+      last_name: visitor?.last_name,
+      email: visitor?.email,
       created_by: this.user()?.userId,
       reservation_reference,
       reservation_type: typeSelected.id,
-      legal_id,
-      document_type: documentSelected.id,
-      phone,
+      legal_id: visitor?.legal_id,
+      document_type: visitor?.document_type,
+      phone: visitor?.phone,
       building: this.buildingId(),
       company: '',
     };
@@ -155,7 +149,6 @@ export class FormComponent implements OnInit {
         car_plate: car_plate,
       };
     }
-    console.log(dto);
     this.store.dispatch(addReservation({ dto }));
   }
 }

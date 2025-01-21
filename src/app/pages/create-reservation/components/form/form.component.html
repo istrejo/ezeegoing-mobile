@@ -6,20 +6,41 @@
   >
     <div class="px-6 flex flex-col mt-4 gap-4 w-full">
       <div class="flex justify-between items-center gap-1">
-        <app-select
+        <!-- <app-select
           class="w-[85%]"
           formControlName="visitorSelected"
           [options]="visitors"
           placeholder="Visitante"
-        />
+        /> -->
+        <ion-item class="custom-select w-[85%]">
+          <ion-select
+            formControlName="visitorSelected"
+            mode="ios"
+            label="Visitante"
+            label-placement="fixed"
+            placeholder="Elige un visitante"
+          >
+            @for(visitor of visitors(); track visitor.id) {
+
+            <ion-select-option [value]="visitor.legal_id">{{
+              visitor.fullname | titlecase
+            }}</ion-select-option>
+
+            }
+          </ion-select>
+        </ion-item>
         <ion-button
           (click)="addVisitor()"
-          class="w-[15%]"
+          class="w-[15%] h-[48px]"
           color="primary"
           mode="ios"
           shape="round"
         >
-          <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+          <ion-icon
+            slot="icon-only"
+            class="text-2xl"
+            name="add-circle-outline"
+          ></ion-icon>
         </ion-button>
       </div>
 
@@ -40,24 +61,6 @@
         placeholder="Tipo de reservación"
       >
       </app-select>
-      <app-select
-        formControlName="documentSelected"
-        [options]="documentTypes"
-        placeholder="Tipo de documento"
-      >
-      </app-select>
-      <app-input
-        formControlName="legal_id"
-        type="number"
-        inputId="legal_id"
-        placeholder="Identificación"
-      />
-      <app-input
-        formControlName="phone"
-        inputId="phone"
-        type="number"
-        placeholder="Teléfono"
-      />
 
       <div class="flex justify-between items-center mb-4">
         <span>¿Tiene Vehículo?</span>
@@ -96,7 +99,10 @@
       mode="ios"
       class="text-white mt-4"
       expand="block"
-      [disabled]="!form.valid"
+      [disabled]="
+        !form.valid ||
+        (form.get('hasVehicle')?.value && !form.get('car_plate')?.value.trim())
+      "
     >
       Crear Reserva
     </ion-button>
