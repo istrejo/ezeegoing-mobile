@@ -93,6 +93,24 @@ export class VisitorsPage implements OnInit {
     );
   }
 
+  onScroll(event: any): void {
+    const search = this.search.toLocaleLowerCase();
+    if (search.trim()) {
+      this.limit += 10;
+      this.visitorsTemp.set(
+        this.visitors()
+          .filter((data: Visitor): any => data.fullname?.includes(search))
+          .slice(0, this.limit)
+      );
+    } else if (this.limit < this.visitors().length) {
+      this.limit += 10;
+      this.visitorsTemp.set(this.visitors().slice(0, this.limit));
+    }
+    setTimeout(() => {
+      event.target.complete();
+    }, 1500);
+  }
+
   createVisitor() {
     this.modalSvc.presentModal(ModalComponent);
   }

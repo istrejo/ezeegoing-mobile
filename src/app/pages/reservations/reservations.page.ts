@@ -112,7 +112,9 @@ export class ReservationsPage implements OnInit {
       this.limit += 10;
       this.reservationsTemp.set(this.reservations().slice(0, this.limit));
     }
-    event.target.complete();
+    setTimeout(() => {
+      event.target.complete();
+    }, 1500);
   }
 
   onReserve() {

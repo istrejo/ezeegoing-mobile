@@ -49,6 +49,9 @@
     <app-card [visitor]="visitor" />
 
     } }
+    <ion-infinite-scroll (ionInfinite)="onScroll($event)">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
   </ion-list>
   <ion-fab slot="fixed" horizontal="end" vertical="bottom">
     <ion-fab-button (click)="createVisitor()">
