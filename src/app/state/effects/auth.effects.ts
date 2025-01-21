@@ -48,11 +48,11 @@ application. */
             return AuthActions.loginSuccess({ userData });
           }),
           catchError(({ error }) => {
-            const finalError = error.error;
+            const finalError: string = error.error;
             let errorMessage = '';
 
-            if (finalError.message === 'Reservation already exists') {
-              errorMessage = 'Ya existe esta reservación';
+            if (finalError.includes('Error al autenticar en el servidor')) {
+              errorMessage = 'Credenciales incorrectas';
             }
 
             if (errorMessage) {
@@ -60,7 +60,7 @@ application. */
             } else {
               this.toastService.error(error.error);
             }
-
+            console.error(error);
             this.loadingCtrl.dismiss();
             return of(AuthActions.loginFailure({ error }));
           })
