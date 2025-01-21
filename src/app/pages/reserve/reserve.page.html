@@ -43,7 +43,7 @@
       [id]="reservation.id"
       [description]="reservation.name"
       [type]="reservation.id"
-      [routerLink]="reservation.id == 3 ? ['/tabs/charger-form'] : ['/tabs/create-reservation', reservation.id]"
+      [routerLink]="reservation.id == 3 ? ['/tabs/charger-form'] : ['/tabs/create-reservation', reservation.id, reservation.name]"
     />
 
     } }

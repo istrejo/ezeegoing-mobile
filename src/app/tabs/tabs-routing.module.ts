@@ -29,7 +29,7 @@ const routes: Routes = [
           ),
       },
       {
-        path: 'create-reservation/:id',
+        path: 'create-reservation/:id/:name',
         loadChildren: () =>
           import('../pages/create-reservation/create-reservation.module').then(
             (m) => m.CreateReservationPageModule
