@@ -10,6 +10,7 @@ import {
   selectVisitorsLoading,
 } from 'src/app/state/selectors/visitor.selectors';
 import { ModalComponent } from './components/modal/modal.component';
+import { faUsers } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-visitors',
@@ -29,6 +30,7 @@ export class VisitorsPage implements OnInit {
   public temporalVisitorsTemp = signal<Visitor[]>([]);
   public isLoading = signal<boolean>(false);
   public search = '';
+  public faUsers = faUsers;
   limit = 10;
 
   skeletonItems = [
