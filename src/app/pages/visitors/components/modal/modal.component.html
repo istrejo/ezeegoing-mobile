@@ -49,11 +49,7 @@
           inputId="email"
           placeholder="564897489789"
         ></app-input>
-        <app-input
-          formControlName="company_name"
-          label="Compañía (opcional)"
-          placeholder="Company ABC"
-        ></app-input>
+
         <div class="flex justify-between items-center gap-1">
           <app-select
             formControlName="document_selected"
@@ -77,13 +73,23 @@
             <ion-radio [value]="false">No</ion-radio><br />
           </ion-radio-group>
         </div>
+        @if(form.get('is_supplier')?.value) {
+        <app-input
+          formControlName="company_name"
+          label="Compañía (opcional)"
+          placeholder="Company ABC"
+        ></app-input>
+        }
       </div>
       <ion-button
         type="submit"
         mode="ios"
         class="text-white mt-4"
         expand="block"
-        [disabled]="!form.valid"
+        [disabled]="
+          !form.valid ||
+          (form.get('is_supplier')?.value && !form.get('company_name')?.value)
+        "
       >
         {{ visitor ? "Actualizar" : "Registrar visitante" }}
       </ion-button>
