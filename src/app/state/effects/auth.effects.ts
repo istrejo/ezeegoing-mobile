@@ -48,9 +48,20 @@ application. */
             return AuthActions.loginSuccess({ userData });
           }),
           catchError(({ error }) => {
-            console.error(error);
+            const finalError = error.error;
+            let errorMessage = '';
+
+            if (finalError.message === 'Reservation already exists') {
+              errorMessage = 'Ya existe esta reservación';
+            }
+
+            if (errorMessage) {
+              this.toastService.error(errorMessage);
+            } else {
+              this.toastService.error(error.error);
+            }
+
             this.loadingCtrl.dismiss();
-            this.toastService.error(error.error);
             return of(AuthActions.loginFailure({ error }));
           })
         );
