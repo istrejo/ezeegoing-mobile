@@ -11,7 +11,7 @@ export interface Visitor {
   phone: string;
   email: string;
   is_supplier: boolean;
-  company_name: null;
+  company_name: string | null;
   photo: null;
   card_number: string;
   card_number_qr: string;
@@ -21,9 +21,10 @@ export interface Visitor {
   company: number;
   credid_search_log: null;
   badge: null;
-  user: number;
+  user: number | null;
   vehicles: any[];
   fullname?: string;
+  is_permanent: boolean;
 }
 
 export interface VisitorState {

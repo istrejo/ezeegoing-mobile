@@ -17,42 +17,91 @@
       (ionInput)="onSearch()"
     ></ion-searchbar>
   </div>
+  <ion-segment value="default">
+    <ion-segment-button value="default" content-id="default">
+      <ion-label>Permanentes</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="temp" content-id="temp">
+      <ion-label>Temporales</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+  <ion-segment-view>
+    <ion-segment-content id="default">
+      <ion-list
+        class="flex flex-col w-full gap-4 items-center justify-center bg-transparent pb-[68px]"
+        lines="none"
+      >
+        @if(isLoading()) { @for(item of skeletonItems; track item.id) {
 
-  <ion-list
-    class="flex flex-col w-full gap-4 items-center justify-center bg-transparent pb-[68px]"
-    lines="none"
-  >
-    @if(isLoading()) { @for(item of skeletonItems; track item.id) {
+        <ion-item
+          class="skelleton-item flex items-center w-full h-14 rounded-lg ion-activatable ion-no-padding bg-transparent"
+        >
+          <ion-thumbnail class="" slot="start">
+            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+          </ion-thumbnail>
+          <ion-label>
+            <h3>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 80%"
+              ></ion-skeleton-text>
+            </h3>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 60%"
+              ></ion-skeleton-text>
+            </p>
+          </ion-label>
+        </ion-item>
+        } } @else { @for(visitor of permanentVisitorsTemp(); track visitor.id){
+        <app-card [visitor]="visitor" />
 
-    <ion-item
-      class="skelleton-item flex items-center w-full h-14 rounded-lg ion-activatable ion-no-padding bg-transparent"
-    >
-      <ion-thumbnail class="" slot="start">
-        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-      </ion-thumbnail>
-      <ion-label>
-        <h3>
-          <ion-skeleton-text
-            [animated]="true"
-            style="width: 80%"
-          ></ion-skeleton-text>
-        </h3>
-        <p>
-          <ion-skeleton-text
-            [animated]="true"
-            style="width: 60%"
-          ></ion-skeleton-text>
-        </p>
-      </ion-label>
-    </ion-item>
-    } } @else { @for(visitor of visitorsTemp(); track visitor.id){
-    <app-card [visitor]="visitor" />
+        } }
+        <ion-infinite-scroll (ionInfinite)="onScroll($event)">
+          <ion-infinite-scroll-content></ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+      </ion-list>
+    </ion-segment-content>
+    <ion-segment-content id="temp">
+      <ion-list
+        class="flex flex-col w-full gap-4 items-center justify-center bg-transparent pb-[68px]"
+        lines="none"
+      >
+        @if(isLoading()) { @for(item of skeletonItems; track item.id) {
 
-    } }
-    <ion-infinite-scroll (ionInfinite)="onScroll($event)">
-      <ion-infinite-scroll-content></ion-infinite-scroll-content>
-    </ion-infinite-scroll>
-  </ion-list>
+        <ion-item
+          class="skelleton-item flex items-center w-full h-14 rounded-lg ion-activatable ion-no-padding bg-transparent"
+        >
+          <ion-thumbnail class="" slot="start">
+            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+          </ion-thumbnail>
+          <ion-label>
+            <h3>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 80%"
+              ></ion-skeleton-text>
+            </h3>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 60%"
+              ></ion-skeleton-text>
+            </p>
+          </ion-label>
+        </ion-item>
+        } } @else { @for(visitor of temporalVisitorsTemp(); track visitor.id){
+        <app-card [visitor]="visitor" />
+
+        } }
+        <ion-infinite-scroll (ionInfinite)="onScroll($event)">
+          <ion-infinite-scroll-content></ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+      </ion-list>
+    </ion-segment-content>
+  </ion-segment-view>
+
   <ion-fab slot="fixed" horizontal="end" vertical="bottom">
     <ion-fab-button (click)="createVisitor()">
       <ion-icon name="add-circle-outline"></ion-icon>
