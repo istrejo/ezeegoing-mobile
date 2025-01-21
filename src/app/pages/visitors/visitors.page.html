@@ -17,7 +17,7 @@
       (ionInput)="onSearch()"
     ></ion-searchbar>
   </div>
-  <ion-segment value="default">
+  <ion-segment value="default" class="mb-4">
     <ion-segment-button value="default" content-id="default">
       <ion-label>Permanentes</ion-label>
     </ion-segment-button>
@@ -57,6 +57,13 @@
         } } @else { @for(visitor of permanentVisitorsTemp(); track visitor.id){
         <app-card [visitor]="visitor" />
 
+        } @if(permanentVisitors().length === 0) {
+        <h3 class="font-bold text-xl text-center">
+          Aún no tienen visitantes permanentes
+        </h3>
+        <ion-button shape="round" (click)="createVisitor()">
+          Nuevo visitante
+        </ion-button>
         } }
         <ion-infinite-scroll (ionInfinite)="onScroll($event)">
           <ion-infinite-scroll-content></ion-infinite-scroll-content>
@@ -94,7 +101,14 @@
         } } @else { @for(visitor of temporalVisitorsTemp(); track visitor.id){
         <app-card [visitor]="visitor" />
 
-        } }
+        } @if(temporalVisitors().length === 0) {
+        <h3 class="font-bold text-xl text-center">
+          Aún no tienen visitantes temporales
+        </h3>
+        <ion-button shape="round" (click)="createVisitor()">
+          Nuevo visitante
+        </ion-button>
+        }}
         <ion-infinite-scroll (ionInfinite)="onScroll($event)">
           <ion-infinite-scroll-content></ion-infinite-scroll-content>
         </ion-infinite-scroll>

@@ -72,6 +72,7 @@ application. */
             this.tokenService.removeRefreshToken();
             localStorage.removeItem('userData');
             localStorage.removeItem('buildingId');
+            localStorage.removeItem('currentBuilding');
             this.router.navigate(['/login'], {
               replaceUrl: true,
             });
