@@ -52,6 +52,11 @@ export class ModalComponent implements OnInit {
     this.initForm();
     if (!!this.visitor) {
       this.form.patchValue(this.visitor);
+      if (this.visitor.is_permanent) {
+        this.form.patchValue({
+          visitor_type: this.visitorTypes[0],
+        });
+      }
       if (this.visitor.document_type === 1) {
         this.form.patchValue({
           document_selected: this.documentTypes[0],
