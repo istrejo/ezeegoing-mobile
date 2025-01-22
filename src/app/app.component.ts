@@ -1,6 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { PrimeNGConfig } from 'primeng/api';
 import { SplashScreen } from '@capacitor/splash-screen';
+import { StatusBar, Style } from '@capacitor/status-bar';
+
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -9,8 +11,9 @@ import { SplashScreen } from '@capacitor/splash-screen';
 export class AppComponent {
   private primengConfig = inject(PrimeNGConfig);
   constructor() {
-    this.primengConfig.ripple = true;
     this.showSplash();
+    this.setStatusBarStyleLight();
+    this.primengConfig.ripple = true;
   }
 
   async showSplash() {
@@ -18,5 +21,9 @@ export class AppComponent {
       autoHide: true,
       showDuration: 3000,
     });
+  }
+
+  async setStatusBarStyleLight() {
+    await StatusBar.setStyle({ style: Style.Light });
   }
 }

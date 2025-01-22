@@ -1,18 +1,17 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
+  appId: 'com.myapp.ezeegoing',
   appName: 'ezeegoing',
   webDir: 'www',
   plugins: {
     SplashScreen: {
       launchShowDuration: 0,
       launchAutoHide: true,
-      // launchFadeOutDuration: 3000,
-      backgroundColor: '#ffffffff',
+      backgroundColor: '#ffffff',
       androidSplashResourceName: 'splash',
       androidScaleType: 'CENTER_CROP',
-      showSpinner: true,
+      showSpinner: false,
       androidSpinnerStyle: 'large',
       iosSpinnerStyle: 'small',
       spinnerColor: '#999999',
