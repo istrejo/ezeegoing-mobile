@@ -65,6 +65,12 @@
           ></app-input>
         </div>
 
+        <app-select
+          formControlName="visitor_type"
+          [options]="visitorTypes"
+          label="Tipo de vistante"
+          placeholder="Permanente"
+        ></app-select>
         <div class="flex justify-between items-center my-3">
           <span>¿Es proveedor?</span>
 

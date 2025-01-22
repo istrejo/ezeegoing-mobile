@@ -35,12 +35,22 @@ export class ModalComponent implements OnInit {
       id: 2,
     },
   ];
+  visitorTypes = [
+    {
+      name: 'Permanente',
+      value: true,
+    },
+    {
+      name: 'Temporal',
+      value: false,
+    },
+  ];
 
   constructor() {}
 
   ngOnInit() {
     this.initForm();
-    if (this.visitor) {
+    if (!!this.visitor) {
       this.form.patchValue(this.visitor);
       if (this.visitor.document_type === 1) {
         this.form.patchValue({
@@ -62,10 +72,22 @@ export class ModalComponent implements OnInit {
       phone: ['', [Validators.required]],
       card_number: ['', [Validators.required]],
       company_name: ['', []],
-      document_selected: [{ value: {} }, []],
-      document_type: [0, [Validators.required]],
+      document_selected: [
+        {
+          name: 'Cédula',
+          id: 1,
+        },
+      ],
+      document_type: [1, [Validators.required]],
       legal_id: ['', [Validators.required]],
       is_supplier: [false, [Validators.required]],
+      is_permanet: [true, [Validators.required]],
+      visitor_type: [
+        {
+          name: 'Temporal',
+          value: false,
+        },
+      ],
     });
   }
 
@@ -77,20 +99,21 @@ export class ModalComponent implements OnInit {
       this.form.markAllAsTouched();
       return;
     }
-    const { document_selected } = this.form.value;
-    this.form.patchValue({
-      document_type: document_selected.id,
-    });
+    // const { document_selected } = this.form.value;
+    // this.form.patchValue({
+    //   document_type: document_selected.id,
+    // });
     const {
       first_name,
       last_name,
       email,
       phone,
       card_number,
+      document_selected,
       company_name,
-      document_type,
       legal_id,
       is_supplier,
+      visitor_type,
     } = this.form.value;
 
     if (is_supplier) {
@@ -104,9 +127,10 @@ export class ModalComponent implements OnInit {
       phone,
       card_number,
       company_name,
-      document_type,
+      document_type: document_selected.id,
       legal_id,
       is_supplier,
+      is_permanent: visitor_type.value,
     };
 
     if (this.visitor) {

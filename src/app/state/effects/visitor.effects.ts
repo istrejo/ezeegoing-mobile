@@ -58,7 +58,15 @@ export class VisitorEffects {
             return addVisitorSuccess({ visitor });
           }),
           catchError((error: HttpErrorResponse) => {
-            this.toastService.error(error.error.message);
+            console.log(error);
+            const finalError = error.error;
+
+            if (!!finalError.message) {
+              this.toastService.error(finalError.message);
+            } else {
+              this.toastService.error(error.error);
+            }
+
             this.loading.dismiss();
             return of(addVisitorFailure({ error }));
           })

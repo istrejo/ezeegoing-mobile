@@ -25,5 +25,6 @@ export class AppComponent {
 
   async setStatusBarStyleLight() {
     await StatusBar.setStyle({ style: Style.Light });
+    await StatusBar.setBackgroundColor({ color: '#ffffff' });
   }
 }
