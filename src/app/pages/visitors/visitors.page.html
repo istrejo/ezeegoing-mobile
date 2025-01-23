@@ -1,15 +1,17 @@
-<ion-content class="ion-padding">
+<ion-content>
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <div class="flex flex-col items-center justify-between gap-4 mt-11 mb-3">
+  <div
+    class="flex flex-col items-center justify-between gap-4 mt-11 mb-3 pt-4 px-4"
+  >
     <figure>
       <img src="assets/logos/logo-small.png" alt="logo" />
     </figure>
     <h2 class="text-xl font-extrabold mb-1">Visitantes</h2>
   </div>
 
-  <div mode="ios" lines="none" class="">
+  <div mode="ios" lines="none" class="px-4">
     <ion-searchbar
       mode="ios"
       placeholder="Busca un visitante"
@@ -17,7 +19,7 @@
       (ionInput)="onSearch()"
     ></ion-searchbar>
   </div>
-  <ion-segment value="default" class="mb-4">
+  <ion-segment value="default" class="mb-4 px-4">
     <ion-segment-button value="default" content-id="default">
       <ion-label>Permanentes</ion-label>
     </ion-segment-button>
@@ -25,8 +27,9 @@
       <ion-label>Temporales</ion-label>
     </ion-segment-button>
   </ion-segment>
+
   <ion-segment-view>
-    <ion-segment-content id="default">
+    <ion-segment-content class="px-4" id="default">
       <ion-list
         class="flex flex-col w-full gap-4 items-center justify-center bg-transparent pb-[68px]"
         lines="none"
@@ -72,7 +75,7 @@
         </ion-infinite-scroll>
       </ion-list>
     </ion-segment-content>
-    <ion-segment-content id="temp">
+    <ion-segment-content class="px-4" id="temp">
       <ion-list
         class="flex flex-col w-full gap-4 items-center justify-center bg-transparent pb-[68px]"
         lines="none"
