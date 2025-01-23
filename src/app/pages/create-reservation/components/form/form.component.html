@@ -50,12 +50,14 @@
         class="mr-auto"
         datetime="datetime2"
       ></ion-datetime-button>
+      @if(hasTypeCatalogs){
       <app-select
-        formControlName="typeSelected"
-        [options]="reservationTypes"
-        placeholder="Tipo de reservación"
+        formControlName="reservation_type_catalog"
+        [options]="typeCatalogs()"
+        [placeholder]="reservationName"
       >
       </app-select>
+      }
 
       <div class="flex justify-between items-center mb-4">
         <span>¿Tiene Vehículo?</span>

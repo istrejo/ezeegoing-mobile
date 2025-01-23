@@ -79,7 +79,10 @@ export class ReservePage implements OnInit {
    * `reservationId`.
    */
   onCreateReservation(reservation: any) {
-    localStorage.setItem('typeCatalogs', reservation.type_catalogs);
+    localStorage.setItem(
+      'typeCatalogs',
+      JSON.stringify(reservation.type_catalogs)
+    );
     this.router.navigate(
       reservation.id == 3
         ? ['/tabs/charger-form']

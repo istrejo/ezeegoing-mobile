@@ -90,8 +90,13 @@ export class VisitorsPage implements OnInit {
         visitors.filter((item) => item.is_permanent === true)
       );
       this.temporalVisitors.set(visitors.filter((item) => !item.is_permanent));
-      this.permanentVisitorsTemp.set(this.permanentVisitors());
-      this.temporalVisitorsTemp.set(this.temporalVisitors());
+
+      if (this.search.trim()) {
+        this.onSearch();
+      } else {
+        this.permanentVisitorsTemp.set(this.permanentVisitors());
+        this.temporalVisitorsTemp.set(this.temporalVisitors());
+      }
     });
     this.store
       .select(selectVisitorsLoading)

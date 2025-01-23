@@ -29,6 +29,10 @@ export class FormComponent implements OnInit {
   public buildingId = signal<number | null>(null);
   public visitors = signal<Visitor[]>([]);
   reservationType: number | null = null;
+  reservationName: string = '';
+  hasTypeCatalogs: boolean = false;
+
+  typeCatalogs = signal([]);
 
   documentTypes = [
     {
@@ -57,8 +61,16 @@ export class FormComponent implements OnInit {
   }
 
   ngOnInit() {
+    const typeCatalogs = JSON.parse(
+      localStorage.getItem('typeCatalogs') || '[]'
+    );
+
+    this.hasTypeCatalogs = !!typeCatalogs.length;
+
+    this.typeCatalogs.set(typeCatalogs);
     this.route.params.subscribe(({ name, id }) => {
       this.reservationType = id;
+      this.reservationName = name;
     });
     this.loadData();
   }
@@ -85,7 +97,6 @@ export class FormComponent implements OnInit {
   initForm() {
     this.form = this.fb.group({
       visitorSelected: [null, [Validators.required]],
-      typeSelected: [null, [Validators.required]],
       start_date: [
         format(new Date(), 'YYYY-MM-DDTHH:mm:ss'),
         Validators.required,
@@ -98,13 +109,14 @@ export class FormComponent implements OnInit {
       last_name: [''],
       created_by: [this.user()?.userId],
       reservation_reference: [new Date().getTime().toString().slice(0, 9)],
-      reservation_type: [0],
+      // reservation_type: [0],
       legal_id: ['', []],
       document_type: [1],
       phone: ['', []],
       building: [null],
       hasVehicle: [false],
       car_plate: [''],
+      reservation_type_catalog: [null, [Validators.required]],
     });
   }
 
@@ -113,6 +125,7 @@ export class FormComponent implements OnInit {
   }
 
   onSubmit() {
+    console.log(this.form.value);
     if (!this.form.valid) {
       this.form.markAllAsTouched();
       return;
@@ -123,8 +136,8 @@ export class FormComponent implements OnInit {
       end_date,
       car_plate,
       visitorSelected,
-      typeSelected,
       reservation_reference,
+      reservation_type_catalog,
     } = this.form.value;
 
     const createDto = (visitor: any) => ({
@@ -135,11 +148,12 @@ export class FormComponent implements OnInit {
       email: visitor?.email,
       created_by: this.user()?.userId,
       reservation_reference,
-      reservation_type: typeSelected.id,
+      reservation_type: this.reservationType,
       legal_id: visitor?.legal_id,
       document_type: visitor?.document_type,
       phone: visitor?.phone,
       building: this.buildingId(),
+      reservation_type_catalog: reservation_type_catalog.id,
       company: '',
       ...(car_plate && { car_plate }),
     });

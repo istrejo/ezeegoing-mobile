@@ -15,7 +15,6 @@ export class CreateReservationPage implements OnInit {
   private route = inject(ActivatedRoute);
   public user = signal<User | undefined>(undefined);
   public buildingSelected = signal<number | null>(null);
-  form!: FormGroup;
   faChevronLeft = faChevronLeft;
   title: string = '';
   reservationType: number | null = null;

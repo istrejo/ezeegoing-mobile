@@ -59,7 +59,12 @@ export class ReservationsPage implements OnInit {
     });
     this.store.select(selectReservations).subscribe((reservations) => {
       this.reservations.set(reservations);
-      this.reservationsTemp.set(reservations.slice(0, this.limit));
+
+      if (this.search.trim()) {
+        this.orderSearch();
+      } else {
+        this.reservationsTemp.set(reservations.slice(0, this.limit));
+      }
     });
     this.isLoading$ = this.store.select(selectLoading);
   }
