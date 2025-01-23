@@ -53,92 +53,6 @@ export class ReservationEffects {
     );
   });
 
-  // addReservation$2 = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(addReservation),
-  //     mergeMap((action: any) => {
-  //       const requests = [];
-  //       this.presentLoading('Creando reservación');
-  //       console.log('Payload', action);
-
-  //       if (action.reservationType === 2) {
-  //         for (const dto of action.dtoList) {
-  //           requests.push(this.reservationService.createReservation(dto));
-  //         }
-  //       }
-
-  //       if (requests.length) {
-  //         return forkJoin(requests).pipe(
-  //           tap((responses: any) => {
-  //             this.loadingCtrl.dismiss();
-  //             this.openSuccessModal();
-  //             console.log(responses);
-  //             // return addReservationSuccess({ reservation: responses });
-  //             return loadReservations();
-  //           }),
-  //           catchError((error: HttpErrorResponse) => {
-  //             this.loadingCtrl.dismiss();
-
-  //             const finalError = error.error;
-  //             let errorMessage = '';
-
-  //             if (finalError.message === 'Reservation already exists') {
-  //               errorMessage = 'Ya existe esta reservación';
-  //             }
-
-  //             if (errorMessage) {
-  //               this.toastService.error(errorMessage);
-  //             } else {
-  //               this.toastService.error(error.error);
-  //             }
-  //             return of(addReservationFailure({ error }));
-  //           })
-  //         );
-  //       }
-
-  //       if (action.reservationType === 3) {
-  //         return this.reservationService
-  //           .createChargerReservation(action.dto)
-  //           .pipe(
-  //             map((reservation) => {
-  //               this.loadingCtrl.dismiss();
-  //               this.openSuccessModal();
-  //               return addReservationSuccess({ reservation });
-  //             }),
-  //             catchError((error) => {
-  //               this.loadingCtrl.dismiss();
-  //               return of(addReservationFailure({ error }));
-  //             })
-  //           );
-  //       }
-
-  //       return this.reservationService.createReservation(action.dto).pipe(
-  //         map((reservation) => {
-  //           this.loadingCtrl.dismiss();
-  //           this.openSuccessModal();
-  //           return addReservationSuccess({ reservation });
-  //         }),
-  //         catchError((error: HttpErrorResponse) => {
-  //           const finalError = error.error;
-  //           let errorMessage = '';
-
-  //           if (finalError.message === 'Reservation already exists') {
-  //             errorMessage = 'Ya existe esta reservación';
-  //           }
-
-  //           if (errorMessage) {
-  //             this.toastService.error(errorMessage);
-  //           } else {
-  //             this.toastService.error(error.error);
-  //           }
-  //           this.loadingCtrl.dismiss();
-  //           return of(addReservationFailure({ error }));
-  //         })
-  //       );
-  //     })
-  //   )
-  // );
-
   addReservation$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addReservation),
@@ -211,35 +125,75 @@ export class ReservationEffects {
     this.actions$.pipe(
       ofType(updateReservation),
       mergeMap((action: any) => {
-        this.presentLoading('Actualizando reservación');
-        return this.reservationService
-          .update(action.reservationId, action.dto)
-          .pipe(
-            map((reservation) => {
+        {
+          this.presentLoading('Editando reservación');
+          console.log('Payload', action);
+
+          let request$;
+
+          if (action.reservationType === 2) {
+            const requests = action.dtoList.map((dto: any) =>
+              this.reservationService.update(action.reservationId, dto)
+            );
+            request$ = forkJoin(requests);
+          } else {
+            request$ = this.reservationService.update(
+              action.reservationId,
+              action.dto
+            );
+          }
+
+          return request$.pipe(
+            map((response) => {
               this.loadingCtrl.dismiss();
               this.toastService.success('Reservación actualizada');
               this.modalCtrl.dismiss();
               this.store.dispatch(loadReservations());
-              return updateReservationSuccess({ reservation });
+              return action.reservationType === 2
+                ? loadReservations()
+                : updateReservationSuccess({ reservation: response });
             }),
-            catchError((error) => {
-              const finalError = error.error;
-              let errorMessage = '';
-
-              if (finalError.message === 'Reservation already exists') {
-                errorMessage = 'Ya existe esta reservación';
-              }
-
-              if (errorMessage) {
-                this.toastService.error(errorMessage);
-              } else {
-                this.toastService.error(error.error);
-              }
+            catchError((error: HttpErrorResponse) => {
               this.loadingCtrl.dismiss();
-
-              return of(updateReservationFailure({ error }));
+              const finalError = error.error;
+              const errorMessage =
+                finalError.message === 'Reservation already exists'
+                  ? 'Ya existe esta reservación'
+                  : error.error;
+              this.toastService.error(errorMessage);
+              return of(addReservationFailure({ error }));
             })
           );
+        }
+        // this.presentLoading('Actualizando reservación');
+        // return this.reservationService
+        //   .update(action.reservationId, action.dto)
+        //   .pipe(
+        //     map((reservation) => {
+        //       this.loadingCtrl.dismiss();
+        //       this.toastService.success('Reservación actualizada');
+        //       this.modalCtrl.dismiss();
+        //       this.store.dispatch(loadReservations());
+        //       return updateReservationSuccess({ reservation });
+        //     }),
+        //     catchError((error) => {
+        //       const finalError = error.error;
+        //       let errorMessage = '';
+
+        //       if (finalError.message === 'Reservation already exists') {
+        //         errorMessage = 'Ya existe esta reservación';
+        //       }
+
+        //       if (errorMessage) {
+        //         this.toastService.error(errorMessage);
+        //       } else {
+        //         this.toastService.error(error.error);
+        //       }
+        //       this.loadingCtrl.dismiss();
+
+        //       return of(updateReservationFailure({ error }));
+        //     })
+        //   );
       })
     )
   );

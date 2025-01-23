@@ -65,12 +65,14 @@
           class="mr-auto"
           datetime="datetime2"
         ></ion-datetime-button>
+        @if(hasTypeCatalogs){
         <app-select
-          formControlName="typeSelected"
-          [options]="reservationTypes"
-          placeholder="Tipo de reservación"
+          formControlName="reservation_type_catalog"
+          [options]="typeCatalogs()"
+          placeholder="Lugar"
         >
         </app-select>
+        }
 
         <div class="flex justify-between items-center mb-4">
           <span>¿Tiene Vehículo?</span>
@@ -115,7 +117,8 @@
         [disabled]="
           !form.valid ||
           (form.get('hasVehicle')?.value &&
-            !form.get('car_plate')?.value.trim())
+            !form.get('car_plate')?.value.trim()) ||
+          (hasTypeCatalogs && !form.get('reservation_type_catalog')?.value)
         "
       >
         Editar reserva

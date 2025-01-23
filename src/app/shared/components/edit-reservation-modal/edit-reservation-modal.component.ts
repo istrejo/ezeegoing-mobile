@@ -34,11 +34,13 @@ export class EditReservationModalComponent implements OnInit {
   private fb: FormBuilder = inject(FormBuilder);
   public user = signal<User | undefined>(undefined);
   public buildingId = signal<number | null>(null);
-  form!: FormGroup;
-  faChevronLeft = faChevronLeft;
-  reservationType: number = 1;
-  type = '';
-  visitors = signal<Visitor[]>([]);
+  public form!: FormGroup;
+  public faChevronLeft = faChevronLeft;
+  public reservationType: number = 1;
+  public type = '';
+  public visitors = signal<Visitor[]>([]);
+  public hasTypeCatalogs: boolean = false;
+  public typeCatalogs = signal([]);
 
   documentTypes = [
     {
@@ -67,6 +69,24 @@ export class EditReservationModalComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('Reservation selected: ', this.reservation);
+    const typeCatalogs = JSON.parse(
+      localStorage.getItem('typeCatalogs') || '[]'
+    ).map((item: any) => ({
+      name: item.name,
+      id: item.id,
+    }));
+
+    const typeCatalogSelected = typeCatalogs.find(
+      (item: any) => item.id === this.reservation.reservation_type_catalog_id
+    );
+
+    console.log(typeCatalogSelected);
+
+    this.hasTypeCatalogs = !!typeCatalogs.length;
+
+    this.typeCatalogs.set(typeCatalogs);
+
     this.store.select(selectUser).subscribe((user: any) => {
       this.user.set(user);
     });
@@ -85,22 +105,10 @@ export class EditReservationModalComponent implements OnInit {
       visitorSelected: this.reservation.legal_id,
       start_date: dayjs(this.reservation.start_date).toISOString(),
       end_date: dayjs(this.reservation.end_date).toISOString(),
-      typeSelected: {
-        name:
-          this.reservation.reservation_type_id === 1 ? 'Normal' : 'Temporal',
-        id: this.reservation.reservation_type_id,
-      },
-      documentSelected: {
-        name: this.reservation.document_type_id === 1 ? 'Cédula' : 'Pasaporte',
-        id: this.reservation.document_type_id,
-      },
-      document_type: this.reservation.document_type_id,
-      reservation_type: this.reservation.document_type_id,
       create_by: this.reservation.created_by_id,
       email: this.reservation.email,
-      legal_id: this.reservation.legal_id,
-      phone: this.reservation.phone,
       building: this.reservation.building_id,
+      reservation_type_catalog: typeCatalogSelected,
     });
   }
 
@@ -117,8 +125,6 @@ export class EditReservationModalComponent implements OnInit {
   initForm() {
     this.form = this.fb.group({
       visitorSelected: [null, [Validators.required]],
-      documentSelected: [null, [Validators.required]],
-      typeSelected: [null, [Validators.required]],
       start_date: [
         format(new Date(), 'YYYY-MM-DDTHH:mm:ss'),
         Validators.required,
@@ -131,13 +137,10 @@ export class EditReservationModalComponent implements OnInit {
       last_name: [''],
       created_by: [this.user()?.userId],
       reservation_reference: [new Date().getTime().toString().slice(0, 9)],
-      reservation_type: [0],
-      legal_id: ['', []],
-      document_type: [null],
-      phone: ['', []],
       building: [this.buildingId()],
       hasVehicle: [false],
       car_plate: [''],
+      reservation_type_catalog: [{ name: 'Rancho 1', id: 1 }],
     });
   }
 
@@ -152,44 +155,60 @@ export class EditReservationModalComponent implements OnInit {
       end_date,
       car_plate,
       visitorSelected,
-      typeSelected,
       reservation_reference,
+      reservation_type_catalog,
+      building,
     } = this.form.value;
-    const visitor: Visitor | undefined = this.visitors().find(
-      (item) => item.legal_id == visitorSelected
-    );
 
-    if (!visitor) {
-      console.error('Visitor not found');
-      return;
-    }
-
-    let dto: any = {
+    const createDto = (visitor: any) => ({
       start_date,
       end_date,
-      first_name: visitor.first_name,
-      last_name: visitor.last_name,
-      email: visitor.email,
+      first_name: visitor?.first_name,
+      last_name: visitor?.last_name,
+      email: visitor?.email,
       created_by: this.user()?.userId,
       reservation_reference,
-      reservation_type: typeSelected.id,
-      legal_id: this.reservation.legal_id,
-      document_type: visitor.document_type,
-      phone: visitor.phone,
-      building: this.buildingId(),
+      reservation_type: this.reservation.reservation_type_id,
+      legal_id: visitor?.legal_id,
+      document_type: visitor?.document_type,
+      phone: visitor?.phone,
+      building,
       company: '',
-    };
+      ...(car_plate && { car_plate }),
+      ...(reservation_type_catalog && {
+        reservation_type_catalog: reservation_type_catalog.id,
+      }),
+    });
 
-    if (car_plate) {
-      dto = {
-        ...dto,
-        car_plate: car_plate,
-      };
+    if (this.reservationType == 2) {
+      const dtoList: any[] = [];
+      for (const legalId of visitorSelected) {
+        const visitor = this.visitors().find(
+          (item) => item.legal_id === legalId
+        );
+        if (visitor) {
+          const dto = createDto(visitor);
+          dtoList.push(dto);
+        }
+      }
+      this.store.dispatch(
+        updateReservation({
+          dtoList: dtoList,
+          reservationId: this.reservation.id,
+          reservationType: this.reservation.reservation_type_id,
+        })
+      );
+    } else {
+      const visitor = this.visitors().find(
+        (item) => item.legal_id === visitorSelected
+      );
+      if (visitor) {
+        const dto = createDto(visitor);
+        this.store.dispatch(
+          updateReservation({ reservationId: this.reservation.id, dto })
+        );
+      }
     }
-
-    this.store.dispatch(
-      updateReservation({ reservationId: this.reservation.id, dto })
-    );
   }
 
   close() {

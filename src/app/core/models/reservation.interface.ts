@@ -88,4 +88,5 @@ export interface Reservation {
   skip_pre_register: boolean;
   controller: null | string;
   alpr_authentication: boolean;
+  reservation_type_catalog: string | number;
 }

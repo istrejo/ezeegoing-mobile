@@ -1,10 +1,15 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, signal } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
-import { Reservation } from 'src/app/core/models/reservation.interface';
+import {
+  Reservation,
+  ReservationType,
+} from 'src/app/core/models/reservation.interface';
 import { AlertService } from 'src/app/core/services/alert/alert.service';
 import { EditReservationModalComponent } from 'src/app/shared/components/edit-reservation-modal/edit-reservation-modal.component';
+import { loadReservationTypes } from 'src/app/state/actions/reservation-type.actions';
 import { deleteReservation } from 'src/app/state/actions/reservation.actions';
+import { selectReservationTypes } from 'src/app/state/selectors/reservation-type.selectors';
 
 @Component({
   selector: 'app-card',
@@ -17,6 +22,7 @@ export class CardComponent implements OnInit {
   private alertService = inject(AlertService);
   private store: Store = inject(Store);
   private modalCtrl = inject(ModalController);
+  public types = signal<ReservationType[]>([]);
 
   iconUrl: string = '';
   title: string = '';
@@ -25,6 +31,12 @@ export class CardComponent implements OnInit {
 
   ngOnInit() {
     this.getIcon();
+    this.store.select(selectReservationTypes).subscribe((reservationsTypes) => {
+      if (!reservationsTypes.length) {
+        this.store.dispatch(loadReservationTypes());
+      }
+      this.types.set(reservationsTypes);
+    });
   }
 
   getIcon() {
@@ -68,6 +80,13 @@ export class CardComponent implements OnInit {
   }
 
   async onEdit() {
+    const typeCatalogs = this.types().find(
+      (item) => item.id === this.reservation.reservation_type_id
+    )?.type_catalogs;
+    if (!!typeCatalogs) {
+      console.log('Type catalogs: ', typeCatalogs);
+      localStorage.setItem('typeCatalogs', JSON.stringify(typeCatalogs));
+    }
     const modal = await this.modalCtrl.create({
       component: EditReservationModalComponent,
       componentProps: {
