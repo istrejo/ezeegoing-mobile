@@ -109,14 +109,13 @@ export class FormComponent implements OnInit {
       last_name: [''],
       created_by: [this.user()?.userId],
       reservation_reference: [new Date().getTime().toString().slice(0, 9)],
-      // reservation_type: [0],
       legal_id: ['', []],
       document_type: [1],
       phone: ['', []],
       building: [null],
       hasVehicle: [false],
       car_plate: [''],
-      reservation_type_catalog: [null, [Validators.required]],
+      reservation_type_catalog: [null],
     });
   }
 
@@ -153,9 +152,11 @@ export class FormComponent implements OnInit {
       document_type: visitor?.document_type,
       phone: visitor?.phone,
       building: this.buildingId(),
-      reservation_type_catalog: reservation_type_catalog.id,
       company: '',
       ...(car_plate && { car_plate }),
+      ...(reservation_type_catalog && {
+        reservation_type_catalog: reservation_type_catalog.id,
+      }),
     });
 
     if (this.reservationType == 2) {
@@ -172,13 +173,6 @@ export class FormComponent implements OnInit {
       this.store.dispatch(
         addReservation({ dtoList: dtoList, reservationType: 2 })
       );
-      // visitorSelected.forEach((legalId: string) => {
-      //   const visitor = this.visitors().find((item) => item.legal_id === legalId);
-      //   if (visitor) {
-      //     const dto = createDto(visitor);
-      //     this.store.dispatch(addReservation({ dto }));
-      //   }
-      // });
     } else {
       const visitor = this.visitors().find(
         (item) => item.legal_id === visitorSelected

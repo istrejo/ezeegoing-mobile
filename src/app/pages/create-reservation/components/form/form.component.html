@@ -98,7 +98,9 @@
       expand="block"
       [disabled]="
         !form.valid ||
-        (form.get('hasVehicle')?.value && !form.get('car_plate')?.value.trim())
+        (form.get('hasVehicle')?.value &&
+          !form.get('car_plate')?.value.trim()) ||
+        (hasTypeCatalogs && !form.get('reservation_type_catalog')?.value)
       "
     >
       Crear Reserva
