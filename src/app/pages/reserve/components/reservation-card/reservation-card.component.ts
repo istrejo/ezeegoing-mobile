@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { IonItem, IonRippleEffect } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-reservation-card',
@@ -26,14 +25,14 @@ export class ReservationCardComponent implements OnInit {
   getIcon() {
     switch (this.type) {
       case 1:
-        return (this.iconUrl = 'parking.svg');
+        return (this.iconUrl = 'building.svg');
       case 2:
         return (this.iconUrl = 'visit.svg');
       case 3:
         return (this.iconUrl = 'charger.svg');
 
       default:
-        return (this.iconUrl = 'visit.svg');
+        return (this.iconUrl = 'common-areas.svg');
     }
   }
 }

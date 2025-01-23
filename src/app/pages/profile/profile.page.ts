@@ -46,7 +46,6 @@ export class ProfilePage implements OnInit {
    */
   loadData() {
     this.store.select(selectUser).subscribe((user) => {
-      console.log(user);
       this.user.set(user);
       if (!user) {
         this.store.dispatch(loadUser());
@@ -54,7 +53,6 @@ export class ProfilePage implements OnInit {
     });
 
     this.store.select(selectCurrentBuilding).subscribe((building) => {
-      console.log('Current building: ', building);
       this.building.set(building);
       if (!building) {
         this.store.dispatch(loadBuildings());

@@ -103,46 +103,43 @@ export class ModalComponent implements OnInit {
     if (!this.form.valid) {
       this.form.markAllAsTouched();
       return;
+    } else {
+      const {
+        first_name,
+        last_name,
+        email,
+        phone,
+        card_number,
+        document_selected,
+        company_name,
+        legal_id,
+        is_supplier,
+        visitor_type,
+      } = this.form.value;
+
+      if (is_supplier) {
+        this.form.get('company_name')?.addValidators([Validators.required]);
+      }
+
+      const dto = {
+        first_name,
+        last_name,
+        email,
+        phone,
+        card_number,
+        company_name,
+        document_type: document_selected.id,
+        legal_id,
+        is_supplier,
+        is_permanent: visitor_type.value,
+      };
+
+      if (this.visitor) {
+        this.store.dispatch(updateVisitor({ id: this.visitor.id, dto }));
+        return;
+      }
+
+      this.store.dispatch(addVisitor({ dto }));
     }
-    // const { document_selected } = this.form.value;
-    // this.form.patchValue({
-    //   document_type: document_selected.id,
-    // });
-    const {
-      first_name,
-      last_name,
-      email,
-      phone,
-      card_number,
-      document_selected,
-      company_name,
-      legal_id,
-      is_supplier,
-      visitor_type,
-    } = this.form.value;
-
-    if (is_supplier) {
-      this.form.get('card_number')?.addValidators([Validators.required]);
-    }
-
-    const dto = {
-      first_name,
-      last_name,
-      email,
-      phone,
-      card_number,
-      company_name,
-      document_type: document_selected.id,
-      legal_id,
-      is_supplier,
-      is_permanent: visitor_type.value,
-    };
-
-    if (this.visitor) {
-      this.store.dispatch(updateVisitor({ id: this.visitor.id, dto }));
-      return;
-    }
-
-    this.store.dispatch(addVisitor({ dto }));
   }
 }

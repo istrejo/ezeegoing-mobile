@@ -1,13 +1,7 @@
 import { Visitor } from './../../../core/models/visitor.state';
 import { Component, inject, Input, OnInit, signal } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
-import { ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { User } from 'src/app/core/models/auth.state.interface';
 import { Reservation } from 'src/app/core/models/reservation.interface';
@@ -21,6 +15,7 @@ import * as dayjs from 'dayjs';
 import { format } from '@formkit/tempo';
 import { ModalService } from 'src/app/core/services/modal/modal.service';
 import { ModalComponent } from 'src/app/pages/visitors/components/modal/modal.component';
+import { selectReservationTypes } from 'src/app/state/selectors/reservation-type.selectors';
 
 @Component({
   selector: 'app-edit-reservation-modal',
@@ -69,7 +64,6 @@ export class EditReservationModalComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('Reservation selected: ', this.reservation);
     const typeCatalogs = JSON.parse(
       localStorage.getItem('typeCatalogs') || '[]'
     ).map((item: any) => ({
@@ -80,8 +74,6 @@ export class EditReservationModalComponent implements OnInit {
     const typeCatalogSelected = typeCatalogs.find(
       (item: any) => item.id === this.reservation.reservation_type_catalog_id
     );
-
-    console.log(typeCatalogSelected);
 
     this.hasTypeCatalogs = !!typeCatalogs.length;
 
@@ -99,6 +91,7 @@ export class EditReservationModalComponent implements OnInit {
       }
       this.visitors.set(res);
     });
+    this.store.select(selectReservationTypes).subscribe((types) => {});
 
     console.log('resertvation: ', this.reservation);
     this.form.patchValue({
@@ -113,7 +106,7 @@ export class EditReservationModalComponent implements OnInit {
   }
 
   ionViewWillLeave() {
-    this.form.reset();
+    this.form.patchValue({});
   }
 
   addVisitor() {
