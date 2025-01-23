@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of, throwError } from 'rxjs';
-import { catchError, map, mergeMap } from 'rxjs/operators';
+import { forkJoin, of, throwError } from 'rxjs';
+import { catchError, map, mergeMap, tap } from 'rxjs/operators';
 import { ReservationService } from '../../core/services/reservation/reservation.service';
 import {
   loadReservations,
@@ -53,47 +53,130 @@ export class ReservationEffects {
     );
   });
 
+  // addReservation$2 = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(addReservation),
+  //     mergeMap((action: any) => {
+  //       const requests = [];
+  //       this.presentLoading('Creando reservación');
+  //       console.log('Payload', action);
+
+  //       if (action.reservationType === 2) {
+  //         for (const dto of action.dtoList) {
+  //           requests.push(this.reservationService.createReservation(dto));
+  //         }
+  //       }
+
+  //       if (requests.length) {
+  //         return forkJoin(requests).pipe(
+  //           tap((responses: any) => {
+  //             this.loadingCtrl.dismiss();
+  //             this.openSuccessModal();
+  //             console.log(responses);
+  //             // return addReservationSuccess({ reservation: responses });
+  //             return loadReservations();
+  //           }),
+  //           catchError((error: HttpErrorResponse) => {
+  //             this.loadingCtrl.dismiss();
+
+  //             const finalError = error.error;
+  //             let errorMessage = '';
+
+  //             if (finalError.message === 'Reservation already exists') {
+  //               errorMessage = 'Ya existe esta reservación';
+  //             }
+
+  //             if (errorMessage) {
+  //               this.toastService.error(errorMessage);
+  //             } else {
+  //               this.toastService.error(error.error);
+  //             }
+  //             return of(addReservationFailure({ error }));
+  //           })
+  //         );
+  //       }
+
+  //       if (action.reservationType === 3) {
+  //         return this.reservationService
+  //           .createChargerReservation(action.dto)
+  //           .pipe(
+  //             map((reservation) => {
+  //               this.loadingCtrl.dismiss();
+  //               this.openSuccessModal();
+  //               return addReservationSuccess({ reservation });
+  //             }),
+  //             catchError((error) => {
+  //               this.loadingCtrl.dismiss();
+  //               return of(addReservationFailure({ error }));
+  //             })
+  //           );
+  //       }
+
+  //       return this.reservationService.createReservation(action.dto).pipe(
+  //         map((reservation) => {
+  //           this.loadingCtrl.dismiss();
+  //           this.openSuccessModal();
+  //           return addReservationSuccess({ reservation });
+  //         }),
+  //         catchError((error: HttpErrorResponse) => {
+  //           const finalError = error.error;
+  //           let errorMessage = '';
+
+  //           if (finalError.message === 'Reservation already exists') {
+  //             errorMessage = 'Ya existe esta reservación';
+  //           }
+
+  //           if (errorMessage) {
+  //             this.toastService.error(errorMessage);
+  //           } else {
+  //             this.toastService.error(error.error);
+  //           }
+  //           this.loadingCtrl.dismiss();
+  //           return of(addReservationFailure({ error }));
+  //         })
+  //       );
+  //     })
+  //   )
+  // );
+
   addReservation$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addReservation),
       mergeMap((action: any) => {
         this.presentLoading('Creando reservación');
         console.log('Payload', action);
-        if (action.reservationType === 3) {
-          return this.reservationService
-            .createChargerReservation(action.dto)
-            .pipe(
-              map((reservation) => {
-                this.loadingCtrl.dismiss();
-                this.openSuccessModal();
-                return addReservationSuccess({ reservation });
-              }),
-              catchError((error) => {
-                this.loadingCtrl.dismiss();
-                return of(addReservationFailure({ error }));
-              })
-            );
+
+        let request$;
+
+        if (action.reservationType === 2) {
+          const requests = action.dtoList.map((dto: any) =>
+            this.reservationService.createReservation(dto)
+          );
+          request$ = forkJoin(requests);
+        } else if (action.reservationType === 3) {
+          request$ = this.reservationService.createChargerReservation(
+            action.dto
+          );
+        } else {
+          request$ = this.reservationService.createReservation(action.dto);
         }
-        return this.reservationService.createReservation(action.dto).pipe(
-          map((reservation) => {
+
+        return request$.pipe(
+          map((response) => {
             this.loadingCtrl.dismiss();
             this.openSuccessModal();
-            return addReservationSuccess({ reservation });
+            return action.reservationType === 2
+              ? loadReservations()
+              : addReservationSuccess({ reservation: response });
           }),
           catchError((error: HttpErrorResponse) => {
-            const finalError = error.error;
-            let errorMessage = '';
-
-            if (finalError.message === 'Reservation already exists') {
-              errorMessage = 'Ya existe esta reservación';
-            }
-
-            if (errorMessage) {
-              this.toastService.error(errorMessage);
-            } else {
-              this.toastService.error(error.error);
-            }
             this.loadingCtrl.dismiss();
+            const finalError = error.error;
+            const errorMessage =
+              finalError.message === 'Reservation already exists'
+                ? 'Ya existe esta reservación'
+                : error.error;
+            this.toastService.error(errorMessage);
             return of(addReservationFailure({ error }));
           })
         );

@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { format } from '@formkit/tempo';
 import { Store } from '@ngrx/store';
 import { User } from 'src/app/core/models/auth.state.interface';
@@ -18,6 +19,8 @@ import { selectVisitors } from 'src/app/state/selectors/visitor.selectors';
   styleUrls: ['./form.component.scss'],
 })
 export class FormComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+
   private modalSvc = inject(ModalService);
   private fb: FormBuilder = inject(FormBuilder);
   public form!: FormGroup;
@@ -25,6 +28,7 @@ export class FormComponent implements OnInit {
   public user = signal<User | undefined>(undefined);
   public buildingId = signal<number | null>(null);
   public visitors = signal<Visitor[]>([]);
+  reservationType: number | null = null;
 
   documentTypes = [
     {
@@ -53,7 +57,9 @@ export class FormComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.form.value);
+    this.route.params.subscribe(({ name, id }) => {
+      this.reservationType = id;
+    });
     this.loadData();
   }
 
@@ -63,18 +69,15 @@ export class FormComponent implements OnInit {
 
   loadData() {
     this.store.select(selectUser).subscribe((user) => {
-      console.log(user);
       this.user.set(user);
     });
     this.store.select(selectBuildingSelected).subscribe((buildingId) => {
-      console.log(buildingId);
       this.buildingId.set(buildingId);
     });
     this.store.select(selectVisitors).subscribe((visitors: Visitor[]) => {
       if (!visitors.length) {
         this.store.dispatch(loadVisitors());
       }
-      console.log('Visitors: ', visitors);
       this.visitors.set(visitors);
     });
   }
@@ -106,9 +109,7 @@ export class FormComponent implements OnInit {
   }
 
   addVisitor() {
-    this.modalSvc.presentModal(ModalComponent).then((data) => {
-      console.log('Modal data', data);
-    });
+    this.modalSvc.presentModal(ModalComponent).then((data) => {});
   }
 
   onSubmit() {
@@ -125,10 +126,8 @@ export class FormComponent implements OnInit {
       typeSelected,
       reservation_reference,
     } = this.form.value;
-    const visitor = this.visitors().find(
-      (item) => item.legal_id == visitorSelected
-    );
-    let dto: any = {
+
+    const createDto = (visitor: any) => ({
       start_date,
       end_date,
       first_name: visitor?.first_name,
@@ -142,13 +141,38 @@ export class FormComponent implements OnInit {
       phone: visitor?.phone,
       building: this.buildingId(),
       company: '',
-    };
-    if (car_plate) {
-      dto = {
-        ...dto,
-        car_plate: car_plate,
-      };
+      ...(car_plate && { car_plate }),
+    });
+
+    if (this.reservationType == 2) {
+      const dtoList: any[] = [];
+      for (const legalId of visitorSelected) {
+        const visitor = this.visitors().find(
+          (item) => item.legal_id === legalId
+        );
+        if (visitor) {
+          const dto = createDto(visitor);
+          dtoList.push(dto);
+        }
+      }
+      this.store.dispatch(
+        addReservation({ dtoList: dtoList, reservationType: 2 })
+      );
+      // visitorSelected.forEach((legalId: string) => {
+      //   const visitor = this.visitors().find((item) => item.legal_id === legalId);
+      //   if (visitor) {
+      //     const dto = createDto(visitor);
+      //     this.store.dispatch(addReservation({ dto }));
+      //   }
+      // });
+    } else {
+      const visitor = this.visitors().find(
+        (item) => item.legal_id === visitorSelected
+      );
+      if (visitor) {
+        const dto = createDto(visitor);
+        this.store.dispatch(addReservation({ dto }));
+      }
     }
-    this.store.dispatch(addReservation({ dto }));
   }
 }

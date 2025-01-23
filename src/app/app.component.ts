@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { PrimeNGConfig } from 'primeng/api';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { StatusBar, Style } from '@capacitor/status-bar';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-root',
@@ -9,10 +10,13 @@ import { StatusBar, Style } from '@capacitor/status-bar';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
+  private platform = inject(Platform);
   private primengConfig = inject(PrimeNGConfig);
   constructor() {
-    this.showSplash();
-    this.setStatusBarStyleLight();
+    if (this.platform.is('hybrid')) {
+      this.showSplash();
+      this.setStatusBarStyleLight();
+    }
     this.primengConfig.ripple = true;
   }
 

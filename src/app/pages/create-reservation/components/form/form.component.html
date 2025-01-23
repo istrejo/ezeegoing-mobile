@@ -13,6 +13,7 @@
             label="Visitante"
             label-placement="fixed"
             placeholder="Elige un visitante"
+            [multiple]="this.reservationType == 2"
           >
             @for(visitor of visitors(); track visitor.id) {
 

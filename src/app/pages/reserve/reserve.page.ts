@@ -78,8 +78,13 @@ export class ReservePage implements OnInit {
    * `router.navigate` method to navigate to the `create-reservation` route with the selected
    * `reservationId`.
    */
-  onCreateReservation(reservationId: any) {
-    this.router.navigate(['tabs/create-reservation', reservationId]);
+  onCreateReservation(reservation: any) {
+    localStorage.setItem('typeCatalogs', reservation.type_catalogs);
+    this.router.navigate(
+      reservation.id == 3
+        ? ['/tabs/charger-form']
+        : ['/tabs/create-reservation', reservation.id, reservation.name]
+    );
   }
 
   /**
