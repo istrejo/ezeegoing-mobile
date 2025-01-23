@@ -63,8 +63,8 @@ export class ProfilePage implements OnInit {
       if (!reservations.length) {
         this.store.dispatch(loadReservations());
       }
-
-      this.reservations.set(reservations.length);
+      const activeReservations = reservations.filter((item) => item.is_active);
+      this.reservations.set(activeReservations.length);
     });
 
     this.store
