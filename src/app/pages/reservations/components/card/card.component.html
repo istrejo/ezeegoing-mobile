@@ -2,9 +2,6 @@
   lines="none"
   class="reservation-card flex items-center w-full rounded-lg shadow bg-white"
 >
-  <!-- <figure class="mr-4">
-    <img class="" [src]="'assets/svgs/' + iconUrl" alt="Icono" />
-  </figure> -->
   <ion-avatar class="mr-3">
     <figure class="mr-4">
       <img [src]="'assets/svgs/' + iconUrl" alt="logo" />
@@ -17,7 +14,7 @@
     <p class="text-sm">
       Autorización:
       <span>
-        {{ reservation.alpr_authentication ? "Activa" : "Inactiva" }}
+        {{ reservation.is_active ? "Activa" : "Inactiva" }}
       </span>
     </p>
     <p class="text-sm">Ingreso: {{ reservation.start_date | date }}</p>
