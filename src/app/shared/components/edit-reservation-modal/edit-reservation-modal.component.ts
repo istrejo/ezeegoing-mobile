@@ -143,6 +143,8 @@ export class EditReservationModalComponent implements OnInit {
       return;
     }
 
+    const reservationType = this.reservation.reservation_type_id;
+
     const {
       start_date,
       end_date,
@@ -153,18 +155,24 @@ export class EditReservationModalComponent implements OnInit {
       building,
     } = this.form.value;
 
-    const createDto = (visitor: any) => ({
+    const createDto = (visitor?: any) => ({
       start_date,
       end_date,
-      first_name: visitor?.first_name,
-      last_name: visitor?.last_name,
-      email: visitor?.email,
+      first_name:
+        reservationType > 2 ? this.reservation.first_name : visitor?.first_name,
+      last_name:
+        reservationType > 2 ? this.reservation.first_name : visitor?.last_name,
+      email: reservationType > 2 ? this.reservation.email : visitor?.email,
       created_by: this.user()?.userId,
       reservation_reference,
       reservation_type: this.reservation.reservation_type_id,
-      legal_id: visitor?.legal_id,
-      document_type: visitor?.document_type,
-      phone: visitor?.phone,
+      legal_id:
+        reservationType > 2 ? this.reservation.legal_id : visitor?.legal_id,
+      document_type:
+        reservationType > 2
+          ? this.reservation.document_type_id
+          : visitor?.document_type,
+      phone: reservationType > 2 ? this.reservation.phone : visitor?.phone,
       building,
       company: '',
       ...(car_plate && { car_plate }),
@@ -195,12 +203,10 @@ export class EditReservationModalComponent implements OnInit {
       const visitor = this.visitors().find(
         (item) => item.legal_id === visitorSelected
       );
-      if (visitor) {
-        const dto = createDto(visitor);
-        this.store.dispatch(
-          updateReservation({ reservationId: this.reservation.id, dto })
-        );
-      }
+      const dto = createDto(visitor);
+      this.store.dispatch(
+        updateReservation({ reservationId: this.reservation.id, dto })
+      );
     }
   }
 
