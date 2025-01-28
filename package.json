@@ -37,6 +37,7 @@
     "@ngrx/effects": "^18.1.1",
     "@ngrx/store": "^18.1.1",
     "@ngrx/store-devtools": "^18.1.1",
+    "capacitor-pass-to-wallet": "^3.0.0",
     "dayjs": "^1.11.13",
     "ionicons": "^7.0.0",
     "jwt-decode": "^4.0.0",

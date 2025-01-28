@@ -3,15 +3,17 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { format } from '@formkit/tempo';
 import { Store } from '@ngrx/store';
-import { User } from 'src/app/core/models/auth.state.interface';
 import { Visitor } from 'src/app/core/models/visitor.state';
 import { ModalService } from 'src/app/core/services/modal/modal.service';
 import { ModalComponent } from 'src/app/pages/visitors/components/modal/modal.component';
 import { addReservation } from 'src/app/state/actions/reservation.actions';
+import { loadUser } from 'src/app/state/actions/user.actions';
 import { loadVisitors } from 'src/app/state/actions/visitor.actions';
-import { selectUser } from 'src/app/state/selectors/auth.selectors';
+import { selectUser } from 'src/app/state/selectors/user.selectors';
 import { selectBuildingSelected } from 'src/app/state/selectors/building.selectors';
 import { selectVisitors } from 'src/app/state/selectors/visitor.selectors';
+import { User, UserData } from 'src/app/core/models/user.state.intercafe';
+import { AlertService } from 'src/app/core/services/alert/alert.service';
 
 @Component({
   selector: 'app-form',
@@ -19,16 +21,16 @@ import { selectVisitors } from 'src/app/state/selectors/visitor.selectors';
   styleUrls: ['./form.component.scss'],
 })
 export class FormComponent implements OnInit {
+  private alertSvc = inject(AlertService);
   private route = inject(ActivatedRoute);
-
   private modalSvc = inject(ModalService);
   private fb: FormBuilder = inject(FormBuilder);
   public form!: FormGroup;
   private store = inject(Store);
-  public user = signal<User | undefined>(undefined);
+  public user = signal<UserData | null>(null);
   public buildingId = signal<number | null>(null);
   public visitors = signal<Visitor[]>([]);
-  reservationType: number | null = null;
+  reservationType: number = 0;
   reservationName: string = '';
   hasTypeCatalogs: boolean = false;
 
@@ -61,6 +63,7 @@ export class FormComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('Enter');
     const typeCatalogs = JSON.parse(
       localStorage.getItem('typeCatalogs') || '[]'
     );
@@ -69,11 +72,19 @@ export class FormComponent implements OnInit {
 
     this.typeCatalogs.set(typeCatalogs);
     this.route.params.subscribe(({ name, id }) => {
-      this.reservationType = id;
+      console.log({ name, id });
+      this.reservationType = Number(id);
       this.reservationName = name;
     });
+    console.log(this.reservationType);
     this.loadData();
+
+    if (this.reservationType > 2) {
+      this.form.get('visitorSelected')?.setValidators([]);
+    }
   }
+
+  ionViewWillEnter() {}
 
   ionViewWillLeave() {
     this.form.reset();
@@ -81,7 +92,11 @@ export class FormComponent implements OnInit {
 
   loadData() {
     this.store.select(selectUser).subscribe((user) => {
+      if (!user) {
+        this.store.dispatch(loadUser());
+      }
       this.user.set(user);
+      console.log(this.user());
     });
     this.store.select(selectBuildingSelected).subscribe((buildingId) => {
       this.buildingId.set(buildingId);
@@ -107,7 +122,7 @@ export class FormComponent implements OnInit {
       ],
       first_name: [''],
       last_name: [''],
-      created_by: [this.user()?.userId],
+      created_by: [this.user()?.user.id],
       reservation_reference: [new Date().getTime().toString().slice(0, 9)],
       building: [this.buildingId()],
       hasVehicle: [false],
@@ -121,7 +136,6 @@ export class FormComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.form.value);
     if (!this.form.valid) {
       this.form.markAllAsTouched();
       return;
@@ -136,18 +150,45 @@ export class FormComponent implements OnInit {
       reservation_type_catalog,
     } = this.form.value;
 
-    const createDto = (visitor: any) => ({
+    if (new Date(start_date) >= new Date(end_date)) {
+      console.error('La fecha de inicio debe ser menor que la fecha de fin');
+      this.alertSvc.presentAlert({
+        message:
+          'La fecha de finalización no puede ser menor o igual a la de inicio',
+        buttons: [
+          {
+            text: 'Ok',
+            role: 'cancel',
+          },
+        ],
+      });
+
+      return;
+    }
+
+    const createDto = (visitor?: any) => ({
       start_date,
       end_date,
-      first_name: visitor?.first_name,
-      last_name: visitor?.last_name,
-      email: visitor?.email,
-      created_by: this.user()?.userId,
+      first_name:
+        this.reservationType > 2
+          ? this.user()?.user.first_name
+          : visitor?.first_name,
+      last_name:
+        this.reservationType > 2
+          ? this.user()?.user.last_name
+          : visitor?.last_name,
+      email:
+        this.reservationType > 2 ? this.user()?.user.email : visitor?.email,
+      created_by: this.user()?.user.id,
       reservation_reference,
       reservation_type: this.reservationType,
-      legal_id: visitor?.legal_id,
-      document_type: visitor?.document_type,
-      phone: visitor?.phone,
+      legal_id:
+        this.reservationType > 2 ? this.user()?.legal_id : visitor?.legal_id,
+      document_type:
+        this.reservationType > 2
+          ? this.user()?.document_type.id
+          : visitor?.document_type,
+      phone: this.reservationType > 2 ? this.user()?.phone : visitor?.phone,
       building: this.buildingId(),
       company: '',
       ...(car_plate && { car_plate }),
@@ -156,7 +197,9 @@ export class FormComponent implements OnInit {
       }),
     });
 
-    if (this.reservationType == 2) {
+    console.log('Dto to send: ', createDto());
+
+    if (this.reservationType === 2) {
       const dtoList: any[] = [];
       for (const legalId of visitorSelected) {
         const visitor = this.visitors().find(
@@ -174,10 +217,8 @@ export class FormComponent implements OnInit {
       const visitor = this.visitors().find(
         (item) => item.legal_id === visitorSelected
       );
-      if (visitor) {
-        const dto = createDto(visitor);
-        this.store.dispatch(addReservation({ dto }));
-      }
+      const dto = createDto(visitor);
+      this.store.dispatch(addReservation({ dto }));
     }
   }
 }

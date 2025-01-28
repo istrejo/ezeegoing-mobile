@@ -1,0 +1,11 @@
+ion-header {
+  background: transparent;
+
+  ion-toolbar {
+    --background: transparent;
+    height: 100%;
+    ion-back-button {
+      --icon-font-size: 16px;
+    }
+  }
+}

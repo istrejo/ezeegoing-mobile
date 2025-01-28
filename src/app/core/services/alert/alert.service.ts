@@ -23,7 +23,7 @@ export class AlertService {
       subHeader,
       message,
       buttons,
-      mode,
+      mode: 'ios',
     });
 
     await alert.present();
