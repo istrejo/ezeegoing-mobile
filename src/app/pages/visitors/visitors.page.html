@@ -19,7 +19,11 @@
       (ionInput)="onSearch()"
     ></ion-searchbar>
   </div>
-  <ion-segment value="default" class="mb-4 px-4">
+  <ion-segment
+    (ionChange)="segmentChange($event)"
+    value="default"
+    class="mb-4 px-4"
+  >
     <ion-segment-button value="default" content-id="default">
       <ion-label>Permanentes</ion-label>
     </ion-segment-button>
@@ -29,7 +33,7 @@
   </ion-segment>
 
   <ion-segment-view>
-    <ion-segment-content class="px-4" id="default">
+    <ion-segment-content #permanent class="px-4" id="default">
       <ion-list
         class="flex flex-col w-full gap-4 items-center justify-center bg-transparent pb-[68px]"
         lines="none"
@@ -75,7 +79,7 @@
         </ion-infinite-scroll>
       </ion-list>
     </ion-segment-content>
-    <ion-segment-content class="px-4" id="temp">
+    <ion-segment-content #temp class="px-4" id="temp">
       <ion-list
         class="flex flex-col w-full gap-4 items-center justify-center bg-transparent pb-[68px]"
         lines="none"

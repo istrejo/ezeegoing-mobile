@@ -1,4 +1,12 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  inject,
+  OnInit,
+  signal,
+  ViewChild,
+} from '@angular/core';
 import { faBuilding, faCalendarDays } from '@fortawesome/free-solid-svg-icons';
 import { Store } from '@ngrx/store';
 import { Visitor } from 'src/app/core/models/visitor.state';
@@ -18,6 +26,8 @@ import { faUsers } from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./visitors.page.scss'],
 })
 export class VisitorsPage implements OnInit {
+  @ViewChild('permanent') segmentView1!: any;
+  @ViewChild('temp') segmentView2!: any;
   private modalSvc: ModalService = inject(ModalService);
   private store = inject(Store);
   faBuilding = faBuilding;
@@ -64,6 +74,11 @@ export class VisitorsPage implements OnInit {
    */
   ngOnInit() {
     this.loadData();
+  }
+
+  segmentChange(e: any) {
+    this.segmentView1.el.scrollTop = 0;
+    this.segmentView2.el.scrollTop = 0;
   }
 
   /**
