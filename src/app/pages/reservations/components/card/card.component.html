@@ -20,6 +20,9 @@
     <p class="text-sm">Ingreso: {{ reservation.start_date | date }}</p>
   </div>
   <ion-buttons class="mr-4" slot="end" class="flex flex-col">
+    <ion-button (click)="onAddToWallet()">
+      <ion-icon slot="start" name="wallet-outline"></ion-icon>
+    </ion-button>
     <ion-button (click)="onEdit()">
       <img slot="icon-only" src="assets/svgs/edit.svg" alt="" />
     </ion-button>

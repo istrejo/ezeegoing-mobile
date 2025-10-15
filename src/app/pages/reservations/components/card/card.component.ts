@@ -10,6 +10,10 @@ import { EditReservationModalComponent } from 'src/app/shared/components/edit-re
 import { loadReservationTypes } from 'src/app/state/actions/reservation-type.actions';
 import { deleteReservation } from 'src/app/state/actions/reservation.actions';
 import { selectReservationTypes } from 'src/app/state/selectors/reservation-type.selectors';
+import { ToastController } from '@ionic/angular';
+import { WalletService } from 'src/app/core/services/wallet.service';
+import { firstValueFrom } from 'rxjs';
+import { CapacitorPassToWallet } from 'capacitor-pass-to-wallet';
 
 @Component({
   selector: 'app-card',
@@ -22,6 +26,8 @@ export class CardComponent implements OnInit {
   private alertService = inject(AlertService);
   private store: Store = inject(Store);
   private modalCtrl = inject(ModalController);
+  private toastController = inject(ToastController);
+  private walletService = inject(WalletService);
   public types = signal<ReservationType[]>([]);
   public iconUrl: string = '';
 
@@ -95,5 +101,28 @@ export class CardComponent implements OnInit {
         },
       ],
     });
+  }
+
+  async onAddToWallet() {
+    try {
+      const blob = await firstValueFrom(this.walletService.getPassFile(this.reservation.id));
+      const dataUrl = (await this.walletService.convertBlobToBase64(blob)) as string;
+      const commaIdx = dataUrl.indexOf(',');
+      const base64 = commaIdx >= 0 ? dataUrl.substring(commaIdx + 1) : dataUrl;
+      await CapacitorPassToWallet.addToWallet({ base64 });
+      const toast = await this.toastController.create({
+        message: 'Pase agregado a Apple Wallet',
+        duration: 2000,
+        color: 'success',
+      });
+      await toast.present();
+    } catch (err: any) {
+      const toast = await this.toastController.create({
+        message: err?.message || 'No se pudo agregar el pase.',
+        duration: 2500,
+        color: 'danger',
+      });
+      await toast.present();
+    }
   }
 }
