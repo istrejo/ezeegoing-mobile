@@ -29,7 +29,7 @@ export class CardComponent implements OnInit {
   private toastController = inject(ToastController);
   private walletService = inject(WalletService);
   public types = signal<ReservationType[]>([]);
-  public iconUrl: string = '';
+  public iconUrl = '';
   
   public isReservationExpired = computed(() => {
     const end = this.reservation?.end_date as any;
