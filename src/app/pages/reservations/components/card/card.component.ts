@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit, signal } from '@angular/core';
+import { Component, inject, Input, OnInit, signal, computed } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import {
@@ -30,6 +30,16 @@ export class CardComponent implements OnInit {
   private walletService = inject(WalletService);
   public types = signal<ReservationType[]>([]);
   public iconUrl: string = '';
+  
+  public isReservationExpired = computed(() => {
+    const end = this.reservation?.end_date as any;
+    const endDate = end ? new Date(end) : null;
+    return !!endDate && isFinite(endDate.getTime()) && endDate.getTime() < Date.now();
+  });
+  
+  public canAddToWallet = computed(() => {
+    return this.reservation?.is_active && !this.isReservationExpired();
+  });
 
   constructor() {}
 
