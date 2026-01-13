@@ -14,6 +14,7 @@ import { ToastController } from '@ionic/angular';
 import { WalletService } from 'src/app/core/services/wallet.service';
 import { firstValueFrom } from 'rxjs';
 import { CapacitorPassToWallet } from 'capacitor-pass-to-wallet';
+import { LoadingService } from 'src/app/core/services/loading/loading.service';
 
 @Component({
   selector: 'app-card',
@@ -26,6 +27,7 @@ export class CardComponent implements OnInit {
   private alertService = inject(AlertService);
   private store: Store = inject(Store);
   private modalCtrl = inject(ModalController);
+  private loading = inject(LoadingService);
   private toastController = inject(ToastController);
   private walletService = inject(WalletService);
   public types = signal<ReservationType[]>([]);
@@ -115,20 +117,27 @@ export class CardComponent implements OnInit {
 
   async onAddToWallet() {
     try {
+      this.loading.present();
       const blob = await firstValueFrom(this.walletService.getPassFile(this.reservation.id));
       const dataUrl = (await this.walletService.convertBlobToBase64(blob)) as string;
       const commaIdx = dataUrl.indexOf(',');
       const base64 = commaIdx >= 0 ? dataUrl.substring(commaIdx + 1) : dataUrl;
       await CapacitorPassToWallet.addToWallet({ base64 });
-      const toast = await this.toastController.create({
-        message: 'Pase agregado a Apple Wallet',
-        duration: 2000,
-        color: 'success',
-      });
-      await toast.present();
+      this.loading.dismiss();
     } catch (err: any) {
+      this.loading.dismiss();
+      let errorObject = JSON.parse(err.errorMessage);
+      let message = ''
+
+
+      if (errorObject?.message === 'Pass already added') {
+        message = 'El pase ya existe en tu Apple Wallet';
+      } else {
+        message = errorObject?.message;
+      }
+
       const toast = await this.toastController.create({
-        message: err?.message || 'No se pudo agregar el pase.',
+        message: message,
         duration: 2500,
         color: 'danger',
       });
