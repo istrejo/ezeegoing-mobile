@@ -17,6 +17,18 @@
     ></ion-searchbar>
   </div>
 
+  @if(!(isLoading$ | async) && reservations().length === 0) {
+  <div class="flex flex-col items-center justify-center text-center mt-10 px-6">
+    <h3 class="text-lg font-bold">Aún no tienes reservaciones</h3>
+    <p class="text-sm opacity-80 mt-2">
+      Cuando hagas una reservación, aparecerá aquí.
+    </p>
+    <ion-button class="mt-4" expand="block" (click)="onReserve()">
+      Agregar una reservación
+    </ion-button>
+  </div>
+  }
+
   <ion-list
     class="flex flex-col w-full gap-4 items-center justify-center bg-transparent pb-[68px]"
     lines="none"
