@@ -9,13 +9,21 @@
     <h3 class="text-sm font-semibold">
       {{ visitor.fullname | titlecase }}
     </h3>
-    <p class="text-sm">
+    <p
+      class="text-sm cursor-pointer"
+      (click)="copyToClipboard(visitor.phone, 'Teléfono')"
+    >
       Teléfono:
       <span>
         {{ visitor.phone }}
       </span>
     </p>
-    <p class="text-sm">Correo: {{ visitor.email }}</p>
+    <p
+      class="text-sm cursor-pointer"
+      (click)="copyToClipboard(visitor.email, 'Correo')"
+    >
+      Correo: {{ visitor.email }}
+    </p>
   </div>
   <ion-buttons class="mr-4" slot="end" class="flex flex-col">
     <ion-button (click)="updateVisitor()">

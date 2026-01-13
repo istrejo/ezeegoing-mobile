@@ -2,6 +2,7 @@ import { createReducer, on } from '@ngrx/store';
 import {
   addReservationSuccess,
   deleteReservation,
+  deleteReservationSuccess,
   loadReservations,
   loadReservationsFailure,
   loadReservationsSuccess,
@@ -36,7 +37,7 @@ export const reservationReducer = createReducer(
     ...state,
     reservations: [...state.reservations, reservation],
   })),
-  on(deleteReservation, (state, { reservationId }) => ({
+  on(deleteReservationSuccess, (state, { reservationId }) => ({
     ...state,
     reservations: state.reservations.filter(
       (reservation) => reservation.id !== reservationId
