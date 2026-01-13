@@ -6,6 +6,7 @@ import { AlertService } from 'src/app/core/services/alert/alert.service';
 import { ModalService } from 'src/app/core/services/modal/modal.service';
 import { deleteVisitor } from 'src/app/state/actions/visitor.actions';
 import { ModalComponent } from '../modal/modal.component';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-card',
@@ -16,6 +17,7 @@ export class CardComponent implements OnInit {
   private alertservice = inject(AlertService);
   private store = inject(Store);
   private modalService = inject(ModalService);
+  private toastController = inject(ToastController);
 
   @Input() visitor!: Visitor;
 
@@ -49,5 +51,37 @@ export class CardComponent implements OnInit {
 
   updateVisitor() {
     this.modalService.presentModal(ModalComponent, { visitor: this.visitor });
+  }
+
+  async copyToClipboard(value: string, label: string) {
+    const text = (value ?? '').toString().trim();
+
+    if (!text) {
+      return;
+    }
+
+    try {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+      }
+      
+      const toast = await this.toastController.create({
+        message: `${label} copiado al portapapeles`,
+        duration: 1500,
+        color: 'secondary',
+        mode: 'ios',
+        position: 'top',
+      });
+      await toast.present();
+    } catch {
+      const toast = await this.toastController.create({
+        message: `No se pudo copiar ${label}`,
+        duration: 1500,
+        color: 'danger',
+        mode: 'ios',
+        position: 'top',
+      });
+      await toast.present();
+    }
   }
 }
