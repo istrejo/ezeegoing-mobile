@@ -2,6 +2,7 @@ import { createReducer, on } from '@ngrx/store';
 import { VisitorState } from './../../core/models/visitor.state';
 import {
   deleteVisitor,
+  deleteVisitorSuccess,
   loadVisitors,
   loadVisitorsFailure,
   loadVisitorsSuccess,
@@ -32,7 +33,7 @@ export const visitorReducer = createReducer(
     error,
   })),
 
-  on(deleteVisitor, (state, { visitorId }) => ({
+  on(deleteVisitorSuccess, (state, { visitorId }) => ({
     ...state,
     visitors: state.visitors.filter((visitor) => visitor.id !== visitorId),
     loading: false,
