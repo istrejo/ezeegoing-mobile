@@ -32,7 +32,7 @@ interface RequestOptions {
 })
 export class ApiService {
   // private readonly API = environment.apiUrl;
-  private baseUrl = signal<string | null>(null);
+  public baseUrl = signal<string | null>(null);
   private store = inject(Store);
 
   private http = inject(HttpClient);

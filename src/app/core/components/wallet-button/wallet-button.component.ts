@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { WalletService } from '../../services/wallet.service';
 import { CapacitorPassToWallet } from 'capacitor-pass-to-wallet';
 import { firstValueFrom } from 'rxjs';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-wallet-button',
@@ -10,7 +11,10 @@ import { firstValueFrom } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WalletButtonComponent {
-  constructor(private walletService: WalletService) {}
+  constructor(
+    private walletService: WalletService,
+    private toastController: ToastController
+  ) {}
 
   async downloadAndAddPass(): Promise<void> {
     const reservationId = 29765;
@@ -22,8 +26,22 @@ export class WalletButtonComponent {
 
       const result = await CapacitorPassToWallet.addToWallet({ base64 });
       console.log('Pase agregado correctamente:', result);
+
+      const toast = await this.toastController.create({
+        message: 'Pase agregado a Apple Wallet',
+        duration: 2000,
+        color: 'success',
+      });
+      await toast.present();
     } catch (err) {
       console.error('Error al descargar o agregar el pase:', err);
+
+      const toast = await this.toastController.create({
+        message: 'No se pudo agregar el pase.',
+        duration: 2500,
+        color: 'danger',
+      });
+      await toast.present();
     }
   }
 
