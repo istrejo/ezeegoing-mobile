@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.myapp.ezeegoing',
+  appId: 'com.grupospc.ezeegoing',
   appName: 'ezeegoing',
   webDir: 'www',
   plugins: {
