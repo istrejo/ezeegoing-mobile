@@ -1,6 +1,6 @@
-import { Component, EventEmitter, inject, Input, model, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { Visitor } from 'src/app/core/models/visitor.state';
-import { TabsService } from '../../services/tabs.service';
+import { TabsService, VisitorTab } from '../../services/tabs.service';
 
 
 @Component({
@@ -11,6 +11,9 @@ import { TabsService } from '../../services/tabs.service';
 export class CustomVisitorTabsComponent {
   private tabsService = inject(TabsService);
   public currentTab = this.tabsService.currentTab;
+  private touchStartX = 0;
+  private touchStartY = 0;
+  private readonly swipeThreshold = 50;
   @Input({ required: true }) isLoading = false;
   @Input({ required: true }) skeletonItems: { id: number }[] = [];
   @Input({ required: true }) permanentVisitorsTemp: Visitor[] = [];
@@ -28,5 +31,44 @@ export class CustomVisitorTabsComponent {
 
   onInfiniteScroll(event: any) {
     this.scroll.emit(event);
+  }
+
+  onTouchStart(event: TouchEvent) {
+    const touch = event.changedTouches?.[0];
+    if (!touch) {
+      return;
+    }
+
+    this.touchStartX = touch.clientX;
+    this.touchStartY = touch.clientY;
+  }
+
+  onTouchEnd(event: TouchEvent) {
+    const touch = event.changedTouches?.[0];
+    if (!touch) {
+      return;
+    }
+
+    const diffX = touch.clientX - this.touchStartX;
+    const diffY = touch.clientY - this.touchStartY;
+    const isHorizontalSwipe =
+      Math.abs(diffX) > this.swipeThreshold && Math.abs(diffX) > Math.abs(diffY);
+
+    if (!isHorizontalSwipe) {
+      return;
+    }
+
+    if (diffX < 0) {
+      this.goToTab('temporal');
+      return;
+    }
+
+    this.goToTab('permanent');
+  }
+
+  private goToTab(tab: VisitorTab) {
+    if (this.currentTab() !== tab) {
+      this.tabsService.setCurrentTab(tab);
+    }
   }
 }
