@@ -1,0 +1,23 @@
+<div class="tabs-header px-4 mb-4" role="tablist" aria-label="Tipos de visitantes">
+  <button
+    type="button"
+    class="tab-button"
+    [class.tab-button--active]="currentTab() === 'permanent'"
+    (click)="setActiveTab('permanent')"
+    role="tab"
+    [attr.aria-selected]="currentTab() === 'permanent'"
+  >
+    Permanentes
+  </button>
+
+  <button
+    type="button"
+    class="tab-button"
+    [class.tab-button--active]="currentTab() === 'temporal'"
+    (click)="setActiveTab('temporal')"
+    role="tab"
+    [attr.aria-selected]="currentTab() === 'temporal'"
+  >
+    Temporales
+  </button>
+</div>
