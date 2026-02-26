@@ -1,11 +1,8 @@
 import {
-  AfterViewInit,
   Component,
-  ElementRef,
   inject,
   OnInit,
   signal,
-  ViewChild,
 } from '@angular/core';
 import { faBuilding, faCalendarDays } from '@fortawesome/free-solid-svg-icons';
 import { Store } from '@ngrx/store';
@@ -19,6 +16,8 @@ import {
 } from 'src/app/state/selectors/visitor.selectors';
 import { ModalComponent } from './components/modal/modal.component';
 import { faUsers } from '@fortawesome/free-solid-svg-icons';
+import { TabsService } from './services/tabs.service';
+
 
 @Component({
   selector: 'app-visitors',
@@ -26,9 +25,9 @@ import { faUsers } from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./visitors.page.scss'],
 })
 export class VisitorsPage implements OnInit {
-  @ViewChild('permanent') segmentView1!: any;
-  @ViewChild('temp') segmentView2!: any;
   private modalSvc: ModalService = inject(ModalService);
+  private tabsService = inject(TabsService);
+  public currentTab = this.tabsService.currentTab;
   private store = inject(Store);
   faBuilding = faBuilding;
   faCalendarDays = faCalendarDays;
@@ -41,6 +40,8 @@ export class VisitorsPage implements OnInit {
   public isLoading = signal<boolean>(false);
   public search = '';
   public faUsers = faUsers;
+
+
   limit = 10;
 
   skeletonItems = [
@@ -74,11 +75,6 @@ export class VisitorsPage implements OnInit {
    */
   ngOnInit() {
     this.loadData();
-  }
-
-  segmentChange(e: any) {
-    this.segmentView1.el.scrollTop = 0;
-    this.segmentView2.el.scrollTop = 0;
   }
 
   /**
@@ -193,3 +189,4 @@ export class VisitorsPage implements OnInit {
     setTimeout(() => event.target.complete(), 1500);
   }
 }
+

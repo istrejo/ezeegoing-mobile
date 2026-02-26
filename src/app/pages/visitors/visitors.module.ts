@@ -12,6 +12,8 @@ import { CardComponent } from './components/card/card.component';
 import { ModalComponent } from './components/modal/modal.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { SelectComponent } from '../../shared/components/select/select.component';
+import { CustomVisitorTabsComponent } from './components/custom-visitor-tabs/custom-visitor-tabs.component';
+import { TabButtonsComponent } from './components/tab-buttons/tab-buttons.component';
 
 @NgModule({
   imports: [
@@ -24,6 +26,12 @@ import { SelectComponent } from '../../shared/components/select/select.component
     SharedModule,
     SelectComponent,
   ],
-  declarations: [VisitorsPage, CardComponent, ModalComponent],
+  declarations: [
+    VisitorsPage,
+    CardComponent,
+    ModalComponent,
+    CustomVisitorTabsComponent,
+    TabButtonsComponent
+  ],
 })
 export class VisitorsPageModule {}
