@@ -1,73 +1,87 @@
-
-
-@if (currentTab() === 'permanent') {
-<section class="px-4" role="tabpanel">
-  <ion-list
-    class="flex flex-col w-full gap-4 items-center justify-center bg-transparent pb-[68px]"
-    lines="none"
+<div
+  class="swipe-container"
+  (touchstart)="onTouchStart($event)"
+  (touchend)="onTouchEnd($event)"
+>
+  <section
+    class="tab-panel px-4"
+    role="tabpanel"
+    [class.tab-panel--active]="currentTab() === 'permanent'"
+    [class.tab-panel--inactive]="currentTab() !== 'permanent'"
+    [class.tab-panel--inactive-left]="currentTab() !== 'permanent'"
   >
-    @if(isLoading) { @for(item of skeletonItems; track item.id) {
-    <ion-item
-      class="skelleton-item flex items-center w-full h-14 rounded-lg ion-activatable ion-no-padding bg-transparent"
+    <ion-list
+      class="flex flex-col w-full gap-4 items-center justify-center bg-transparent pb-[68px]"
+      lines="none"
     >
-      <ion-thumbnail slot="start">
-        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-      </ion-thumbnail>
-      <ion-label>
-        <h3>
-          <ion-skeleton-text [animated]="true" style="width: 80%"></ion-skeleton-text>
-        </h3>
-        <p>
-          <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
-        </p>
-      </ion-label>
-    </ion-item>
-    } } @else { @for(visitor of permanentVisitorsTemp; track visitor.id){
-    <app-card [visitor]="visitor" />
-    } @if(permanentVisitorsCount === 0) {
-    <h3 class="font-bold text-xl text-center">Aún no tienen visitantes permanentes</h3>
-    <fa-icon [icon]="faUsers" class="text-2xl text-primary"></fa-icon>
+      @if(isLoading) { @for(item of skeletonItems; track item.id) {
+      <ion-item
+        class="skelleton-item flex items-center w-full h-14 rounded-lg ion-activatable ion-no-padding bg-transparent"
+      >
+        <ion-thumbnail slot="start">
+          <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+        </ion-thumbnail>
+        <ion-label>
+          <h3>
+            <ion-skeleton-text [animated]="true" style="width: 80%"></ion-skeleton-text>
+          </h3>
+          <p>
+            <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
+          </p>
+        </ion-label>
+      </ion-item>
+      } } @else { @for(visitor of permanentVisitorsTemp; track visitor.id){
+      <app-card [visitor]="visitor" />
+      } @if(permanentVisitorsCount === 0) {
+      <h3 class="font-bold text-xl text-center">Aún no tienen visitantes permanentes</h3>
+      <fa-icon [icon]="faUsers" class="text-2xl text-primary"></fa-icon>
 
-    <ion-button shape="round" (click)="onCreateVisitor()"> Nuevo visitante </ion-button>
-    } }
-    <ion-infinite-scroll (ionInfinite)="onInfiniteScroll($event)">
-      <ion-infinite-scroll-content></ion-infinite-scroll-content>
-    </ion-infinite-scroll>
-  </ion-list>
-</section>
-} @else {
-<section class="px-4" role="tabpanel">
-  <ion-list
-    class="flex flex-col w-full gap-4 items-center justify-center bg-transparent pb-[68px]"
-    lines="none"
+      <ion-button shape="round" (click)="onCreateVisitor()"> Nuevo visitante </ion-button>
+      } }
+      <ion-infinite-scroll (ionInfinite)="onInfiniteScroll($event)">
+        <ion-infinite-scroll-content></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </ion-list>
+  </section>
+
+  <section
+    class="tab-panel px-4"
+    role="tabpanel"
+    [class.tab-panel--active]="currentTab() === 'temporal'"
+    [class.tab-panel--inactive]="currentTab() !== 'temporal'"
+    [class.tab-panel--inactive-right]="currentTab() !== 'temporal'"
   >
-    @if(isLoading) { @for(item of skeletonItems; track item.id) {
-    <ion-item
-      class="skelleton-item flex items-center w-full h-14 rounded-lg ion-activatable ion-no-padding bg-transparent"
+    <ion-list
+      class="flex flex-col w-full gap-4 items-center justify-center bg-transparent pb-[68px]"
+      lines="none"
     >
-      <ion-thumbnail slot="start">
-        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-      </ion-thumbnail>
-      <ion-label>
-        <h3>
-          <ion-skeleton-text [animated]="true" style="width: 80%"></ion-skeleton-text>
-        </h3>
-        <p>
-          <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
-        </p>
-      </ion-label>
-    </ion-item>
-    } } @else { @for(visitor of temporalVisitorsTemp; track visitor.id){
-    <app-card [visitor]="visitor" />
-    } @if(temporalVisitorsCount === 0) {
-    <h3 class="font-bold text-xl text-center">Aún no tienen visitantes temporales</h3>
-    <fa-icon [icon]="faUsers" class="text-2xl text-primary"></fa-icon>
+      @if(isLoading) { @for(item of skeletonItems; track item.id) {
+      <ion-item
+        class="skelleton-item flex items-center w-full h-14 rounded-lg ion-activatable ion-no-padding bg-transparent"
+      >
+        <ion-thumbnail slot="start">
+          <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+        </ion-thumbnail>
+        <ion-label>
+          <h3>
+            <ion-skeleton-text [animated]="true" style="width: 80%"></ion-skeleton-text>
+          </h3>
+          <p>
+            <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
+          </p>
+        </ion-label>
+      </ion-item>
+      } } @else { @for(visitor of temporalVisitorsTemp; track visitor.id){
+      <app-card [visitor]="visitor" />
+      } @if(temporalVisitorsCount === 0) {
+      <h3 class="font-bold text-xl text-center">Aún no tienen visitantes temporales</h3>
+      <fa-icon [icon]="faUsers" class="text-2xl text-primary"></fa-icon>
 
-    <ion-button shape="round" (click)="onCreateVisitor()"> Nuevo visitante </ion-button>
-    } }
-    <ion-infinite-scroll (ionInfinite)="onInfiniteScroll($event)">
-      <ion-infinite-scroll-content></ion-infinite-scroll-content>
-    </ion-infinite-scroll>
-  </ion-list>
-</section>
-}
+      <ion-button shape="round" (click)="onCreateVisitor()"> Nuevo visitante </ion-button>
+      } }
+      <ion-infinite-scroll (ionInfinite)="onInfiniteScroll($event)">
+        <ion-infinite-scroll-content></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </ion-list>
+  </section>
+</div>
