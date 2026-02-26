@@ -1,12 +1,9 @@
-ion-segment-view {
-  width: 100%;
-  height: 80vh;
-  // overflow-y: scroll;
+/* Custom tabs styles are scoped in custom-visitor-tabs.component.scss */
+:host {
+  background: linear-gradient(180deg, #ffffff 0%, #d5e9f8 100%);
+
 }
 
-ion-segment-content {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow-y: scroll;
+ion-content {
+  --background: none;
 }

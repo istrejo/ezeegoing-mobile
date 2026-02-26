@@ -1,132 +1,36 @@
+<ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+  <ion-refresher-content></ion-refresher-content>
+</ion-refresher>
+<div
+class="flex flex-col items-center justify-between gap-4 mt-11 mb-3 pt-4 px-4"
+>
+<figure>
+  <img src="assets/logos/logo-small.png" alt="logo" />
+</figure>
+<h2 class="text-xl font-extrabold mb-1">Visitantes</h2>
+</div>
+
+<div mode="ios" lines="none" class="px-4">
+  <ion-searchbar
+  mode="ios"
+  placeholder="Busca un visitante"
+  [(ngModel)]="search"
+  (ionInput)="onSearch()"
+  ></ion-searchbar>
+</div>
+<app-tab-buttons></app-tab-buttons>
 <ion-content>
-  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
-  <div
-    class="flex flex-col items-center justify-between gap-4 mt-11 mb-3 pt-4 px-4"
-  >
-    <figure>
-      <img src="assets/logos/logo-small.png" alt="logo" />
-    </figure>
-    <h2 class="text-xl font-extrabold mb-1">Visitantes</h2>
-  </div>
-
-  <div mode="ios" lines="none" class="px-4">
-    <ion-searchbar
-      mode="ios"
-      placeholder="Busca un visitante"
-      [(ngModel)]="search"
-      (ionInput)="onSearch()"
-    ></ion-searchbar>
-  </div>
-  <ion-segment
-    (ionChange)="segmentChange($event)"
-    value="default"
-    class="mb-4 px-4"
-  >
-    <ion-segment-button value="default" content-id="default">
-      <ion-label>Permanentes</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="temp" content-id="temp">
-      <ion-label>Temporales</ion-label>
-    </ion-segment-button>
-  </ion-segment>
-
-  <ion-segment-view>
-    <ion-segment-content #permanent class="px-4" id="default">
-      <ion-list
-        class="flex flex-col w-full gap-4 items-center justify-center bg-transparent pb-[68px]"
-        lines="none"
-      >
-        @if(isLoading()) { @for(item of skeletonItems; track item.id) {
-
-        <ion-item
-          class="skelleton-item flex items-center w-full h-14 rounded-lg ion-activatable ion-no-padding bg-transparent"
-        >
-          <ion-thumbnail class="" slot="start">
-            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-          </ion-thumbnail>
-          <ion-label>
-            <h3>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 80%"
-              ></ion-skeleton-text>
-            </h3>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 60%"
-              ></ion-skeleton-text>
-            </p>
-          </ion-label>
-        </ion-item>
-        } } @else { @for(visitor of permanentVisitorsTemp(); track visitor.id){
-        <app-card [visitor]="visitor" />
-
-        } @if(permanentVisitors().length === 0) {
-        <h3 class="font-bold text-xl text-center">
-          Aún no tienen visitantes permanentes
-        </h3>
-        <fa-icon [icon]="faUsers" class="text-2xl text-primary"></fa-icon>
-
-        <ion-button shape="round" (click)="createVisitor()">
-          Nuevo visitante
-        </ion-button>
-        } }
-        <ion-infinite-scroll (ionInfinite)="onScroll($event)">
-          <ion-infinite-scroll-content></ion-infinite-scroll-content>
-        </ion-infinite-scroll>
-      </ion-list>
-    </ion-segment-content>
-    <ion-segment-content #temp class="px-4" id="temp">
-      <ion-list
-        class="flex flex-col w-full gap-4 items-center justify-center bg-transparent pb-[68px]"
-        lines="none"
-      >
-        @if(isLoading()) { @for(item of skeletonItems; track item.id) {
-
-        <ion-item
-          class="skelleton-item flex items-center w-full h-14 rounded-lg ion-activatable ion-no-padding bg-transparent"
-        >
-          <ion-thumbnail class="" slot="start">
-            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-          </ion-thumbnail>
-          <ion-label>
-            <h3>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 80%"
-              ></ion-skeleton-text>
-            </h3>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 60%"
-              ></ion-skeleton-text>
-            </p>
-          </ion-label>
-        </ion-item>
-        } } @else { @for(visitor of temporalVisitorsTemp(); track visitor.id){
-        <app-card [visitor]="visitor" />
-
-        } @if(temporalVisitors().length === 0) {
-        <h3 class="font-bold text-xl text-center">
-          Aún no tienen visitantes temporales
-        </h3>
-        <fa-icon [icon]="faUsers" class="text-2xl text-primary"></fa-icon>
-
-        <fa-icon [icon]="faUsers"></fa-icon>
-        <ion-button shape="round" (click)="createVisitor()">
-          Nuevo visitante
-        </ion-button>
-        }}
-        <ion-infinite-scroll (ionInfinite)="onScroll($event)">
-          <ion-infinite-scroll-content></ion-infinite-scroll-content>
-        </ion-infinite-scroll>
-      </ion-list>
-    </ion-segment-content>
-  </ion-segment-view>
+  <app-custom-visitor-tabs
+    [isLoading]="isLoading()"
+    [skeletonItems]="skeletonItems"
+    [permanentVisitorsTemp]="permanentVisitorsTemp()"
+    [temporalVisitorsTemp]="temporalVisitorsTemp()"
+    [permanentVisitorsCount]="permanentVisitors().length"
+    [temporalVisitorsCount]="temporalVisitors().length"
+    [faUsers]="faUsers"
+    (createVisitor)="createVisitor()"
+    (scroll)="onScroll($event)"
+  ></app-custom-visitor-tabs>
 
   <ion-fab slot="fixed" horizontal="end" vertical="bottom">
     <ion-fab-button (click)="createVisitor()">
