@@ -16,7 +16,6 @@ import {
 } from 'src/app/state/selectors/visitor.selectors';
 import { ModalComponent } from './components/modal/modal.component';
 import { faUsers } from '@fortawesome/free-solid-svg-icons';
-import { TabsService } from './services/tabs.service';
 
 
 @Component({
@@ -26,8 +25,6 @@ import { TabsService } from './services/tabs.service';
 })
 export class VisitorsPage implements OnInit {
   private modalSvc: ModalService = inject(ModalService);
-  private tabsService = inject(TabsService);
-  public currentTab = this.tabsService.currentTab;
   private store = inject(Store);
   faBuilding = faBuilding;
   faCalendarDays = faCalendarDays;
