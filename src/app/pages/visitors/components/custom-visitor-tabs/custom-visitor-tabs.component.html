@@ -23,20 +23,30 @@
         </ion-thumbnail>
         <ion-label>
           <h3>
-            <ion-skeleton-text [animated]="true" style="width: 80%"></ion-skeleton-text>
+            <ion-skeleton-text
+              [animated]="true"
+              style="width: 80%"
+            ></ion-skeleton-text>
           </h3>
           <p>
-            <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
+            <ion-skeleton-text
+              [animated]="true"
+              style="width: 60%"
+            ></ion-skeleton-text>
           </p>
         </ion-label>
       </ion-item>
       } } @else { @for(visitor of permanentVisitorsTemp; track visitor.id){
       <app-card [visitor]="visitor" />
       } @if(permanentVisitorsCount === 0) {
-      <h3 class="font-bold text-xl text-center">Aún no tienen visitantes permanentes</h3>
+      <h3 class="font-bold text-xl text-center">
+        Aún no tienen visitantes permanentes
+      </h3>
       <fa-icon [icon]="faUsers" class="text-2xl text-primary"></fa-icon>
 
-      <ion-button shape="round" (click)="onCreateVisitor()"> Nuevo visitante </ion-button>
+      <ion-button shape="round" (click)="onCreateVisitor()">
+        Nuevo visitante
+      </ion-button>
       } }
       <ion-infinite-scroll (ionInfinite)="onInfiniteScroll($event)">
         <ion-infinite-scroll-content></ion-infinite-scroll-content>
@@ -64,20 +74,30 @@
         </ion-thumbnail>
         <ion-label>
           <h3>
-            <ion-skeleton-text [animated]="true" style="width: 80%"></ion-skeleton-text>
+            <ion-skeleton-text
+              [animated]="true"
+              style="width: 80%"
+            ></ion-skeleton-text>
           </h3>
           <p>
-            <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
+            <ion-skeleton-text
+              [animated]="true"
+              style="width: 60%"
+            ></ion-skeleton-text>
           </p>
         </ion-label>
       </ion-item>
       } } @else { @for(visitor of temporalVisitorsTemp; track visitor.id){
       <app-card [visitor]="visitor" />
       } @if(temporalVisitorsCount === 0) {
-      <h3 class="font-bold text-xl text-center">Aún no tienen visitantes temporales</h3>
+      <h3 class="font-bold text-xl text-center">
+        Aún no tienen visitantes temporales
+      </h3>
       <fa-icon [icon]="faUsers" class="text-2xl text-primary"></fa-icon>
 
-      <ion-button shape="round" (click)="onCreateVisitor()"> Nuevo visitante </ion-button>
+      <ion-button shape="round" (click)="onCreateVisitor()">
+        Nuevo visitante
+      </ion-button>
       } }
       <ion-infinite-scroll (ionInfinite)="onInfiniteScroll($event)">
         <ion-infinite-scroll-content></ion-infinite-scroll-content>

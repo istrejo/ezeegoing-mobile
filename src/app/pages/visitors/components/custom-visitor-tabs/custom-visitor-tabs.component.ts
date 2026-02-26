@@ -2,7 +2,6 @@ import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { Visitor } from 'src/app/core/models/visitor.state';
 import { TabsService, VisitorTab } from '../../services/tabs.service';
 
-
 @Component({
   selector: 'app-custom-visitor-tabs',
   templateUrl: './custom-visitor-tabs.component.html',
@@ -52,7 +51,8 @@ export class CustomVisitorTabsComponent {
     const diffX = touch.clientX - this.touchStartX;
     const diffY = touch.clientY - this.touchStartY;
     const isHorizontalSwipe =
-      Math.abs(diffX) > this.swipeThreshold && Math.abs(diffX) > Math.abs(diffY);
+      Math.abs(diffX) > this.swipeThreshold &&
+      Math.abs(diffX) > Math.abs(diffY);
 
     if (!isHorizontalSwipe) {
       return;
