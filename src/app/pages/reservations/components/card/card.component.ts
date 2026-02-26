@@ -33,14 +33,9 @@ export class CardComponent implements OnInit {
   public types = signal<ReservationType[]>([]);
   public iconUrl: string = '';
   
-  public isReservationExpired = computed(() => {
-    const end = this.reservation?.end_date as any;
-    const endDate = end ? new Date(end) : null;
-    return !!endDate && isFinite(endDate.getTime()) && endDate.getTime() < Date.now();
-  });
   
   public canAddToWallet = computed(() => {
-    return this.reservation?.is_active && !this.isReservationExpired();
+    return this.reservation?.is_active 
   });
 
   constructor() {}

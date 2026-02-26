@@ -1,18 +1,20 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { format } from '@formkit/tempo';
+import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
+import { format } from '@formkit/tempo';
+import { Subject, takeUntil } from 'rxjs';
 import { Visitor } from 'src/app/core/models/visitor.state';
 import { ModalService } from 'src/app/core/services/modal/modal.service';
 import { ModalComponent } from 'src/app/pages/visitors/components/modal/modal.component';
-import { addReservation } from 'src/app/state/actions/reservation.actions';
+import { addReservation, addReservationSuccess } from 'src/app/state/actions/reservation.actions';
 import { loadUser } from 'src/app/state/actions/user.actions';
 import { loadVisitors } from 'src/app/state/actions/visitor.actions';
 import { selectUser } from 'src/app/state/selectors/user.selectors';
 import { selectBuildingSelected } from 'src/app/state/selectors/building.selectors';
 import { selectVisitors } from 'src/app/state/selectors/visitor.selectors';
-import { User, UserData } from 'src/app/core/models/user.state.intercafe';
+import { UserData } from 'src/app/core/models/user.state.intercafe';
 import { AlertService } from 'src/app/core/services/alert/alert.service';
 
 @Component({
@@ -20,13 +22,15 @@ import { AlertService } from 'src/app/core/services/alert/alert.service';
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })
-export class FormComponent implements OnInit {
+export class FormComponent implements OnInit, OnDestroy {
   private alertSvc = inject(AlertService);
   private route = inject(ActivatedRoute);
   private modalSvc = inject(ModalService);
   private fb: FormBuilder = inject(FormBuilder);
-  public form!: FormGroup;
   private store = inject(Store);
+  private actions = inject(Actions);
+  private destroy$ = new Subject<void>();
+  public form!: FormGroup;
   public user = signal<UserData | null>(null);
   public buildingId = signal<number | null>(null);
   public visitors = signal<Visitor[]>([]);
@@ -82,6 +86,18 @@ export class FormComponent implements OnInit {
     if (this.reservationType > 2) {
       this.form.get('visitorSelected')?.setValidators([]);
     }
+
+    this.actions
+      .pipe(
+        ofType(addReservationSuccess),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => this.resetForm());
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   ionViewWillEnter() {}
@@ -129,6 +145,23 @@ export class FormComponent implements OnInit {
       car_plate: [''],
       reservation_type_catalog: [null],
     });
+  }
+
+  resetForm() {
+    this.form.reset({
+      visitorSelected: null,
+      start_date: format(new Date(), 'YYYY-MM-DDTHH:mm:ss'),
+      end_date: format(new Date(), 'YYYY-MM-DDTHH:mm:ss'),
+      first_name: '',
+      last_name: '',
+      created_by: this.user()?.user.id,
+      reservation_reference: new Date().getTime().toString().slice(0, 9),
+      building: this.buildingId(),
+      hasVehicle: false,
+      car_plate: '',
+      reservation_type_catalog: null,
+    });
+    this.form.markAsUntouched();
   }
 
   addVisitor() {
