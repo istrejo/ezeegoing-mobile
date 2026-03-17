@@ -1,8 +1,10 @@
-import { LoadingController } from '@ionic/angular';
 import { LocalStorageService } from './../../core/services/localstorage/localstorage.service';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { Server } from 'src/app/core/models/server.interface';
+import { ModalService } from 'src/app/core/services/modal/modal.service';
+import { ServerModalComponent } from 'src/app/shared/components/server-modal/server-modal.component';
 import { login } from 'src/app/state/actions/auth.actions';
 
 @Component({
@@ -13,7 +15,7 @@ import { login } from 'src/app/state/actions/auth.actions';
 export class LoginPage implements OnInit {
   private store: Store = inject(Store);
   private localStorageSvc = inject(LocalStorageService);
-  private loadingCtrl = inject(LoadingController);
+  private modalSvc = inject(ModalService);
   fb: FormBuilder = inject(FormBuilder);
   form!: FormGroup;
   credentials: any = null;
@@ -39,7 +41,7 @@ export class LoginPage implements OnInit {
     this.form = this.fb.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required]],
-      id: ['', [Validators.required]],
+      id: [null],
       rememberMe: [false],
     });
   }
@@ -59,9 +61,21 @@ export class LoginPage implements OnInit {
     this.localStorageSvc.removeItem('credentials');
   }
 
-  onSubmit() {
+  async onSubmit() {
+    if (this.form.invalid) {
+      return;
+    }
+
+    const selectedServer: Server | undefined = await this.modalSvc.presentModal(
+      ServerModalComponent
+    );
+    if (!selectedServer) {
+      return;
+    }
+
+    this.form.patchValue({ id: selectedServer.id });
     this.saveCredentials();
     const { password, username, id } = this.form.value;
-    this.store.dispatch(login({ username, password, id }));
+    this.store.dispatch(login({ username, password, id: Number(id) }));
   }
 }
