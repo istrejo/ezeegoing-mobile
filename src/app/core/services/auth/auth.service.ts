@@ -1,6 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { LoginResponse } from '../../models/auth.state.interface';
+import { Server } from '../../models/server.interface';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Store } from '@ngrx/store';
@@ -28,6 +29,10 @@ export class AuthService {
   login(username: string, password: string, id: number): Observable<any> {
     const loginData = { password, username, id };
     return this.http.post<LoginResponse>(`${this.apiUrl}login/`, loginData);
+  }
+
+  getServers(): Observable<Server[]> {
+    return this.http.get<Server[]>(`${this.apiUrl}servers/`);
   }
 
   logout(): Observable<any> {

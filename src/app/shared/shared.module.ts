@@ -9,12 +9,14 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { BuildingModalComponent } from './components/building-modal/building-modal.component';
 import { EditReservationModalComponent } from './components/edit-reservation-modal/edit-reservation-modal.component';
 import { SelectComponent } from './components/select/select.component';
+import { ServerModalComponent } from './components/server-modal/server-modal.component';
 
 const components = [
   InputComponent,
   ValidationErrorsComponent,
   BuildingModalComponent,
   EditReservationModalComponent,
+  ServerModalComponent,
 ];
 const directives = [ControlValueAccessorDirective];
 
