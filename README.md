@@ -2,7 +2,7 @@
 
 Aplicación móvil híbrida para gestión de reservaciones en edificios, estacionamientos y áreas comunes.
 
-Esto es un ejemplo para un PR
+Esto es un ejemplo para un Pull Request
 
 ## Stack Tecnológico
 
