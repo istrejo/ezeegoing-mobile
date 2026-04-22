@@ -2,6 +2,8 @@
 
 Aplicación móvil híbrida para gestión de reservaciones en edificios, estacionamientos y áreas comunes.
 
+Esto es un ejemplo para un PR
+
 ## Stack Tecnológico
 
 - **Angular 18** - Framework frontend
