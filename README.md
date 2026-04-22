@@ -2,7 +2,28 @@
 
 Aplicación móvil híbrida para gestión de reservaciones en edificios, estacionamientos y áreas comunes.
 
-Esto es un ejemplo para un PR
+## Ejemplo de Pull Request
+
+### Título
+
+feat: Implementar validación de reservaciones expiradas en Apple Wallet
+
+### Descripción
+
+Este PR agrega la lógica de validación para mostrar el botón de Apple Wallet únicamente cuando la reservación está activa y no ha expirado.
+
+### Cambios realizados
+
+- Agregado computed property `isReservationExpired` para verificar fecha de expiración
+- Agregado computed property `canAddToWallet` para determinar visibilidad del botón
+- Actualizado template con directiva `@if` para renderizado condicional
+
+### Pruebas
+
+- [x] Probado en simulador iOS
+- [x] Probado en dispositivo físico
+- [x] Verificado que el botón no aparece en reservaciones expiradas
+- [x] Verificado que el botón no aparece en reservaciones inactivas
 
 ## Stack Tecnológico
 
